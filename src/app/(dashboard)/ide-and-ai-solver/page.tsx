@@ -420,7 +420,6 @@ export default function IDEAndAISolverPage() {
 </div>
 </div>
 </div>
-}
 </div>
 </div>
 
