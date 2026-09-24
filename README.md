@@ -1,6 +1,8 @@
-# CodePrep AI 🚀
-
-An advanced, dark-themed platform dedicated strictly to Coding, Programming & Technical Interviews. Designed to help developers break into FAANG-level engineering roles.
+<div align="center">
+  <img src="https://lh3.googleusercontent.com/aida/AEtjO1VwAcN14E0JNeoVt1wl1XBxE6eFMjMgmiEwhv0giUUZFjUFDxPnvxrjodV2cvLAosDl1fGJzbXcd6nE01Bl6TY3eby8te9hg4pkL0HsEbrgPAz_sI00-rRUSfQ_UiebDldHwUf0o8v1BTqygWuQUJj7eTlTX4Fz1j6yX3NlcS0Fa6Tt5VAdVB0XB4wIem5tCEIYEVZIkwVptc2am3sK4m6llzbodxGFCfQLwupAPmxRWvBMV6HG_S_6Vno" alt="CodePrep AI Logo" width="100"/>
+  <h1>CodePrep AI 🚀</h1>
+  <p>An advanced, dark-themed platform dedicated strictly to Coding, Programming & Technical Interviews.</p>
+</div>
 
 ## Features
 - **Dashboard Overview:** Track your consistency streaks, algorithmic acceptance rate, and FAANG level readiness prediction (e.g. Meta E6 / Google L6).
