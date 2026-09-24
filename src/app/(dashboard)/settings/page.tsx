@@ -39,8 +39,8 @@ export default function SettingsPage() {
 
         {/* Content Area */}
         <div className="md:col-span-3 space-y-6">
-          <div className="border border-white/10 rounded-xl bg-[#09090b] overflow-hidden">
-            <div className="p-6 border-b border-white/10 bg-white/5">
+          <div className="border border-border rounded-xl bg-background overflow-hidden">
+            <div className="p-6 border-b border-border bg-white/5">
               <h3 className="text-lg font-semibold text-white mb-1">AI Provider Configuration</h3>
               <p className="text-sm text-neutral-400">
                 CodePrep AI runs on simulated endpoints by default. Add your own API key to unlock real-time, live AI responses using the latest models.
@@ -50,7 +50,7 @@ export default function SettingsPage() {
             <div className="p-6 space-y-6">
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="h-8 w-8 rounded bg-blue-500/10 flex items-center justify-center shrink-0">
+                  <div className="h-8 w-8 rounded bg-primary/10 flex items-center justify-center shrink-0">
                     <Cloud className="h-4 w-4 text-blue-400" />
                   </div>
                   <div className="flex-1">
@@ -63,11 +63,11 @@ export default function SettingsPage() {
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
                   placeholder="sk-..."
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-primary/50"
+                  className="w-full bg-white/5 border border-border rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-primary/50"
                 />
               </div>
 
-              <div className="space-y-4 pt-4 border-t border-white/10">
+              <div className="space-y-4 pt-4 border-t border-border">
                 <div className="flex items-center justify-between">
                    <div className="flex items-center gap-3">
                     <div className="h-8 w-8 rounded bg-orange-500/10 flex items-center justify-center shrink-0">
@@ -82,7 +82,7 @@ export default function SettingsPage() {
                 </div>
               </div>
 
-              <div className="space-y-4 pt-4 border-t border-white/10">
+              <div className="space-y-4 pt-4 border-t border-border">
                 <div className="flex items-center justify-between">
                    <div className="flex items-center gap-3">
                     <div className="h-8 w-8 rounded bg-green-500/10 flex items-center justify-center shrink-0">

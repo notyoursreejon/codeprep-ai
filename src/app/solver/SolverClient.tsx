@@ -36,9 +36,9 @@ export default function SolverClient({ initialProblem }: { initialProblem: any }
   };
 
   return (
-    <div className="flex flex-col h-screen bg-[#09090b]">
+    <div className="flex flex-col h-screen bg-background">
       {/* Header */}
-      <header className="h-14 flex items-center justify-between px-4 border-b border-white/10 shrink-0 bg-[#09090b]">
+      <header className="h-14 flex items-center justify-between px-4 border-b border-border shrink-0 bg-background">
         <div className="flex items-center gap-4">
           <Link href="/dashboard" className="text-neutral-400 hover:text-white transition-colors">
             <ChevronLeft className="h-5 w-5" />
@@ -52,7 +52,7 @@ export default function SolverClient({ initialProblem }: { initialProblem: any }
           <select 
             value={language} 
             onChange={(e) => setLanguage(e.target.value)}
-            className="bg-white/5 border border-white/10 text-white text-sm rounded-md px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary"
+            className="bg-white/5 border border-border text-white text-sm rounded-md px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary"
           >
             <option value="javascript">JavaScript</option>
             <option value="python">Python</option>
@@ -70,8 +70,8 @@ export default function SolverClient({ initialProblem }: { initialProblem: any }
       <main className="flex-1 flex overflow-hidden">
         
         {/* Left: Problem Input */}
-        <div className="w-1/2 flex flex-col border-r border-white/10 bg-[#0c0c0e]">
-          <div className="px-4 py-2 bg-white/5 border-b border-white/10 text-xs font-semibold text-neutral-400 uppercase tracking-wider">
+        <div className="w-1/2 flex flex-col border-r border-border bg-card">
+          <div className="px-4 py-2 bg-white/5 border-b border-border text-xs font-semibold text-neutral-400 uppercase tracking-wider">
             Problem Description
           </div>
           <textarea
@@ -83,7 +83,7 @@ export default function SolverClient({ initialProblem }: { initialProblem: any }
         </div>
 
         {/* Right: AI Output / Code */}
-        <div className="w-1/2 flex flex-col bg-[#09090b] relative">
+        <div className="w-1/2 flex flex-col bg-background relative">
           {!aiResponse && !isLoading && (
              <div className="absolute inset-0 flex items-center justify-center text-neutral-500 flex-col gap-4">
                 <BrainCircuit className="h-12 w-12 opacity-20" />
@@ -91,7 +91,7 @@ export default function SolverClient({ initialProblem }: { initialProblem: any }
              </div>
           )}
           {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center text-primary flex-col gap-4 bg-[#09090b]/50 backdrop-blur-sm z-10">
+            <div className="absolute inset-0 flex items-center justify-center text-primary flex-col gap-4 bg-background/50 backdrop-blur-sm z-10">
                 <Loader2 className="h-8 w-8 animate-spin" />
                 <p className="text-sm font-medium animate-pulse">Analyzing problem...</p>
             </div>
@@ -100,7 +100,7 @@ export default function SolverClient({ initialProblem }: { initialProblem: any }
           {aiResponse && (
             <>
               {/* Tabs */}
-              <div className="flex border-b border-white/10 bg-white/5 px-2 overflow-x-auto">
+              <div className="flex border-b border-border bg-white/5 px-2 overflow-x-auto">
                 {["explanation", "approach", "code", "complexity", "edge cases"].map((tab) => (
                   <button
                     key={tab}
@@ -142,11 +142,11 @@ export default function SolverClient({ initialProblem }: { initialProblem: any }
                     {activeTab === "approach" && <p>{aiResponse.approach}</p>}
                     {activeTab === "complexity" && (
                       <div className="space-y-4">
-                        <div className="bg-white/5 border border-white/10 p-4 rounded-lg">
+                        <div className="bg-white/5 border border-border p-4 rounded-lg">
                           <h4 className="font-semibold text-neutral-200 mb-1">Time Complexity</h4>
                           <p className="font-mono text-green-400">{aiResponse.complexity.time}</p>
                         </div>
-                        <div className="bg-white/5 border border-white/10 p-4 rounded-lg">
+                        <div className="bg-white/5 border border-border p-4 rounded-lg">
                           <h4 className="font-semibold text-neutral-200 mb-1">Space Complexity</h4>
                           <p className="font-mono text-orange-400">{aiResponse.complexity.space}</p>
                         </div>

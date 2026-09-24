@@ -31,8 +31,8 @@ export default function DebuggerPage() {
       </div>
 
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 min-h-0">
-        <div className="flex flex-col border border-white/10 rounded-xl overflow-hidden bg-[#0c0c0e]">
-          <div className="p-3 border-b border-white/10 bg-white/5 flex justify-between items-center">
+        <div className="flex flex-col border border-border rounded-xl overflow-hidden bg-card">
+          <div className="p-3 border-b border-border bg-white/5 flex justify-between items-center">
             <span className="text-sm font-medium text-neutral-300">Your Code</span>
             <Button size="sm" onClick={handleDebug} disabled={isLoading}>
               {isLoading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Bug className="h-4 w-4 mr-2" />}
@@ -55,8 +55,8 @@ export default function DebuggerPage() {
           </div>
         </div>
 
-        <div className="flex flex-col border border-white/10 rounded-xl overflow-hidden bg-[#09090b]">
-           <div className="p-3 border-b border-white/10 bg-white/5">
+        <div className="flex flex-col border border-border rounded-xl overflow-hidden bg-background">
+           <div className="p-3 border-b border-border bg-white/5">
             <span className="text-sm font-medium text-neutral-300">AI Analysis</span>
           </div>
           <div className="flex-1 overflow-y-auto p-6">
@@ -93,7 +93,7 @@ export default function DebuggerPage() {
 
                 <div>
                   <h4 className="text-neutral-400 font-bold mb-2 uppercase tracking-wider text-xs">Corrected Code</h4>
-                  <div className="rounded-lg overflow-hidden border border-white/10 h-48">
+                  <div className="rounded-lg overflow-hidden border border-border h-48">
                     <Editor
                       height="100%"
                       language="javascript"

@@ -41,7 +41,7 @@ export default function ProjectPrepPage() {
             value={projectDesc}
             onChange={(e) => setProjectDesc(e.target.value)}
             placeholder="e.g. Built a real-time chat application using React, Node.js, and WebSockets. Implemented JWT authentication and PostgreSQL for message persistence..."
-            className="flex-1 w-full bg-[#09090b] border border-white/10 rounded-xl p-4 text-sm text-neutral-200 resize-none focus:outline-none focus:border-primary/50 transition-colors leading-relaxed"
+            className="flex-1 w-full bg-background border border-border rounded-xl p-4 text-sm text-neutral-200 resize-none focus:outline-none focus:border-primary/50 transition-colors leading-relaxed"
           />
           <div className="mt-4 flex justify-end">
             <Button onClick={handleGenerate} disabled={isLoading || !projectDesc.trim()}>
@@ -56,7 +56,7 @@ export default function ProjectPrepPage() {
             <HelpCircle className="h-4 w-4 text-primary" />
             Generated Interview Questions
           </div>
-          <div className="flex-1 border border-white/10 rounded-xl bg-white/5 p-6 overflow-y-auto">
+          <div className="flex-1 border border-border rounded-xl bg-white/5 p-6 overflow-y-auto">
             {!questions && !isLoading && (
               <div className="h-full flex flex-col items-center justify-center text-neutral-500 gap-4 text-center">
                 <HelpCircle className="h-12 w-12 opacity-20" />
@@ -74,7 +74,7 @@ export default function ProjectPrepPage() {
             {questions && (
               <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4">
                 {questions.map((q, i) => (
-                  <div key={i} className="p-4 bg-[#09090b] border border-white/10 rounded-lg hover:border-primary/50 transition-colors cursor-pointer group">
+                  <div key={i} className="p-4 bg-background border border-border rounded-lg hover:border-primary/50 transition-colors cursor-pointer group">
                     <div className="flex gap-3">
                       <div className="h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0 text-xs font-bold text-primary">
                         {i + 1}
@@ -84,7 +84,7 @@ export default function ProjectPrepPage() {
                   </div>
                 ))}
                 
-                <div className="mt-8 pt-6 border-t border-white/10 text-center">
+                <div className="mt-8 pt-6 border-t border-border text-center">
                   <Button variant="outline" className="w-full">
                     <ArrowRight className="mr-2 h-4 w-4" />
                     Start Mock Interview with these Questions

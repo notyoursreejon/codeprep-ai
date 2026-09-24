@@ -23,7 +23,7 @@ export default function FundamentalsPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {modules.map((mod, i) => (
-          <div key={i} className="border border-white/10 rounded-xl bg-white/5 p-6 hover:bg-white/10 transition-colors flex flex-col group relative overflow-hidden">
+          <div key={i} className="border border-border rounded-xl bg-white/5 p-6 hover:bg-white/10 transition-colors flex flex-col group relative overflow-hidden">
              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
             <div className="flex items-center gap-4 mb-4">
               <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
@@ -54,7 +54,7 @@ export default function FundamentalsPage() {
                     {mod.progress === 0 ? "Start" : mod.progress === 100 ? "Review" : "Continue"}
                   </Button>
                 </Link>
-                <Button size="sm" variant="outline" className="w-full text-xs border-white/10">Flashcards</Button>
+                <Button size="sm" variant="outline" className="w-full text-xs border-border">Flashcards</Button>
               </div>
             </div>
           </div>

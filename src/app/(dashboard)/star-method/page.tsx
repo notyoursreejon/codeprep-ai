@@ -55,7 +55,7 @@ export default function StarMethodPage() {
         <p className="text-neutral-400">Master behavioral interviews by structuring your stories.</p>
       </div>
 
-      <div className="bg-[#121214] border border-white/10 rounded-xl p-6 relative overflow-hidden">
+      <div className="bg-input border border-border rounded-xl p-6 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-1 bg-primary h-full" />
         <div className="flex justify-between items-start gap-4">
           <div>
@@ -72,14 +72,14 @@ export default function StarMethodPage() {
         <div className="space-y-6">
           <div className="space-y-2">
             <label className="text-sm font-medium text-white flex items-center gap-2">
-              <div className="h-6 w-6 rounded bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold">S</div>
+              <div className="h-6 w-6 rounded bg-primary/20 text-blue-400 flex items-center justify-center font-bold">S</div>
               Situation
             </label>
             <textarea
               value={form.situation}
               onChange={(e) => setForm({ ...form, situation: e.target.value })}
               placeholder="Set the scene and give the necessary details of your example..."
-              className="w-full bg-[#09090b] border border-white/10 rounded-lg p-3 text-sm text-white resize-none h-24 focus:border-blue-500/50 focus:outline-none"
+              className="w-full bg-background border border-border rounded-lg p-3 text-sm text-white resize-none h-24 focus:border-primary/50 focus:outline-none"
             />
           </div>
 
@@ -92,7 +92,7 @@ export default function StarMethodPage() {
               value={form.task}
               onChange={(e) => setForm({ ...form, task: e.target.value })}
               placeholder="Describe what your responsibility was in that situation..."
-              className="w-full bg-[#09090b] border border-white/10 rounded-lg p-3 text-sm text-white resize-none h-24 focus:border-purple-500/50 focus:outline-none"
+              className="w-full bg-background border border-border rounded-lg p-3 text-sm text-white resize-none h-24 focus:border-purple-500/50 focus:outline-none"
             />
           </div>
 
@@ -105,7 +105,7 @@ export default function StarMethodPage() {
               value={form.action}
               onChange={(e) => setForm({ ...form, action: e.target.value })}
               placeholder="Explain exactly what steps you took to address it..."
-              className="w-full bg-[#09090b] border border-white/10 rounded-lg p-3 text-sm text-white resize-none h-32 focus:border-orange-500/50 focus:outline-none"
+              className="w-full bg-background border border-border rounded-lg p-3 text-sm text-white resize-none h-32 focus:border-orange-500/50 focus:outline-none"
             />
           </div>
 
@@ -118,7 +118,7 @@ export default function StarMethodPage() {
               value={form.result}
               onChange={(e) => setForm({ ...form, result: e.target.value })}
               placeholder="Share what outcomes your actions achieved (use metrics if possible)..."
-              className="w-full bg-[#09090b] border border-white/10 rounded-lg p-3 text-sm text-white resize-none h-24 focus:border-green-500/50 focus:outline-none"
+              className="w-full bg-background border border-border rounded-lg p-3 text-sm text-white resize-none h-24 focus:border-green-500/50 focus:outline-none"
             />
           </div>
           
@@ -128,7 +128,7 @@ export default function StarMethodPage() {
           </Button>
         </div>
 
-        <div className="flex flex-col border border-white/10 rounded-xl bg-[#09090b] p-6 h-fit sticky top-6">
+        <div className="flex flex-col border border-border rounded-xl bg-background p-6 h-fit sticky top-6">
           <div className="flex items-center gap-2 font-medium text-neutral-300 mb-6">
             <MessageSquare className="h-5 w-5 text-primary" />
             AI Interviewer Feedback
@@ -150,7 +150,7 @@ export default function StarMethodPage() {
 
           {feedback && (
             <div className="space-y-6 animate-in fade-in">
-              <div className="flex justify-between items-center border-b border-white/10 pb-4">
+              <div className="flex justify-between items-center border-b border-border pb-4">
                 <span className="text-neutral-400 font-medium">Impact Score</span>
                 <span className="text-2xl font-bold text-white">{feedback.score}</span>
               </div>

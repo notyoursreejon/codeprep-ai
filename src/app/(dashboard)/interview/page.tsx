@@ -21,7 +21,7 @@ export default function InterviewDashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {interviewRoles.map((role) => (
-          <div key={role.id} className="border border-white/10 rounded-xl bg-white/5 p-6 hover:bg-white/10 transition-colors flex flex-col group cursor-pointer relative overflow-hidden">
+          <div key={role.id} className="border border-border rounded-xl bg-white/5 p-6 hover:bg-white/10 transition-colors flex flex-col group cursor-pointer relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
             
             <div className="flex items-center gap-4 mb-4">

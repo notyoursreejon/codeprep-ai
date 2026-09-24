@@ -25,7 +25,7 @@ export default function ChallengePage() {
           </h2>
           <p className="text-neutral-400">Solve the problem of the day to maintain your streak.</p>
         </div>
-        <div className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 flex items-center gap-3">
+        <div className="bg-white/5 border border-border rounded-lg px-4 py-2 flex items-center gap-3">
           <div className="text-sm text-neutral-400">Current Streak</div>
           <div className="flex items-center gap-1.5 font-bold text-orange-500">
             <span className="text-xl">12</span>
@@ -34,8 +34,8 @@ export default function ChallengePage() {
         </div>
       </div>
 
-      <div className="bg-[#09090b] border border-white/10 rounded-xl overflow-hidden">
-        <div className="p-6 border-b border-white/10 bg-gradient-to-r from-primary/10 via-[#09090b] to-[#09090b]">
+      <div className="bg-background border border-border rounded-xl overflow-hidden">
+        <div className="p-6 border-b border-border bg-gradient-to-r from-primary/10 via-[#09090b] to-[#09090b]">
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-2 text-primary font-medium">
               <Calendar className="h-4 w-4" />
@@ -72,7 +72,7 @@ export default function ChallengePage() {
                     ? "bg-green-500/10 border-green-500/20 text-green-400" 
                     : d.status === "active"
                       ? "bg-primary/20 border-primary/50 text-white shadow-[0_0_15px_rgba(var(--primary),0.3)]"
-                      : "bg-[#09090b] border-white/5 text-neutral-500"
+                      : "bg-background border-white/5 text-neutral-500"
                 }`}
               >
                 <span className="text-xs mb-1">{d.day}</span>

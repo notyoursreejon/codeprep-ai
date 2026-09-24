@@ -34,9 +34,9 @@ export default function InterviewRolePage({ params }: { params: Promise<{ roleId
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-8rem)] max-w-4xl mx-auto border border-white/10 rounded-xl bg-[#09090b] overflow-hidden">
+    <div className="flex flex-col h-[calc(100vh-8rem)] max-w-4xl mx-auto border border-border rounded-xl bg-background overflow-hidden">
       {/* Header */}
-      <div className="p-4 border-b border-white/10 bg-white/5 flex items-center justify-between">
+      <div className="p-4 border-b border-border bg-white/5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center">
             <BrainCircuit className="h-5 w-5 text-primary" />
@@ -61,7 +61,7 @@ export default function InterviewRolePage({ params }: { params: Promise<{ roleId
              <div className={cn("h-8 w-8 rounded-full flex items-center justify-center shrink-0", msg.role === "user" ? "bg-white/10" : "bg-primary/20")}>
                {msg.role === "user" ? "U" : <BrainCircuit className="h-4 w-4 text-primary" />}
              </div>
-             <div className={cn("p-4 rounded-2xl text-sm leading-relaxed", msg.role === "user" ? "bg-primary text-primary-foreground rounded-tr-sm" : "bg-white/5 border border-white/10 text-neutral-200 rounded-tl-sm")}>
+             <div className={cn("p-4 rounded-2xl text-sm leading-relaxed", msg.role === "user" ? "bg-primary text-primary-foreground rounded-tr-sm" : "bg-white/5 border border-border text-neutral-200 rounded-tl-sm")}>
                 {msg.content}
              </div>
           </div>
@@ -71,7 +71,7 @@ export default function InterviewRolePage({ params }: { params: Promise<{ roleId
              <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
                <BrainCircuit className="h-4 w-4 text-primary" />
              </div>
-             <div className="p-4 rounded-2xl bg-white/5 border border-white/10 text-neutral-400 rounded-tl-sm flex gap-1 items-center">
+             <div className="p-4 rounded-2xl bg-white/5 border border-border text-neutral-400 rounded-tl-sm flex gap-1 items-center">
                 <div className="w-1.5 h-1.5 bg-neutral-500 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
                 <div className="w-1.5 h-1.5 bg-neutral-500 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
                 <div className="w-1.5 h-1.5 bg-neutral-500 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
@@ -81,7 +81,7 @@ export default function InterviewRolePage({ params }: { params: Promise<{ roleId
       </div>
 
       {/* Input Area */}
-      <div className="p-4 border-t border-white/10 bg-white/5">
+      <div className="p-4 border-t border-border bg-white/5">
         <div className="relative flex items-center">
           <textarea 
             value={input}
@@ -93,7 +93,7 @@ export default function InterviewRolePage({ params }: { params: Promise<{ roleId
               }
             }}
             placeholder="Type your answer..."
-            className="w-full bg-[#09090b] border border-white/10 rounded-xl pl-4 pr-12 py-3 text-sm text-neutral-200 resize-none focus:outline-none focus:border-primary/50"
+            className="w-full bg-background border border-border rounded-xl pl-4 pr-12 py-3 text-sm text-neutral-200 resize-none focus:outline-none focus:border-primary/50"
             rows={2}
           />
           <Button 

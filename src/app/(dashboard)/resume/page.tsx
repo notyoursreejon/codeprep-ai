@@ -60,7 +60,7 @@ export default function ResumeAnalyzerPage() {
             value={resumeText}
             onChange={(e) => setResumeText(e.target.value)}
             placeholder="John Doe&#10;Software Engineer&#10;john.doe@email.com&#10;&#10;Experience:&#10;Software Developer at TechCorp (2020-Present)&#10;- Built microservices using Node.js and Docker..."
-            className="flex-1 w-full bg-[#09090b] border border-white/10 rounded-xl p-6 text-sm text-neutral-200 resize-none focus:outline-none focus:border-primary/50 transition-colors leading-relaxed font-mono"
+            className="flex-1 w-full bg-background border border-border rounded-xl p-6 text-sm text-neutral-200 resize-none focus:outline-none focus:border-primary/50 transition-colors leading-relaxed font-mono"
           />
           <div className="mt-4 flex justify-end">
             <Button onClick={handleAnalyze} disabled={isAnalyzing || !resumeText.trim()} size="lg">
@@ -76,7 +76,7 @@ export default function ResumeAnalyzerPage() {
             Analysis Results
           </div>
           
-          <div className="flex-1 border border-white/10 rounded-xl bg-[#09090b] overflow-y-auto">
+          <div className="flex-1 border border-border rounded-xl bg-background overflow-y-auto">
             {!result && !isAnalyzing && (
               <div className="h-full flex flex-col items-center justify-center text-neutral-500 gap-4 p-8 text-center">
                 <FileSearch className="h-12 w-12 opacity-20" />
@@ -95,7 +95,7 @@ export default function ResumeAnalyzerPage() {
               <div className="p-6 space-y-8 animate-in fade-in slide-in-from-bottom-4">
                 
                 {/* Score Header */}
-                <div className="flex items-center gap-6 p-6 border border-white/10 rounded-xl bg-white/5">
+                <div className="flex items-center gap-6 p-6 border border-border rounded-xl bg-white/5">
                    <div className="relative h-24 w-24 shrink-0 flex items-center justify-center">
                       <svg className="h-full w-full transform -rotate-90" viewBox="0 0 100 100">
                         <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="8" className="text-white/10" />

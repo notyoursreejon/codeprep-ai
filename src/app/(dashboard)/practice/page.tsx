@@ -26,10 +26,10 @@ export default async function PracticePage() {
             <input 
               type="text" 
               placeholder="Search problems..." 
-              className="bg-white/[0.02] border border-white/[0.08] rounded-xl pl-10 pr-4 py-2.5 text-sm text-neutral-200 focus:outline-none focus:border-white/20 w-full md:w-64 transition-colors"
+              className="bg-white/[0.02] border border-border rounded-xl pl-10 pr-4 py-2.5 text-sm text-neutral-200 focus:outline-none focus:border-white/20 w-full md:w-64 transition-colors"
             />
           </div>
-          <Button variant="outline" className="border-white/[0.08] bg-white/[0.02] rounded-xl">
+          <Button variant="outline" className="border-border bg-white/[0.02] rounded-xl">
             <Filter className="h-4 w-4 mr-2" />
             Filter
           </Button>
@@ -45,9 +45,9 @@ export default async function PracticePage() {
         ))}
       </div>
 
-      <div className="border border-white/[0.08] rounded-2xl overflow-hidden bg-white/[0.02] backdrop-blur-md">
+      <div className="border border-border rounded-2xl overflow-hidden bg-white/[0.02] backdrop-blur-md">
         <table className="w-full text-sm text-left">
-          <thead className="bg-[#09090b]/50 text-neutral-400 border-b border-white/[0.08]">
+          <thead className="bg-background/50 text-neutral-400 border-b border-border">
             <tr>
               <th className="px-6 py-4 font-medium">Status</th>
               <th className="px-6 py-4 font-medium">Title</th>

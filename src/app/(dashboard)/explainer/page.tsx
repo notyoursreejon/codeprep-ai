@@ -35,8 +35,8 @@ export default function ExplainerPage() {
       </div>
 
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 min-h-0">
-        <div className="flex flex-col border border-white/10 rounded-xl overflow-hidden bg-[#0c0c0e]">
-          <div className="p-3 border-b border-white/10 bg-white/5 flex justify-between items-center">
+        <div className="flex flex-col border border-border rounded-xl overflow-hidden bg-card">
+          <div className="p-3 border-b border-border bg-white/5 flex justify-between items-center">
             <span className="text-sm font-medium text-neutral-300">Snippet to Explain</span>
             <Button size="sm" onClick={handleExplain} disabled={isLoading}>
               {isLoading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Sparkles className="h-4 w-4 mr-2" />}
@@ -59,8 +59,8 @@ export default function ExplainerPage() {
           </div>
         </div>
 
-        <div className="flex flex-col border border-white/10 rounded-xl overflow-hidden bg-[#09090b]">
-           <div className="p-3 border-b border-white/10 bg-white/5">
+        <div className="flex flex-col border border-border rounded-xl overflow-hidden bg-background">
+           <div className="p-3 border-b border-border bg-white/5">
             <span className="text-sm font-medium text-neutral-300">AI Explanation</span>
           </div>
           <div className="flex-1 overflow-y-auto p-6">

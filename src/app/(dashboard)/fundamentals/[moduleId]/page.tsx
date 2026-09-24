@@ -49,7 +49,7 @@ export default function ModulePage({ params }: { params: Promise<{ moduleId: str
         Back to Fundamentals
       </Link>
 
-      <div className="border border-white/10 rounded-xl bg-white/5 p-8">
+      <div className="border border-border rounded-xl bg-white/5 p-8">
         <div className="flex items-center gap-4 mb-8">
           <div className="h-12 w-12 rounded-lg bg-primary/20 flex items-center justify-center shrink-0">
             <BrainCircuit className="h-6 w-6 text-primary" />
@@ -61,9 +61,9 @@ export default function ModulePage({ params }: { params: Promise<{ moduleId: str
         </div>
 
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-white border-b border-white/10 pb-2">Curriculum</h3>
+          <h3 className="text-lg font-semibold text-white border-b border-border pb-2">Curriculum</h3>
           {data.content.map((topic, i) => (
-            <div key={i} className="flex items-center justify-between p-4 border border-white/10 rounded-lg bg-[#09090b] hover:bg-white/5 transition-colors cursor-pointer group">
+            <div key={i} className="flex items-center justify-between p-4 border border-border rounded-lg bg-background hover:bg-white/5 transition-colors cursor-pointer group">
               <span className="text-neutral-200 group-hover:text-white transition-colors">{topic}</span>
               {i === 0 ? (
                  <CheckCircle2 className="h-5 w-5 text-green-500" />

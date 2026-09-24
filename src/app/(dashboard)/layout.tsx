@@ -39,10 +39,10 @@ export default function DashboardLayout({
   const pathname = usePathname();
 
   return (
-    <div className="flex h-screen bg-[#09090b] selection:bg-primary/30">
+    <div className="flex h-screen bg-background selection:bg-primary/30">
       {/* Sidebar */}
-      <aside className="w-72 border-r border-white/[0.08] bg-[#09090b]/50 backdrop-blur-xl hidden md:flex flex-col z-20">
-        <div className="h-20 flex items-center px-8 border-b border-white/[0.08]">
+      <aside className="w-72 border-r border-border bg-background/50 backdrop-blur-xl hidden md:flex flex-col z-20">
+        <div className="h-20 flex items-center px-8 border-b border-border">
           <Link className="flex items-center gap-3 group" href="/">
             <div className="bg-white text-black p-1.5 rounded-lg group-hover:scale-105 transition-transform">
               <Terminal className="h-5 w-5" />
@@ -72,7 +72,7 @@ export default function DashboardLayout({
           })}
         </nav>
         
-        <div className="p-6 border-t border-white/[0.08]">
+        <div className="p-6 border-t border-border">
           <Link
             href="/settings"
             className="flex items-center gap-4 px-4 py-3 rounded-xl font-medium text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-all"
@@ -84,13 +84,13 @@ export default function DashboardLayout({
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col relative overflow-hidden bg-[#0c0c0e]">
+      <main className="flex-1 flex flex-col relative overflow-hidden bg-card">
         {/* Decorative Background Glows */}
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px] pointer-events-none" />
 
         {/* Top Navbar */}
-        <header className="h-20 flex items-center justify-between px-10 border-b border-white/[0.08] bg-[#0c0c0e]/80 backdrop-blur-xl z-10 relative">
+        <header className="h-20 flex items-center justify-between px-10 border-b border-border bg-card/80 backdrop-blur-xl z-10 relative">
           <div className="flex items-center gap-4">
             <h1 className="text-lg font-semibold text-white tracking-tight">
               {sidebarLinks.find((l) => l.href === pathname)?.name || "CodePrep AI"}
@@ -106,13 +106,13 @@ export default function DashboardLayout({
             <input 
               type="text" 
               placeholder="Search problems, topics, or interviews... (Ctrl+K)"
-              className="w-full bg-[#121214] border border-white/10 rounded-full py-2 pl-10 pr-4 text-sm text-neutral-300 focus:outline-none focus:border-primary/50 transition-colors"
+              className="w-full bg-input border border-border rounded-full py-2 pl-10 pr-4 text-sm text-neutral-300 focus:outline-none focus:border-primary/50 transition-colors"
             />
           </div>
 
           <div className="flex items-center gap-6">
-            <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 p-0.5 shadow-lg shadow-blue-500/20 cursor-pointer hover:scale-105 transition-transform">
-              <div className="w-full h-full bg-[#0c0c0e] rounded-full flex items-center justify-center text-sm font-bold text-white">
+            <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-primary to-purple-500 p-0.5 shadow-lg shadow-primary/20 cursor-pointer hover:scale-105 transition-transform">
+              <div className="w-full h-full bg-card rounded-full flex items-center justify-center text-sm font-bold text-white">
                 S
               </div>
             </div>

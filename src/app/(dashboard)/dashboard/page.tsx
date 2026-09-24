@@ -16,7 +16,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md p-6 hover:bg-white/[0.04] transition-colors">
+        <div className="rounded-2xl border border-border bg-white/[0.02] backdrop-blur-md p-6 hover:bg-white/[0.04] transition-colors">
           <div className="flex flex-row items-center justify-between space-y-0 pb-2">
             <h3 className="tracking-tight text-sm font-medium text-neutral-400">Current Streak</h3>
             <div className="p-2 bg-orange-500/10 rounded-lg">
@@ -26,7 +26,7 @@ export default function DashboardPage() {
           <div className="text-3xl font-bold text-white mt-2">12 Days</div>
           <p className="text-sm text-neutral-500 mt-2">Keep it up!</p>
         </div>
-        <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md p-6 hover:bg-white/[0.04] transition-colors">
+        <div className="rounded-2xl border border-border bg-white/[0.02] backdrop-blur-md p-6 hover:bg-white/[0.04] transition-colors">
           <div className="flex flex-row items-center justify-between space-y-0 pb-2">
             <h3 className="tracking-tight text-sm font-medium text-neutral-400">Problems Solved</h3>
             <div className="p-2 bg-green-500/10 rounded-lg">
@@ -36,7 +36,7 @@ export default function DashboardPage() {
           <div className="text-3xl font-bold text-white mt-2">148</div>
           <p className="text-sm text-neutral-500 mt-2">+4 this week</p>
         </div>
-        <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md p-6 hover:bg-white/[0.04] transition-colors">
+        <div className="rounded-2xl border border-border bg-white/[0.02] backdrop-blur-md p-6 hover:bg-white/[0.04] transition-colors">
           <div className="flex flex-row items-center justify-between space-y-0 pb-2">
             <h3 className="tracking-tight text-sm font-medium text-neutral-400">Interviews</h3>
             <div className="p-2 bg-yellow-500/10 rounded-lg">
@@ -46,7 +46,7 @@ export default function DashboardPage() {
           <div className="text-3xl font-bold text-white mt-2">5</div>
           <p className="text-sm text-neutral-500 mt-2">Avg Score: 82%</p>
         </div>
-        <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md p-6 hover:bg-white/[0.04] transition-colors">
+        <div className="rounded-2xl border border-border bg-white/[0.02] backdrop-blur-md p-6 hover:bg-white/[0.04] transition-colors">
           <div className="flex flex-row items-center justify-between space-y-0 pb-2">
             <h3 className="tracking-tight text-sm font-medium text-neutral-400">Weak Topics</h3>
             <div className="p-2 bg-red-500/10 rounded-lg">
@@ -59,9 +59,9 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
-        <div className="col-span-4 rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md p-8">
+        <div className="col-span-4 rounded-2xl border border-border bg-white/[0.02] backdrop-blur-md p-8">
           <h3 className="text-xl font-semibold text-white mb-6">Daily Challenge</h3>
-          <div className="rounded-xl border border-white/[0.08] bg-[#0c0c0e] p-6 flex justify-between items-center group hover:border-white/20 transition-colors">
+          <div className="rounded-xl border border-border bg-card p-6 flex justify-between items-center group hover:border-white/20 transition-colors">
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <span className="text-lg font-medium text-white group-hover:text-primary transition-colors">Merge Intervals</span>
@@ -75,7 +75,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="col-span-3 rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md p-8">
+        <div className="col-span-3 rounded-2xl border border-border bg-white/[0.02] backdrop-blur-md p-8">
           <h3 className="text-xl font-semibold text-white mb-6">Recent Activity</h3>
           <div className="space-y-6">
             {[
