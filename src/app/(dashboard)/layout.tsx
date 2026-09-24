@@ -1,129 +1,19 @@
-"use client";
-
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { 
-  Terminal, 
-  BrainCircuit, 
-  Code2, 
-  LayoutDashboard, 
-  Settings, 
-  BookOpen, 
-  Briefcase, 
-  GraduationCap, 
-  Trophy,
-  Bug
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-
-const sidebarLinks = [
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "AI Solver", href: "/solver", icon: BrainCircuit },
-  { name: "Code Debugger", href: "/debugger", icon: Bug },
-  { name: "Code Explainer", href: "/explainer", icon: Code2 },
-  { name: "System Design", href: "/system-design", icon: LayoutDashboard },
-  { name: "DSA Practice", href: "/practice", icon: BookOpen },
-  { name: "Mock Interview", href: "/interview", icon: Briefcase },
-  { name: "STAR Method", href: "/star-method", icon: Briefcase },
-  { name: "Resume Analyzer", href: "/resume", icon: Briefcase },
-  { name: "CS Fundamentals", href: "/fundamentals", icon: BookOpen },
-  { name: "Project Prep", href: "/project-prep", icon: GraduationCap },
-  { name: "Daily Challenge", href: "/challenge", icon: Trophy },
-];
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname();
-
   return (
-    <div className="flex h-screen bg-background selection:bg-primary/30">
-      {/* Sidebar */}
-      <aside className="w-72 border-r border-border bg-background/50 backdrop-blur-xl hidden md:flex flex-col z-20">
-        <div className="h-20 flex items-center px-8 border-b border-border">
-          <Link className="flex items-center gap-3 group" href="/">
-            <div className="bg-white text-black p-1.5 rounded-lg group-hover:scale-105 transition-transform">
-              <Terminal className="h-5 w-5" />
-            </div>
-            <span className="font-bold tracking-tight text-lg">CodePrep AI</span>
-          </Link>
-        </div>
-        
-        <nav className="flex-1 py-8 px-6 space-y-1.5 overflow-y-auto">
-          {sidebarLinks.map((link) => {
-            const isActive = pathname === link.href;
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={cn(
-                  "flex items-center gap-4 px-4 py-3 rounded-xl font-medium transition-all duration-200",
-                  isActive 
-                    ? "bg-white/10 text-white shadow-sm ring-1 ring-white/20" 
-                    : "text-neutral-400 hover:text-white hover:bg-white/[0.06]"
-                )}
-              >
-                <link.icon className={cn("h-5 w-5", isActive ? "text-white" : "text-neutral-500")} />
-                {link.name}
-              </Link>
-            );
-          })}
-        </nav>
-        
-        <div className="p-6 border-t border-border">
-          <Link
-            href="/settings"
-            className="flex items-center gap-4 px-4 py-3 rounded-xl font-medium text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-all"
-          >
-            <Settings className="h-5 w-5 text-neutral-500" />
-            Settings
-          </Link>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col relative overflow-hidden bg-card">
-        {/* Decorative Background Glows */}
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px] pointer-events-none" />
-
-        {/* Top Navbar */}
-        <header className="h-20 flex items-center justify-between px-10 border-b border-border bg-card/80 backdrop-blur-xl z-10 relative">
-          <div className="flex items-center gap-4">
-            <h1 className="text-lg font-semibold text-white tracking-tight">
-              {sidebarLinks.find((l) => l.href === pathname)?.name || "CodePrep AI"}
-            </h1>
-          </div>
-          
-          <div className="hidden md:flex flex-1 max-w-md mx-8 relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-               <svg className="h-4 w-4 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-               </svg>
-            </div>
-            <input 
-              type="text" 
-              placeholder="Search problems, topics, or interviews... (Ctrl+K)"
-              className="w-full bg-input border border-border rounded-full py-2 pl-10 pr-4 text-sm text-neutral-300 focus:outline-none focus:border-primary/50 transition-colors"
-            />
-          </div>
-
-          <div className="flex items-center gap-6">
-            <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-primary to-purple-500 p-0.5 shadow-lg shadow-primary/20 cursor-pointer hover:scale-105 transition-transform">
-              <div className="w-full h-full bg-card rounded-full flex items-center justify-center text-sm font-bold text-white">
-                S
-              </div>
-            </div>
-          </div>
-        </header>
-
-        {/* Page Content */}
-        <div className="flex-1 overflow-y-auto p-10 relative z-10">
+    <>
+      <aside className="fixed left-0 top-0 bottom-0 w-64 bg-surface-container-low/90 backdrop-blur-xl z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div className="flex flex-col"><div className="h-14 px-gutter flex items-center justify-between"><div className="flex items-center gap-space-sm"><img alt="CodePrep AI Logo" className="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1VwAcN14E0JNeoVt1wl1XBxE6eFMjMgmiEwhv0giUUZFjUFDxPnvxrjodV2cvLAosDl1fGJzbXcd6nE01Bl6TY3eby8te9hg4pkL0HsEbrgPAz_sI00-rRUSfQ_UiebDldHwUf0o8v1BTqygWuQUJj7eTlTX4Fz1j6yX3NlcS0Fa6Tt5VAdVB0XB4wIem5tCEIYEVZIkwVptc2am3sK4m6llzbodxGFCfQLwupAPmxRWvBMV6HG_S_6Vno"/><span className="font-headline-sm text-headline-sm font-semibold tracking-tight text-on-surface">CodePrep AI</span></div><span className="font-label-caps text-label-caps px-space-xs py-0.5 rounded-lg bg-secondary-container text-on-secondary-container uppercase">PRO</span></div><div className="px-gutter py-space-sm"><nav className="flex flex-col gap-space-xs" data-active-classes="bg-primary-container text-on-primary-container font-semibold rounded-lg shadow-inner"><Link aria-current="page" className="flex items-center gap-space-md px-space-md py-space-sm transition-colors bg-primary-container text-on-primary-container font-semibold rounded-lg shadow-inner" data-path="dashboard" href="/dashboard"><span className="material-symbols-outlined text-[18px]">grid_view</span><span className="font-body-md text-body-md">Dashboard</span></Link><Link className="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="ide-and-ai-solver" href="/ide-and-ai-solver"><span className="material-symbols-outlined text-[18px]">terminal</span><span className="font-body-md text-body-md">IDE &amp; AI Solver</span></Link><Link className="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="system-design" href="/system-design"><span className="material-symbols-outlined text-[18px]">hub</span><span className="font-body-md text-body-md">System Design</span></Link><Link className="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="behavioral-star" href="/star-method"><span className="material-symbols-outlined text-[18px]">psychology</span><span className="font-body-md text-body-md">Behavioral STAR</span></Link><Link className="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="resume-ats" href="/resume"><span className="material-symbols-outlined text-[18px]">description</span><span className="font-body-md text-body-md">Resume ATS</span></Link><Link className="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="cs-fundamentals" href="/fundamentals"><span className="material-symbols-outlined text-[18px]">menu_book</span><span className="font-body-md text-body-md">CS Fundamentals</span></Link><Link className="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="settings" href="/settings"><span className="material-symbols-outlined text-[18px]">settings</span><span className="font-body-md text-body-md">Settings</span></Link></nav></div></div><div className="p-gutter flex flex-col gap-space-sm"><div className="flex items-center justify-between px-space-md py-space-sm rounded-lg bg-surface-container"><div className="flex items-center gap-space-xs"><span className="text-[14px]">🔥</span><span className="font-code-sm text-code-sm text-on-surface">14-day streak</span></div><span className="font-label-caps text-label-caps text-tertiary">Active</span></div><div className="flex items-center justify-between px-space-md py-space-sm rounded-lg bg-surface-container-lowest"><div className="flex items-center gap-space-xs"><span className="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span><span className="font-code-sm text-code-sm text-on-surface-variant">AI Engine v4.2</span></div><span className="font-label-caps text-label-caps text-on-surface-variant">Online</span></div></div></aside>
+      <div className="pl-64 flex flex-col min-h-screen">
+        <header className="fixed top-0 left-64 right-0 h-14 bg-surface-container-lowest/80 backdrop-blur-xl z-40 flex items-center justify-between px-gutter-lg shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div className="flex items-center gap-space-sm"><span className="font-code-sm text-code-sm text-on-surface-variant">Workspace</span><span className="text-outline text-xs">/</span><span className="font-code-sm text-code-sm text-on-surface-variant">LeetCode Hard</span><span className="text-outline text-xs">/</span><span className="font-code-sm text-code-sm text-on-surface font-medium">LRU Cache</span></div><div className="flex items-center gap-space-md"><button className="flex items-center justify-between w-80 px-space-md py-space-xs rounded-lg bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors shadow-inner" type="button"><div className="flex items-center gap-space-sm"><span className="material-symbols-outlined text-[16px]">search</span><span className="font-body-sm text-body-sm">Search problems, algorithms...</span></div><kbd className="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-surface-container-highest text-on-surface-variant">⌘K</kbd></button><div className="flex items-center gap-space-xs"><div className="hidden xl:flex items-center gap-space-xs px-space-sm py-space-xs rounded-lg bg-surface-container"><span className="material-symbols-outlined text-primary text-[16px]">token</span><span className="font-code-sm text-code-sm text-on-surface-variant">94,200 / 100k</span></div><button className="p-space-xs rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" type="button"><span className="material-symbols-outlined text-[18px]">volume_up</span></button><button className="relative p-space-xs rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" type="button"><span className="material-symbols-outlined text-[18px]">notifications</span><span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-error"></span></button></div><div className="flex items-center gap-space-sm pl-space-sm"><img alt="Profile" className="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxjOgdzmhNTK1D3jQb8nylSoieyR_DC5zu0wZf01rfafoX34E23Q2C6b6WWu6rWO1stXSSNnsTglyZp5KLgRXMW-KYkeF5BpxbOLc_DR5oMUqX0F3Yp2HF0B7nlay-ukICbVWewnWKf9TXH97fochx3b3zXNQkvOrCKAt9zgetqEC__UNVXeS-MDslTWObKc57z-G6n8xPHJ6SSE8en0-d4C1TY_SHtdXvxPyyAQQ3pUS0RTVGHGgQ"/><div className="hidden md:flex flex-col"><span className="font-body-sm text-body-sm font-semibold text-on-surface leading-tight">Alex Chen</span><span className="font-label-caps text-label-caps text-primary leading-tight">Staff Tier</span></div></div></div></header>
+        <main className="w-full pt-14 flex-1 bg-surface-container-lowest">
           {children}
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   );
 }

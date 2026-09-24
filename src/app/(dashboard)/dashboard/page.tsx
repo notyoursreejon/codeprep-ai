@@ -1,543 +1,426 @@
 "use client";
-import { useEffect } from "react";
-
 export default function DashboardPage() {
-  useEffect(() => {
-    const container = document.getElementById('dashboardpage-container');
-    if (container) {
-        const scriptTags = container.getElementsByTagName('script');
-        for (let i = 0; i < scriptTags.length; i++) {
-            const newScript = document.createElement('script');
-            if (scriptTags[i].src) {
-                newScript.src = scriptTags[i].src;
-            } else {
-                newScript.innerHTML = scriptTags[i].innerHTML;
-            }
-            document.body.appendChild(newScript);
-        }
-    }
-  }, []);
-
   return (
-    <div 
-        id="dashboardpage-container"
-        className="w-full h-full bg-[#0e0e10] text-[#e5e1e4]" 
-        dangerouslySetInnerHTML={{ __html: `<header class="fixed top-0 left-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-[0_4px_30px_rgba(0,0,0,0.5)]"><div class="h-16 w-full px-gutter-desktop flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-lg shrink-0"><div class="flex items-center gap-space-sm"><img alt="CodePrep AI Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UN5h6Nw_OyDdf59-PtCbUJSdTqkmMXCNYJvl_Mirtt3dUBGC8otnAFnA87QcQyk9WmrCQKETHagtLTi0j-ENapJzWihI2n9jKaS_qGQpRtj7ywpSvvSIivdFsybtc5yHCpxgTaIIIvFTjBCAi9W1ApWXrxS3ZY-2wUkhPtcj7h2I9PpW_I9qn7LdJX-bDG-INnkOHZif2frrRO72df3v9TICgG3O_A_SZRdJBUbJO595FbPVgGMGpVAjAc"/><span class="font-headline-sm text-headline-sm tracking-tight text-on-surface flex items-center">CodePrep<span class="text-primary font-headline-sm text-headline-sm">.ai</span></span></div><nav class="hidden xl:flex items-center gap-space-xs" data-active-classes="bg-surface-container-high text-on-surface font-headline-sm"><a class="px-space-sm py-space-xs rounded font-body-md text-body-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="landing" href="#">Landing</a><a aria-current="page" class="px-space-sm py-space-xs rounded transition-colors bg-surface-container-high text-on-surface font-headline-sm" data-path="dashboard" href="#">Dashboard</a><a class="px-space-sm py-space-xs rounded font-body-md text-body-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="ai-workspace" href="#">AI Workspace</a><a class="px-space-sm py-space-xs rounded font-body-md text-body-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="ats-analyzer" href="#">ATS Analyzer</a><a class="px-space-sm py-space-xs rounded font-body-md text-body-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="curriculum" href="#">Curriculum</a></nav></div><div class="flex-1 max-w-md hidden md:block mx-space-sm"><div class="relative flex items-center"><span class="material-symbols-outlined absolute left-3 text-on-surface-variant text-[18px] pointer-events-none">search</span><input class="w-full bg-surface-container-lowest/80 text-on-surface placeholder:text-outline border border-outline-variant/40 rounded-full pl-9 pr-14 py-1.5 font-body-sm text-body-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/40 transition-all" placeholder="Search algorithms, system designs, patterns..." type="text"/><div class="absolute right-2.5 flex items-center px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant/40 text-on-surface-variant font-label-mono text-label-mono">⌘K</div></div></div><div class="flex items-center gap-space-sm shrink-0"><div class="hidden lg:flex items-center gap-space-xs px-2.5 py-1 rounded-full bg-surface-container-low border border-outline-variant/30"><span class="text-tertiary text-xs leading-none">🔥</span><span class="font-label-mono-bold text-label-mono-bold text-tertiary">14 Days</span></div><div class="hidden sm:flex items-center gap-space-xs px-2.5 py-1 rounded-full bg-surface-container-low border border-outline-variant/30"><span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span><span class="font-label-mono-bold text-label-mono-bold text-secondary">Lv. 42 Staff SWE</span></div><button aria-label="Notifications" class="relative p-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-secondary ring-2 ring-surface"></span></button><div class="flex items-center gap-space-xs pl-space-xs border-l border-outline-variant/40"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-1 ring-primary/40" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvXgF9m7wnvO3tLwisNOMY0zycQsMTZIHndWo6Z5NW2XKr6ETnenrq9bGDVEvml8iEJuuzYRqGTIZjunRvWX8K-sOubGsdmU9Cv-gNF6Zg_X8Jcm1p3zhr-rl3cYVYrGRjUfy8nGPe6H4Xqc1u6GHEeeMMIlKgR5flWa3UwJ8W5wfvBZZryyZ1YqVepWYjkwOq1V_HNzf44pIGOdrDDAaYGdFuP0GqW6sV7FyeFh30EXra10ZbKd7y3g"/><span class="material-symbols-outlined text-on-surface-variant text-[18px] cursor-pointer hover:text-on-surface transition-colors">keyboard_arrow_down</span></div></div></div></header><aside class="fixed left-0 top-16 bottom-0 w-64 bg-surface-container-lowest/90 backdrop-blur-xl border-r border-outline-variant/20 z-40 flex flex-col justify-between p-space-sm"><div class="space-y-space-xs"><div class="px-3 py-2 text-outline font-label-mono text-label-mono uppercase tracking-wider">Navigation Engine</div><nav class="space-y-1" data-active-classes="bg-surface-container-high text-on-surface font-headline-sm"><a aria-current="page" class="flex items-center gap-3 px-3 py-2 rounded transition-all bg-surface-container-high text-on-surface font-headline-sm" data-path="dashboard" href="#"><span class="material-symbols-outlined text-[18px]">grid_view</span>Dashboard</a><a class="flex items-center gap-3 px-3 py-2 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-body-sm text-body-sm" data-path="ai-workspace" href="#"><span class="material-symbols-outlined text-[18px]">terminal</span>AI Workspace</a><a class="flex items-center gap-3 px-3 py-2 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-body-sm text-body-sm" data-path="curriculum" href="#"><span class="material-symbols-outlined text-[18px]">account_tree</span>Curriculum</a><a class="flex items-center gap-3 px-3 py-2 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-body-sm text-body-sm" data-path="ats-analyzer" href="#"><span class="material-symbols-outlined text-[18px]">document_scanner</span>ATS Resume Audit</a></nav></div><div class="p-space-sm rounded bg-surface-container-low border border-outline-variant/30 space-y-1.5"><div class="flex items-center justify-between text-on-surface font-label-mono text-label-mono"><span class="text-secondary">● Live Engine</span><span>99.98%</span></div><div class="w-full bg-surface-container-high h-1 rounded-full overflow-hidden"><div class="bg-secondary h-full w-4/5"></div></div><div class="font-label-mono text-label-mono text-outline">Target: L6 / Principal SWE</div></div></aside><div class="pl-64"><main class="relative pt-16 bg-background min-h-screen"><div class="flex flex-col w-full">
-<div class="w-full px-gutter-desktop py-space-md space-y-space-md max-w-[1720px] mx-auto">
-<section class="flex flex-col md:flex-row md:items-center justify-between gap-space-md p-space-md rounded-xl bg-surface-container-low shadow-sm">
-<div class="flex items-center gap-space-md">
-<div class="relative w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center shrink-0">
-<svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" viewbox="0 0 24 24">
-<polyline points="7 8 3 12 7 16"></polyline>
-<polyline points="17 8 21 12 17 16"></polyline>
-<line class="text-tertiary" stroke="currentColor" x1="14" x2="10" y1="4" y2="20"></line>
-<circle class="text-secondary" cx="12" cy="12" fill="currentColor" r="2"></circle>
-</svg>
-<span class="absolute -top-1 -right-1 flex h-3 w-3">
-<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
-<span class="relative inline-flex rounded-full h-3 w-3 bg-secondary"></span>
-</span>
+    <>
+      <div className="flex flex-col w-full">
+<div className="p-gutter-lg space-y-gutter-lg max-w-[1600px] mx-auto w-full">
+{/* Top Welcome Banner with Subtle Indigo Radial Radiance */}
+<section className="relative overflow-hidden rounded-xl bg-surface-container-low p-margin-lg shadow-xl">
+{/* Ambient Glow Behind Header */}
+<div className="absolute -top-24 -right-16 w-[500px] h-[300px] bg-primary-container/10 blur-[90px] rounded-full pointer-events-none"></div>
+<div className="absolute -bottom-20 left-1/4 w-[360px] h-[220px] bg-secondary-container/20 blur-[80px] rounded-full pointer-events-none"></div>
+<div className="relative z-10 flex flex-col xl:flex-row xl:items-center justify-between gap-space-xl">
+<div className="space-y-space-xs">
+<div className="flex items-center gap-space-sm">
+<span className="px-space-sm py-0.5 rounded bg-surface-container font-label-caps text-label-caps text-tertiary uppercase tracking-wider flex items-center gap-1.5">
+<span className="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse"></span>
+              Interview Sprint · Day 14
+            </span>
+<span className="font-code-sm text-code-sm text-on-surface-variant font-mono">Meta E6 / Google L6 Target</span>
 </div>
-<div>
-<div class="flex items-center gap-space-xs">
-<h1 class="font-headline-md text-headline-md tracking-tight text-on-surface">Candidate Telemetry Console</h1>
-<span class="px-2 py-0.5 rounded-full font-label-mono text-label-mono bg-secondary/10 text-secondary">FAANG TRACK</span>
+<h1 className="font-headline-lg text-headline-lg font-semibold text-on-surface tracking-tight">
+            Good evening, Alex. Ready to break into Staff level?
+          </h1>
+<p className="font-body-md text-body-md text-on-surface-variant max-w-2xl">
+            Your performance benchmark puts you in the top <span className="text-tertiary font-medium">3.8%</span> of algorithmic candidates this month. 2 high-leverage architectural drills are pending review.
+          </p>
 </div>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Live interview evaluation pipeline · Target role: Staff Distributed Systems Engineer</p>
+{/* Quick Action CTAs */}
+<div className="flex flex-wrap items-center gap-space-sm shrink-0">
+<a className="px-space-md py-space-sm rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface font-body-md text-body-md font-medium transition-all shadow-sm flex items-center gap-space-xs group" href="#">
+<span className="material-symbols-outlined text-[18px] text-tertiary group-hover:rotate-12 transition-transform">bolt</span>
+<span>Resume Daily Challenge</span>
+</a>
+<a className="px-space-md py-space-sm rounded-lg bg-primary hover:bg-primary-fixed text-on-primary font-body-md text-body-md font-medium transition-all shadow-md flex items-center gap-space-xs group" href="#">
+<span className="material-symbols-outlined text-[18px] group-hover:translate-x-0.5 transition-transform">smart_toy</span>
+<span>Start AI Mock Interview</span>
+</a>
 </div>
-</div>
-<div class="flex items-center gap-space-sm flex-wrap">
-<div class="flex items-center gap-space-xs px-3 py-1.5 rounded-xl bg-surface-container-high">
-<span class="material-symbols-outlined text-[16px] text-tertiary">bolt</span>
-<span class="font-label-mono-bold text-label-mono-bold text-on-surface">XP: 14,850</span>
-<span class="font-label-mono text-label-mono text-tertiary">+350 today</span>
-</div>
-<button class="px-3.5 py-1.5 rounded-lg bg-primary text-on-primary font-headline-sm text-body-sm transition-all duration-150 hover:shadow-[0_0_20px_rgba(192,193,255,0.45)] flex items-center gap-1.5" id="quick-sim-btn">
-<span class="material-symbols-outlined text-[18px]">play_arrow</span>
-          Instant AI Sandbox
-        </button>
 </div>
 </section>
-<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-12 gap-space-md">
-<div class="xl:col-span-5 rounded-xl bg-surface-container-lowest p-space-md flex flex-col justify-between shadow-md transition-all duration-200 hover:bg-surface-container-low group">
-<div class="flex items-start justify-between">
-<div class="space-y-1">
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-tertiary text-[20px]">local_fire_department</span>
-<span class="font-label-mono-bold text-label-mono-bold text-tertiary uppercase tracking-wider">Consistency Matrix</span>
+{/* Metric KPI Cards Grid (4 Columns) */}
+<section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-gutter">
+{/* KPI 1: Problems Solved with Circular Ring Indicator */}
+<div className="rounded-xl bg-surface-container-low p-space-lg flex flex-col justify-between shadow-md transition-all hover:bg-surface-container">
+<div className="flex items-center justify-between">
+<span className="font-code-sm text-code-sm text-on-surface-variant uppercase tracking-wider">Problems Solved</span>
+<span className="material-symbols-outlined text-[20px] text-primary">code_blocks</span>
 </div>
-<div class="flex items-baseline gap-2">
-<span class="font-display-hero-mobile text-display-hero-mobile text-on-surface font-headline-lg tracking-tight">24</span>
-<span class="font-headline-sm text-headline-sm text-on-surface-variant">Days Streak</span>
+<div className="my-space-md flex items-baseline justify-between">
+<div>
+<div className="flex items-baseline gap-space-xs">
+<span className="font-headline-lg text-headline-lg font-bold text-on-surface">342</span>
+<span className="font-code-sm text-code-sm text-on-surface-variant">/ 450</span>
+</div>
+<span className="font-code-sm text-code-sm text-tertiary font-mono">76.0% target attained</span>
+</div>
+{/* Circular SVG Gauge */}
+<div className="relative w-12 h-12 flex items-center justify-center shrink-0">
+<svg className="w-12 h-12 -rotate-90" viewBox="0 0 36 36">
+<path className="text-surface-container-highest" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="3.5"/>
+<path className="text-primary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeDasharray="76, 100" strokeLinecap="round" strokeWidth="3.5"/>
+</svg>
+<span className="absolute font-code-sm text-[10px] text-on-surface font-semibold">76%</span>
 </div>
 </div>
-<div class="flex flex-col items-end gap-1">
-<span class="px-2.5 py-1 rounded-full font-label-mono-bold text-label-mono-bold bg-tertiary-container/30 text-tertiary">Top 2% Globally</span>
-<span class="font-label-mono text-label-mono text-on-surface-variant flex items-center gap-1">
-<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> 2.5x Multiplier
+{/* Breakdown Bar */}
+<div className="space-y-1.5 pt-space-xs">
+<div className="flex h-1.5 w-full rounded-full overflow-hidden bg-surface-container-highest">
+<div className="bg-tertiary w-[35%]" title="Easy: 120"></div>
+<div className="bg-primary w-[53%]" title="Medium: 182"></div>
+<div className="bg-secondary-container w-[12%]" title="Hard: 40"></div>
+</div>
+<div className="flex items-center justify-between font-code-sm text-[11px] text-on-surface-variant">
+<span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-tertiary"></span>120 Easy</span>
+<span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-primary"></span>182 Med</span>
+<span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-secondary-container"></span>40 Hard</span>
+</div>
+</div>
+</div>
+{/* KPI 2: Acceptance Rate */}
+<div className="rounded-xl bg-surface-container-low p-space-lg flex flex-col justify-between shadow-md transition-all hover:bg-surface-container">
+<div className="flex items-center justify-between">
+<span className="font-code-sm text-code-sm text-on-surface-variant uppercase tracking-wider">Acceptance Rate</span>
+<span className="material-symbols-outlined text-[20px] text-tertiary">task_alt</span>
+</div>
+<div className="my-space-md">
+<div className="flex items-baseline gap-space-xs">
+<span className="font-headline-lg text-headline-lg font-bold text-on-surface">78.4%</span>
+<span className="font-code-sm text-code-sm text-tertiary flex items-center font-medium">
+<span className="material-symbols-outlined text-[14px]">trending_up</span> +4.2%
             </span>
 </div>
+<p className="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Top 5% candidate percentile</p>
 </div>
-<div class="my-space-md p-space-sm rounded-xl bg-surface-container-low/70 flex items-center justify-between gap-1">
-<div class="flex flex-col items-center gap-1.5 flex-1">
-<span class="font-label-mono text-label-mono text-outline">MON</span>
-<div class="w-7 h-7 rounded-lg bg-secondary/20 flex items-center justify-center text-secondary">
-<span class="material-symbols-outlined text-[16px]">check</span>
-</div>
-</div>
-<div class="flex flex-col items-center gap-1.5 flex-1">
-<span class="font-label-mono text-label-mono text-outline">TUE</span>
-<div class="w-7 h-7 rounded-lg bg-secondary/20 flex items-center justify-center text-secondary">
-<span class="material-symbols-outlined text-[16px]">check</span>
+{/* Mini Sparkline inline SVG */}
+<div className="pt-space-xs flex items-center justify-between">
+<svg className="w-32 h-6 text-tertiary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 100 24">
+<polyline points="0,18 20,16 40,19 60,11 80,12 100,4" vectorEffect="non-scaling-stroke"/>
+</svg>
+<span className="font-code-sm text-[11px] px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant">Last 30 runs</span>
 </div>
 </div>
-<div class="flex flex-col items-center gap-1.5 flex-1">
-<span class="font-label-mono text-label-mono text-outline">WED</span>
-<div class="w-7 h-7 rounded-lg bg-secondary/20 flex items-center justify-center text-secondary">
-<span class="material-symbols-outlined text-[16px]">check</span>
+{/* KPI 3: Current Streak */}
+<div className="rounded-xl bg-surface-container-low p-space-lg flex flex-col justify-between shadow-md transition-all hover:bg-surface-container">
+<div className="flex items-center justify-between">
+<span className="font-code-sm text-code-sm text-on-surface-variant uppercase tracking-wider">Consistency Streak</span>
+<span className="text-[20px]">🔥</span>
+</div>
+<div className="my-space-md">
+<div className="flex items-baseline gap-space-xs">
+<span className="font-headline-lg text-headline-lg font-bold text-on-surface">14 Days</span>
+</div>
+<p className="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Personal Best: <span className="text-on-surface font-semibold">28 Days</span></p>
+</div>
+<div className="pt-space-xs flex items-center gap-1.5">
+<div className="h-2 flex-1 rounded bg-tertiary" title="Active"></div>
+<div className="h-2 flex-1 rounded bg-tertiary" title="Active"></div>
+<div className="h-2 flex-1 rounded bg-tertiary" title="Active"></div>
+<div className="h-2 flex-1 rounded bg-tertiary" title="Active"></div>
+<div className="h-2 flex-1 rounded bg-tertiary" title="Active"></div>
+<div className="h-2 flex-1 rounded bg-tertiary" title="Active"></div>
+<div className="h-2 flex-1 rounded bg-tertiary" title="Active"></div>
+<div className="h-2 flex-1 rounded bg-surface-container-highest" title="Day 15 Target"></div>
+<div className="h-2 flex-1 rounded bg-surface-container-highest" title="Day 16 Target"></div>
 </div>
 </div>
-<div class="flex flex-col items-center gap-1.5 flex-1">
-<span class="font-label-mono text-label-mono text-outline">THU</span>
-<div class="w-7 h-7 rounded-lg bg-secondary/20 flex items-center justify-center text-secondary">
-<span class="material-symbols-outlined text-[16px]">check</span>
+{/* KPI 4: Predicted FAANG Level */}
+<div className="rounded-xl bg-surface-container-low p-space-lg flex flex-col justify-between shadow-md transition-all hover:bg-surface-container relative overflow-hidden">
+<div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-xl pointer-events-none"></div>
+<div className="flex items-center justify-between">
+<span className="font-code-sm text-code-sm text-on-surface-variant uppercase tracking-wider">Predicted Readiness</span>
+<span className="px-space-xs py-0.5 rounded bg-secondary-container/60 font-code-sm text-[10px] text-on-secondary-container uppercase">AI Calibrated</span>
+</div>
+<div className="my-space-md">
+<div className="flex items-baseline gap-space-xs">
+<span className="font-headline-lg text-headline-lg font-bold text-primary">L6 / Staff</span>
+</div>
+<p className="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Confidence: <span className="text-tertiary font-semibold">91%</span> (18 evaluations)</p>
+</div>
+<div className="pt-space-xs flex items-center justify-between font-code-sm text-[11px] text-on-surface-variant">
+<span>Meta E6 · Google L6</span>
+<span className="text-primary font-medium hover:underline cursor-pointer">View breakdown →</span>
 </div>
 </div>
-<div class="flex flex-col items-center gap-1.5 flex-1">
-<span class="font-label-mono text-label-mono text-outline">FRI</span>
-<div class="w-7 h-7 rounded-lg bg-secondary/20 flex items-center justify-center text-secondary">
-<span class="material-symbols-outlined text-[16px]">check</span>
+</section>
+{/* GitHub-Style Interactive Contribution & Activity Heatmap */}
+<section className="rounded-xl bg-surface-container-low p-space-lg shadow-md space-y-space-md">
+<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div className="flex items-center gap-space-sm">
+<span className="material-symbols-outlined text-[20px] text-primary">insights</span>
+<h2 className="font-headline-sm text-headline-sm font-semibold text-on-surface">52-Week Practice Heatmap</h2>
+<span className="font-code-sm text-code-sm text-on-surface-variant">412 Submissions in past 365 days</span>
 </div>
-</div>
-<div class="flex flex-col items-center gap-1.5 flex-1">
-<span class="font-label-mono text-label-mono text-outline">SAT</span>
-<div class="w-7 h-7 rounded-lg bg-secondary/20 flex items-center justify-center text-secondary">
-<span class="material-symbols-outlined text-[16px]">check</span>
-</div>
-</div>
-<div class="flex flex-col items-center gap-1.5 flex-1">
-<span class="font-label-mono text-label-mono text-primary font-headline-sm">TODAY</span>
-<div class="w-7 h-7 rounded-lg bg-primary-container/40 flex items-center justify-center text-primary animate-pulse">
-<span class="material-symbols-outlined text-[16px]">local_fire_department</span>
-</div>
-</div>
-</div>
-<div class="flex items-center justify-between pt-1">
-<div class="flex items-center gap-2">
-<span class="font-label-mono text-label-mono text-on-surface-variant">Daily quota: 3/3 solved</span>
-<span class="font-label-mono-bold text-label-mono-bold text-secondary">100% Complete</span>
-</div>
-<span class="font-label-mono text-label-mono text-outline">Reset in 05h 42m</span>
-</div>
-</div>
-<div class="xl:col-span-7 rounded-xl bg-surface-container-lowest p-space-md flex flex-col justify-between shadow-md relative overflow-hidden transition-all duration-200 hover:bg-surface-container-low group">
-<div class="absolute -right-12 -top-12 w-48 h-48 rounded-full bg-primary/5 blur-3xl pointer-events-none"></div>
-<div>
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-primary text-[20px]">videocam</span>
-<span class="font-label-mono-bold text-label-mono-bold text-primary uppercase tracking-wider">Scheduled Simulation</span>
-</div>
-<span class="px-2.5 py-0.5 rounded-full font-label-mono-bold text-label-mono-bold bg-error-container/20 text-error flex items-center gap-1">
-<span class="w-1.5 h-1.5 rounded-full bg-error animate-ping"></span> in 2h 15m
-            </span>
-</div>
-<div class="mt-space-sm flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
-<div>
-<h2 class="font-headline-md text-headline-md text-on-surface">Meta L6 Systems Interview</h2>
-<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">High-throughput Event Broker Design (Kafka / Pulsar Architecture)</p>
-</div>
-<div class="flex items-center gap-2.5 bg-surface-container-high px-3 py-2 rounded-xl shrink-0">
-<div class="w-8 h-8 rounded-full bg-inverse-primary/30 flex items-center justify-center font-label-mono-bold text-label-mono-bold text-primary">
-                AI
-              </div>
-<div class="text-left">
-<div class="font-label-mono-bold text-label-mono-bold text-on-surface">Alex.ai v4.2</div>
-<div class="font-label-mono text-label-mono text-secondary">Staff Bar Raiser</div>
-</div>
-</div>
-</div>
-</div>
-<div class="grid grid-cols-2 sm:grid-cols-4 gap-2 my-space-sm py-space-xs">
-<div class="p-2 rounded bg-surface-container-low">
-<div class="font-label-mono text-label-mono text-outline">Target Latency</div>
-<div class="font-label-mono-bold text-label-mono-bold text-on-surface mt-0.5">< 5ms p99</div>
-</div>
-<div class="p-2 rounded bg-surface-container-low">
-<div class="font-label-mono text-label-mono text-outline">Partition Model</div>
-<div class="font-label-mono-bold text-label-mono-bold text-on-surface mt-0.5">Raft Consensus</div>
-</div>
-<div class="p-2 rounded bg-surface-container-low">
-<div class="font-label-mono text-label-mono text-outline">Expected Scale</div>
-<div class="font-label-mono-bold text-label-mono-bold text-on-surface mt-0.5">10M write ops/s</div>
-</div>
-<div class="p-2 rounded bg-surface-container-low">
-<div class="font-label-mono text-label-mono text-outline">Telemetry Mode</div>
-<div class="font-label-mono-bold text-label-mono-bold text-secondary mt-0.5">Live Audio + Code</div>
-</div>
-</div>
-<div class="flex flex-wrap items-center justify-between gap-space-sm pt-2">
-<button class="px-3 py-1.5 rounded-lg bg-surface-container-high text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors font-body-sm text-body-sm flex items-center gap-1.5">
-<span class="material-symbols-outlined text-[16px]">menu_book</span> Review L6 Rubric
-          </button>
-<div class="flex items-center gap-space-xs">
-<button class="px-3 py-1.5 rounded-lg bg-surface-container-high text-on-surface font-body-sm text-body-sm hover:bg-surface-variant transition-colors">
-              Pre-flight Mic Check
-            </button>
-<button class="px-4 py-1.5 rounded-lg bg-primary text-on-primary font-headline-sm text-body-sm shadow-[0_0_15px_rgba(192,193,255,0.3)] hover:shadow-[0_0_25px_rgba(192,193,255,0.6)] transition-all flex items-center gap-1.5">
-<span class="material-symbols-outlined text-[18px]">rocket_launch</span> Launch Prep Room
-            </button>
-</div>
-</div>
-</div>
-<div class="xl:col-span-8 rounded-xl bg-surface-container-lowest p-space-md shadow-md transition-all duration-200 hover:bg-surface-container-low flex flex-col justify-between">
-<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm pb-space-sm">
-<div>
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-secondary text-[20px]">insights</span>
-<span class="font-headline-sm text-headline-sm text-on-surface">Quarterly Algorithmic Velocity</span>
-</div>
-<p class="font-body-sm text-body-sm text-on-surface-variant">342 verified submissions across Q2 · 98.4th percentile runtime speed</p>
-</div>
-<div class="flex items-center gap-1.5 bg-surface-container-low p-1 rounded-lg">
-<button class="px-2.5 py-0.5 rounded font-label-mono-bold text-label-mono-bold bg-surface-container-high text-on-surface">All</button>
-<button class="px-2.5 py-0.5 rounded font-label-mono text-label-mono text-error hover:bg-surface-container-high/50">Hard (84)</button>
-<button class="px-2.5 py-0.5 rounded font-label-mono text-label-mono text-tertiary hover:bg-surface-container-high/50">Med (192)</button>
-<button class="px-2.5 py-0.5 rounded font-label-mono text-label-mono text-secondary hover:bg-surface-container-high/50">Easy (66)</button>
-</div>
-</div>
-<div class="my-space-sm overflow-x-auto">
-<div class="min-w-[580px] space-y-1.5">
-<div class="flex text-outline font-label-mono text-label-mono justify-between px-1">
-<span>W1 (Apr)</span>
-<span>W3</span>
-<span>W5 (May)</span>
-<span>W7</span>
-<span>W9 (Jun)</span>
-<span>W11</span>
-<span>W12</span>
-</div>
-<div class="grid grid-rows-7 grid-flow-col gap-1.5 w-full" id="heatmap-grid">
-<div class="w-3.5 h-3.5 rounded bg-surface-container-high" title="0 solved"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/30" title="2 solved"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/60" title="4 solved"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary" title="7 solved"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/40" title="3 solved"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/80" title="6 solved"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary" title="8 solved"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/40"></div>
-<div class="w-3.5 h-3.5 rounded bg-surface-container-high"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/60"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/90"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/50"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/30"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/60"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/40"></div>
-<div class="w-3.5 h-3.5 rounded bg-surface-container-high"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/50"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/80"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/90"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/60"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/20"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/70"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/40"></div>
-<div class="w-3.5 h-3.5 rounded bg-surface-container-high"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/30"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/50"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/80"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/70"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/90"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/60"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/90"></div>
-<div class="w-3.5 h-3.5 rounded bg-surface-container-high"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/40"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/50"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/80"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/90"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/40"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/70"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary"></div>
-<div class="w-3.5 h-3.5 rounded bg-surface-container-high"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/60"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/30"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/80"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/90"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/40"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/60"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/70"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary"></div>
-<div class="w-3.5 h-3.5 rounded bg-surface-container-high"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/50"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/80"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/90"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/60"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/90"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/80"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/40"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/70"></div>
-<div class="w-3.5 h-3.5 rounded bg-surface-container-high"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/50"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/90"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/80"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/60"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/30"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/90"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/70"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary/90"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary"></div>
-<div class="w-3.5 h-3.5 rounded bg-secondary animate-pulse ring-2 ring-secondary/30"></div>
-</div>
-</div>
-</div>
-<div class="flex items-center justify-between text-outline font-label-mono text-label-mono pt-space-xs">
-<div class="flex items-center gap-2">
+{/* Intensity Legend */}
+<div className="flex items-center gap-space-xs font-code-sm text-code-sm text-on-surface-variant">
 <span>Less</span>
-<div class="w-2.5 h-2.5 rounded bg-surface-container-high"></div>
-<div class="w-2.5 h-2.5 rounded bg-secondary/30"></div>
-<div class="w-2.5 h-2.5 rounded bg-secondary/60"></div>
-<div class="w-2.5 h-2.5 rounded bg-secondary"></div>
-<span>More</span>
-</div>
-<div class="flex items-center gap-4">
-<span>Avg Solvetime: <strong class="text-on-surface">18m 42s</strong></span>
-<span>Accepted Rate: <strong class="text-secondary">87.2%</strong></span>
+<span className="w-3 h-3 rounded-xs bg-surface-container-highest"></span>
+<span className="w-3 h-3 rounded-xs bg-tertiary/30"></span>
+<span className="w-3 h-3 rounded-xs bg-tertiary/60"></span>
+<span className="w-3 h-3 rounded-xs bg-tertiary"></span>
+<span className="w-3 h-3 rounded-xs bg-primary shadow-[0_0_8px_rgba(128,131,255,0.6)]"></span>
+<span>More (Mock Session)</span>
 </div>
 </div>
+{/* Heatmap Table Simulation */}
+<div className="relative overflow-x-auto pb-space-xs">
+<div className="min-w-[900px]">
+{/* Month Headers */}
+<div className="flex justify-between pl-8 pr-2 font-code-sm text-[11px] text-on-surface-variant pb-1.5 select-none">
+<span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span>
 </div>
-<div class="xl:col-span-4 rounded-xl bg-surface-container-lowest p-space-md shadow-md transition-all duration-200 hover:bg-surface-container-low flex flex-col justify-between">
-<div>
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-primary text-[20px]">radar</span>
-<span class="font-headline-sm text-headline-sm text-on-surface">Domain Competency</span>
+{/* Heatmap Matrix Grid (7 rows x 52 columns) */}
+<div className="flex gap-1.5 items-start">
+{/* Day of Week labels */}
+<div className="flex flex-col gap-1 font-code-sm text-[10px] text-on-surface-variant pt-0.5 select-none w-6">
+<span className="h-3 leading-3">M</span>
+<span className="h-3 leading-3 opacity-0">T</span>
+<span className="h-3 leading-3">W</span>
+<span className="h-3 leading-3 opacity-0">T</span>
+<span className="h-3 leading-3">F</span>
+<span className="h-3 leading-3 opacity-0">S</span>
+<span className="h-3 leading-3 opacity-0">S</span>
 </div>
-<span class="font-label-mono-bold text-label-mono-bold text-secondary">L6 Ready (86%)</span>
-</div>
-<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Composite score derived from 48 mock reviews</p>
-</div>
-<div class="my-space-sm flex items-center justify-center relative">
-<svg class="w-44 h-44 -rotate-90 transform" viewbox="0 0 120 120">
-<circle class="text-surface-container-high" cx="60" cy="60" fill="transparent" r="50" stroke="currentColor" stroke-width="8"></circle>
-<circle class="text-primary" cx="60" cy="60" fill="transparent" r="50" stroke="currentColor" stroke-dasharray="314.15" stroke-dashoffset="44" stroke-linecap="round" stroke-width="8"></circle>
-<circle class="text-surface-container-high" cx="60" cy="60" fill="transparent" r="38" stroke="currentColor" stroke-width="6"></circle>
-<circle class="text-secondary" cx="60" cy="60" fill="transparent" r="38" stroke="currentColor" stroke-dasharray="238.7" stroke-dashoffset="35" stroke-linecap="round" stroke-width="6"></circle>
-</svg>
-<div class="absolute flex flex-col items-center justify-center text-center">
-<span class="font-headline-lg text-headline-lg font-bold text-on-surface">86<span class="text-primary font-headline-sm text-headline-sm">%</span></span>
-<span class="font-label-mono text-label-mono text-outline uppercase tracking-wider">Pass Index</span>
-</div>
-</div>
-<div class="space-y-2">
-<div class="flex items-center justify-between text-body-sm">
-<span class="font-body-sm text-on-surface-variant flex items-center gap-1.5">
-<span class="w-2 h-2 rounded-full bg-primary"></span> Dynamic Programming
-            </span>
-<span class="font-label-mono-bold text-label-mono-bold text-on-surface">92%</span>
-</div>
-<div class="flex items-center justify-between text-body-sm">
-<span class="font-body-sm text-on-surface-variant flex items-center gap-1.5">
-<span class="w-2 h-2 rounded-full bg-secondary"></span> Graph Theory & Trees
-            </span>
-<span class="font-label-mono-bold text-label-mono-bold text-on-surface">88%</span>
-</div>
-<div class="flex items-center justify-between text-body-sm">
-<span class="font-body-sm text-on-surface-variant flex items-center gap-1.5">
-<span class="w-2 h-2 rounded-full bg-tertiary"></span> Concurrency & Multi-threading
-            </span>
-<span class="font-label-mono-bold text-label-mono-bold text-on-surface">84%</span>
-</div>
-<div class="flex items-center justify-between text-body-sm">
-<span class="font-body-sm text-on-surface-variant flex items-center gap-1.5">
-<span class="w-2 h-2 rounded-full bg-error"></span> Distributed Architecture
-            </span>
-<span class="font-label-mono-bold text-label-mono-bold text-on-surface">79%</span>
+{/* Heatmap Week Columns (Generated dynamically structured pattern) */}
+<div className="flex-1 grid grid-flow-col grid-rows-7 gap-1" id="heatmap-grid">
+{/* Sample 52 weeks filled with weighted variance */}
+{/* Block 1: Casual Warmup */}
+<div className="w-3 h-3 rounded-xs bg-surface-container-highest hover:ring-1 hover:ring-primary cursor-pointer transition-all" data-tip="Nov 3: 0 problems"></div>
+<div className="w-3 h-3 rounded-xs bg-tertiary/30 hover:ring-1 hover:ring-primary cursor-pointer transition-all" data-tip="Nov 4: 1 problem"></div>
+<div className="w-3 h-3 rounded-xs bg-surface-container-highest hover:ring-1 hover:ring-primary cursor-pointer transition-all" data-tip="Nov 5: 0 problems"></div>
+<div className="w-3 h-3 rounded-xs bg-tertiary/60 hover:ring-1 hover:ring-primary cursor-pointer transition-all" data-tip="Nov 6: 3 problems"></div>
+<div className="w-3 h-3 rounded-xs bg-surface-container-highest hover:ring-1 hover:ring-primary cursor-pointer transition-all" data-tip="Nov 7: 0 problems"></div>
+<div className="w-3 h-3 rounded-xs bg-tertiary/30 hover:ring-1 hover:ring-primary cursor-pointer transition-all" data-tip="Nov 8: 1 problem"></div>
+<div className="w-3 h-3 rounded-xs bg-surface-container-highest hover:ring-1 hover:ring-primary cursor-pointer transition-all" data-tip="Nov 9: 0 problems"></div>
+{/* Pattern loops for visual aesthetic density */}
+<div className="w-3 h-3 rounded-xs bg-tertiary/30"></div><div className="w-3 h-3 rounded-xs bg-tertiary/60"></div><div className="w-3 h-3 rounded-xs bg-tertiary"></div><div className="w-3 h-3 rounded-xs bg-surface-container-highest"></div><div className="w-3 h-3 rounded-xs bg-tertiary/30"></div><div className="w-3 h-3 rounded-xs bg-primary"></div><div className="w-3 h-3 rounded-xs bg-tertiary/60"></div>
+<div className="w-3 h-3 rounded-xs bg-surface-container-highest"></div><div className="w-3 h-3 rounded-xs bg-tertiary/30"></div><div className="w-3 h-3 rounded-xs bg-tertiary/60"></div><div className="w-3 h-3 rounded-xs bg-surface-container-highest"></div><div className="w-3 h-3 rounded-xs bg-tertiary"></div><div className="w-3 h-3 rounded-xs bg-surface-container-highest"></div><div className="w-3 h-3 rounded-xs bg-tertiary/30"></div>
+<div className="w-3 h-3 rounded-xs bg-tertiary/60"></div><div className="w-3 h-3 rounded-xs bg-tertiary"></div><div className="w-3 h-3 rounded-xs bg-primary"></div><div className="w-3 h-3 rounded-xs bg-tertiary/60"></div><div className="w-3 h-3 rounded-xs bg-tertiary/30"></div><div className="w-3 h-3 rounded-xs bg-surface-container-highest"></div><div className="w-3 h-3 rounded-xs bg-surface-container-highest"></div>
+<div className="w-3 h-3 rounded-xs bg-surface-container-highest"></div><div className="w-3 h-3 rounded-xs bg-tertiary/30"></div><div className="w-3 h-3 rounded-xs bg-tertiary/60"></div><div className="w-3 h-3 rounded-xs bg-tertiary"></div><div className="w-3 h-3 rounded-xs bg-tertiary"></div><div className="w-3 h-3 rounded-xs bg-surface-container-highest"></div><div className="w-3 h-3 rounded-xs bg-tertiary/30"></div>
+<div className="w-3 h-3 rounded-xs bg-tertiary/30"></div><div className="w-3 h-3 rounded-xs bg-tertiary/60"></div><div className="w-3 h-3 rounded-xs bg-surface-container-highest"></div><div className="w-3 h-3 rounded-xs bg-tertiary/30"></div><div className="w-3 h-3 rounded-xs bg-tertiary"></div><div className="w-3 h-3 rounded-xs bg-primary"></div><div className="w-3 h-3 rounded-xs bg-tertiary/60"></div>
+<div className="w-3 h-3 rounded-xs bg-tertiary/60"></div><div className="w-3 h-3 rounded-xs bg-surface-container-highest"></div><div className="w-3 h-3 rounded-xs bg-tertiary/30"></div><div className="w-3 h-3 rounded-xs bg-tertiary/60"></div><div className="w-3 h-3 rounded-xs bg-tertiary"></div><div className="w-3 h-3 rounded-xs bg-surface-container-highest"></div><div className="w-3 h-3 rounded-xs bg-surface-container-highest"></div>
+<div className="w-3 h-3 rounded-xs bg-surface-container-highest"></div><div className="w-3 h-3 rounded-xs bg-tertiary/30"></div><div className="w-3 h-3 rounded-xs bg-tertiary/30"></div><div className="w-3 h-3 rounded-xs bg-surface-container-highest"></div><div className="w-3 h-3 rounded-xs bg-tertiary/60"></div><div className="w-3 h-3 rounded-xs bg-tertiary"></div><div className="w-3 h-3 rounded-xs bg-primary"></div>
+<div className="w-3 h-3 rounded-xs bg-tertiary"></div><div className="w-3 h-3 rounded-xs bg-tertiary/60"></div><div className="w-3 h-3 rounded-xs bg-surface-container-highest"></div><div className="w-3 h-3 rounded-xs bg-tertiary/30"></div><div className="w-3 h-3 rounded-xs bg-tertiary/60"></div><div className="w-3 h-3 rounded-xs bg-tertiary"></div><div className="w-3 h-3 rounded-xs bg-surface-container-highest"></div>
+<div className="w-3 h-3 rounded-xs bg-tertiary/30"></div><div className="w-3 h-3 rounded-xs bg-tertiary"></div><div className="w-3 h-3 rounded-xs bg-primary"></div><div className="w-3 h-3 rounded-xs bg-tertiary/60"></div><div className="w-3 h-3 rounded-xs bg-surface-container-highest"></div><div className="w-3 h-3 rounded-xs bg-tertiary/30"></div><div className="w-3 h-3 rounded-xs bg-tertiary/60"></div>
+<div className="w-3 h-3 rounded-xs bg-surface-container-highest"></div><div className="w-3 h-3 rounded-xs bg-tertiary/30"></div><div className="w-3 h-3 rounded-xs bg-tertiary/60"></div><div className="w-3 h-3 rounded-xs bg-tertiary"></div><div className="w-3 h-3 rounded-xs bg-tertiary"></div><div className="w-3 h-3 rounded-xs bg-primary"></div><div className="w-3 h-3 rounded-xs bg-surface-container-highest"></div>
+<div className="w-3 h-3 rounded-xs bg-tertiary/60"></div><div className="w-3 h-3 rounded-xs bg-surface-container-highest"></div><div className="w-3 h-3 rounded-xs bg-tertiary/30"></div><div className="w-3 h-3 rounded-xs bg-tertiary/60"></div><div className="w-3 h-3 rounded-xs bg-tertiary"></div><div className="w-3 h-3 rounded-xs bg-tertiary/60"></div><div className="w-3 h-3 rounded-xs bg-tertiary/30"></div>
+<div className="w-3 h-3 rounded-xs bg-surface-container-highest"></div><div className="w-3 h-3 rounded-xs bg-tertiary/30"></div><div className="w-3 h-3 rounded-xs bg-tertiary/60"></div><div className="w-3 h-3 rounded-xs bg-surface-container-highest"></div><div className="w-3 h-3 rounded-xs bg-tertiary"></div><div className="w-3 h-3 rounded-xs bg-primary"></div><div className="w-3 h-3 rounded-xs bg-surface-container-highest"></div>
+{/* Recent Sprint Weeks (Bright Active Streak) */}
+<div className="w-3 h-3 rounded-xs bg-tertiary"></div><div className="w-3 h-3 rounded-xs bg-tertiary"></div><div className="w-3 h-3 rounded-xs bg-primary"></div><div className="w-3 h-3 rounded-xs bg-tertiary"></div><div className="w-3 h-3 rounded-xs bg-tertiary"></div><div className="w-3 h-3 rounded-xs bg-primary"></div><div className="w-3 h-3 rounded-xs bg-tertiary"></div>
+<div className="w-3 h-3 rounded-xs bg-tertiary"></div><div className="w-3 h-3 rounded-xs bg-primary"></div><div className="w-3 h-3 rounded-xs bg-tertiary"></div><div className="w-3 h-3 rounded-xs bg-tertiary"></div><div className="w-3 h-3 rounded-xs bg-tertiary"></div><div className="w-3 h-3 rounded-xs bg-primary"></div><div className="w-3 h-3 rounded-xs bg-tertiary"></div>
+<div className="w-3 h-3 rounded-xs bg-tertiary"></div><div className="w-3 h-3 rounded-xs bg-tertiary"></div><div className="w-3 h-3 rounded-xs bg-primary"></div><div className="w-3 h-3 rounded-xs bg-tertiary"></div><div className="w-3 h-3 rounded-xs bg-tertiary"></div><div className="w-3 h-3 rounded-xs bg-surface-container-highest"></div><div className="w-3 h-3 rounded-xs bg-surface-container-highest"></div>
 </div>
 </div>
 </div>
-<div class="xl:col-span-7 rounded-xl bg-surface-container-lowest p-space-md shadow-md transition-all duration-200 hover:bg-surface-container-low flex flex-col justify-between">
-<div>
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-tertiary text-[20px]">stars</span>
-<span class="font-label-mono-bold text-label-mono-bold text-tertiary uppercase tracking-wider">Curated Daily Problem</span>
 </div>
-<span class="px-2.5 py-0.5 rounded-full font-label-mono-bold text-label-mono-bold bg-error-container/30 text-error">HARD</span>
+{/* Hover tooltip notification indicator */}
+<div className="flex items-center justify-between pt-space-xs font-code-sm text-code-sm text-on-surface-variant" id="heatmap-status">
+<span className="flex items-center gap-space-xs">
+<span className="w-2 h-2 rounded-full bg-tertiary"></span>
+<span>Latest peak: <strong className="text-on-surface font-semibold">Nov 14: 6 problems solved, 1 System Design session</strong></span>
+</span>
+<button className="text-primary hover:underline font-code-sm">Download Submission CSV</button>
 </div>
-<div class="mt-space-sm">
-<div class="flex items-center justify-between">
-<h3 class="font-headline-md text-headline-md text-on-surface">Median of Two Sorted Arrays</h3>
-<span class="font-label-mono-bold text-label-mono-bold text-tertiary">+150 XP</span>
+</section>
+{/* Main Workspace Split: 'Resume Left Off' & 'Mock Readiness + Upcoming' */}
+<div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter-lg">
+{/* Left Column: Resume Where You Left Off (7 cols) */}
+<section className="lg:col-span-7 space-y-space-md">
+<div className="flex items-center justify-between">
+<div className="flex items-center gap-space-sm">
+<span className="material-symbols-outlined text-[20px] text-tertiary">history</span>
+<h2 className="font-headline-sm text-headline-sm font-semibold text-on-surface">Resume Where You Left Off</h2>
 </div>
-<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Given two sorted arrays nums1 and nums2 of size m and n respectively, return the median of the two sorted arrays in strictly O(log (m+n)) runtime complexity.</p>
+<a className="font-code-sm text-code-sm text-primary hover:underline" href="#">View All Active (5)</a>
+</div>
+<div className="space-y-space-sm">
+{/* Problem 1: System Design (High Progress) */}
+<div className="rounded-xl bg-surface-container-low p-space-md hover:bg-surface-container transition-all group flex flex-col md:flex-row md:items-center justify-between gap-space-md shadow-sm">
+<div className="space-y-space-xs flex-1">
+<div className="flex flex-wrap items-center gap-space-xs">
+<span className="px-space-xs py-0.5 rounded bg-surface-container-high font-label-caps text-label-caps text-tertiary">SYSTEM DESIGN</span>
+<span className="px-space-xs py-0.5 rounded bg-surface-container-highest font-code-sm text-code-sm text-on-surface-variant">Distributed Systems</span>
+<span className="font-code-sm text-code-sm text-on-surface-variant">· 42 min elapsed</span>
+</div>
+<h3 className="font-headline-sm text-[16px] font-semibold text-on-surface group-hover:text-primary transition-colors">
+                Design in-memory key-value store with TTL &amp; LRU eviction
+              </h3>
+{/* Mini Progress Bar */}
+<div className="w-full max-w-md pt-1">
+<div className="flex items-center justify-between font-code-sm text-[11px] text-on-surface-variant mb-1">
+<span>Architecture &amp; Sharding stage</span>
+<span className="text-tertiary font-medium">85% Complete</span>
+</div>
+<div className="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div className="h-full bg-tertiary w-[85%] rounded-full"></div>
 </div>
 </div>
-<div class="my-space-sm p-space-sm rounded-lg bg-surface-container-high/60 font-code-sm text-code-sm text-on-surface-variant flex items-center justify-between">
-<div class="flex items-center gap-2 truncate">
-<span class="text-primary font-headline-sm">def</span>
-<span class="text-secondary font-headline-sm">findMedianSortedArrays</span>(nums1: List[int], nums2: List[int]) -> float:
-          </div>
-<span class="font-label-mono text-label-mono text-outline shrink-0 ml-2">Python 3.12</span>
 </div>
-<div class="flex flex-wrap items-center justify-between gap-space-sm pt-1">
-<div class="flex items-center gap-space-sm font-label-mono text-label-mono text-outline">
-<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">schedule</span> Est. 25m</span>
-<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">domain</span> Google, Meta, Apple</span>
-</div>
-<div class="flex items-center gap-space-xs">
-<button class="px-3 py-1.5 rounded-lg bg-surface-container-high text-on-surface hover:bg-surface-variant transition-colors font-body-sm text-body-sm">
-              View Hints (3)
-            </button>
-<button class="px-4 py-1.5 rounded-lg bg-primary text-on-primary font-headline-sm text-body-sm hover:shadow-[0_0_20px_rgba(192,193,255,0.45)] transition-all flex items-center gap-1.5">
-<span class="material-symbols-outlined text-[16px]">code</span> Solve in Workspace
-            </button>
+<div className="shrink-0 flex items-center gap-space-sm">
+<a className="px-space-md py-space-sm rounded-lg bg-surface-container-high group-hover:bg-primary group-hover:text-on-primary text-on-surface font-body-sm text-body-sm font-medium transition-all flex items-center gap-1 shadow-sm" href="#">
+<span>Continue</span>
+<span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
 </div>
 </div>
+{/* Problem 2: Hard Algorithm (Trapping Rain Water II) */}
+<div className="rounded-xl bg-surface-container-low p-space-md hover:bg-surface-container transition-all group flex flex-col md:flex-row md:items-center justify-between gap-space-md shadow-sm">
+<div className="space-y-space-xs flex-1">
+<div className="flex flex-wrap items-center gap-space-xs">
+<span className="px-space-xs py-0.5 rounded bg-error-container/50 font-label-caps text-label-caps text-error">HARD ALGORITHM</span>
+<span className="px-space-xs py-0.5 rounded bg-surface-container-highest font-code-sm text-code-sm text-on-surface-variant">PriorityQueue</span>
+<span className="px-space-xs py-0.5 rounded bg-surface-container-highest font-code-sm text-code-sm text-on-surface-variant">BFS 3D</span>
+<span className="font-code-sm text-code-sm text-secondary font-mono">2 hints unlocked</span>
 </div>
-<div class="xl:col-span-5 rounded-xl bg-surface-container-lowest p-space-md shadow-md transition-all duration-200 hover:bg-surface-container-low flex flex-col justify-between">
-<div>
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-error text-[20px]">smart_toy</span>
-<span class="font-label-mono-bold text-label-mono-bold text-error uppercase tracking-wider">AI Weakness Diagnostics</span>
-</div>
-<span class="px-2 py-0.5 rounded font-label-mono text-label-mono bg-error-container/20 text-error">Priority: High</span>
-</div>
-<div class="mt-space-sm space-y-2">
-<div class="p-space-sm rounded-lg bg-surface-container-low">
-<div class="flex items-center justify-between">
-<span class="font-headline-sm text-headline-sm text-on-surface">Distributed Locking Fallback</span>
-<span class="font-label-mono text-label-mono text-outline">Meta Fail Pattern</span>
-</div>
-<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
-                Identified gap: Redlock consensus and clock drift vulnerability edge cases in Distributed Key-Value Stores.
+<h3 className="font-headline-sm text-[16px] font-semibold text-on-surface group-hover:text-primary transition-colors">
+                Trapping Rain Water II (3D Elevation Matrix)
+              </h3>
+<p className="font-body-sm text-body-sm text-on-surface-variant line-clamp-1">
+                Given an m x n integer matrix representing height of each unit cell, return total volume of water it can trap.
               </p>
 </div>
-<div class="p-space-sm rounded-lg bg-surface-container-low">
-<div class="flex items-center justify-between">
-<span class="font-headline-sm text-headline-sm text-on-surface">Memory Footprint in Tries</span>
-<span class="font-label-mono text-label-mono text-outline">Cache Locality</span>
+<div className="shrink-0 flex items-center gap-space-sm">
+<a className="px-space-md py-space-sm rounded-lg bg-surface-container-high group-hover:bg-primary group-hover:text-on-primary text-on-surface font-body-sm text-body-sm font-medium transition-all flex items-center gap-1 shadow-sm" href="#">
+<span>Resume Code</span>
+<span className="material-symbols-outlined text-[16px]">terminal</span>
+</a>
 </div>
-<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
-                High pointer overhead noted during auto-complete retrieval mock. Recommend compressed Radix Tries drill.
+</div>
+{/* STAR Behavioral Scenario */}
+<div className="rounded-xl bg-surface-container-low p-space-md hover:bg-surface-container transition-all group flex flex-col md:flex-row md:items-center justify-between gap-space-md shadow-sm">
+<div className="space-y-space-xs flex-1">
+<div className="flex flex-wrap items-center gap-space-xs">
+<span className="px-space-xs py-0.5 rounded bg-secondary-container font-label-caps text-label-caps text-on-secondary-container">BEHAVIORAL STAR</span>
+<span className="px-space-xs py-0.5 rounded bg-surface-container-highest font-code-sm text-code-sm text-on-surface-variant">Staff Leadership</span>
+<span className="font-code-sm text-code-sm text-tertiary">Action Step Feedback Ready</span>
+</div>
+<h3 className="font-headline-sm text-[16px] font-semibold text-on-surface group-hover:text-primary transition-colors">
+                Handling Cross-Functional Pushback on Tech Debt Refactoring
+              </h3>
+<p className="font-body-sm text-body-sm text-on-surface-variant line-clamp-1">
+                AI Coach suggests quantifying engineering hours reclaimed to convince Product VP.
               </p>
 </div>
-</div>
-</div>
-<div class="pt-space-sm flex items-center justify-between">
-<span class="font-label-mono text-label-mono text-outline">Next diagnostic audit in 3 sessions</span>
-<button class="px-3 py-1.5 rounded-lg bg-inverse-primary/20 text-primary hover:bg-inverse-primary/30 transition-colors font-body-sm text-body-sm flex items-center gap-1">
-<span>Fix Gaps With AI</span>
-<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
-</button>
-</div>
-</div>
-</div>
-<section class="rounded-xl bg-surface-container-lowest p-space-md shadow-md">
-<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm pb-space-sm">
-<div>
-<h3 class="font-headline-md text-headline-md text-on-surface">Recent Mock Interview Transcripts & Scorecards</h3>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Real-time telemetry and evaluator sentiment summaries from latest rounds</p>
-</div>
-<button class="px-3 py-1.5 rounded-lg bg-surface-container-high text-on-surface-variant hover:text-on-surface text-body-sm font-body-sm self-start sm:self-auto">
-          Full Transcripts Archive
-        </button>
-</div>
-<div class="space-y-2 mt-2">
-<div class="p-space-sm rounded-lg bg-surface-container-low flex flex-col md:flex-row md:items-center justify-between gap-space-sm hover:bg-surface-container-high/60 transition-colors">
-<div class="flex items-center gap-space-sm">
-<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center font-headline-sm text-headline-sm text-secondary">
-              L6
-            </div>
-<div>
-<div class="flex items-center gap-2">
-<span class="font-headline-sm text-headline-sm text-on-surface">Distributed Real-time Video Transcoder</span>
-<span class="px-2 py-0.2 rounded font-label-mono text-label-mono bg-secondary/10 text-secondary">Strong Hire</span>
-</div>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Interviewer: Sophia.ai · Focus: Sharding, FFmpeg Pipeline, Backpressure handling</p>
-</div>
-</div>
-<div class="flex items-center gap-space-md justify-between md:justify-end">
-<div class="text-right">
-<div class="font-label-mono-bold text-label-mono-bold text-on-surface">94 / 100</div>
-<div class="font-label-mono text-label-mono text-outline">Yesterday</div>
-</div>
-<button class="p-1.5 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors">
-<span class="material-symbols-outlined text-[20px]">chevron_right</span>
-</button>
-</div>
-</div>
-<div class="p-space-sm rounded-lg bg-surface-container-low flex flex-col md:flex-row md:items-center justify-between gap-space-sm hover:bg-surface-container-high/60 transition-colors">
-<div class="flex items-center gap-space-sm">
-<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center font-headline-sm text-headline-sm text-tertiary">
-              L5
-            </div>
-<div>
-<div class="flex items-center gap-2">
-<span class="font-headline-sm text-headline-sm text-on-surface">LRU Cache with O(1) Expiry Policies</span>
-<span class="px-2 py-0.2 rounded font-label-mono text-label-mono bg-tertiary/10 text-tertiary">Lean Hire</span>
-</div>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Interviewer: David.ai · Focus: Doubly Linked Lists, Concurrent SkipLists, Lock contention</p>
-</div>
-</div>
-<div class="flex items-center gap-space-md justify-between md:justify-end">
-<div class="text-right">
-<div class="font-label-mono-bold text-label-mono-bold text-on-surface">78 / 100</div>
-<div class="font-label-mono text-label-mono text-outline">3 days ago</div>
-</div>
-<button class="p-1.5 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors">
-<span class="material-symbols-outlined text-[20px]">chevron_right</span>
-</button>
+<div className="shrink-0 flex items-center gap-space-sm">
+<a className="px-space-md py-space-sm rounded-lg bg-surface-container-high group-hover:bg-secondary-container group-hover:text-on-secondary-container text-on-surface font-body-sm text-body-sm font-medium transition-all flex items-center gap-1 shadow-sm" href="#">
+<span>Refine STAR</span>
+<span className="material-symbols-outlined text-[16px]">psychology</span>
+</a>
 </div>
 </div>
 </div>
 </section>
+{/* Right Column: Topic Mastery Radar & Upcoming Mock (5 cols) */}
+<section className="lg:col-span-5 space-y-gutter">
+{/* Live Mock Interview Readiness & Mastery Breakdown */}
+<div className="rounded-xl bg-surface-container-low p-space-lg shadow-md space-y-space-md">
+<div className="flex items-center justify-between">
+<div className="flex items-center gap-space-sm">
+<span className="material-symbols-outlined text-[20px] text-primary">analytics</span>
+<h2 className="font-headline-sm text-headline-sm font-semibold text-on-surface">Skill Radar &amp; Domain Mastery</h2>
 </div>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const simBtn = document.getElementById('quick-sim-btn');
-      if (simBtn) {
-        simBtn.addEventListener('click', () => {
-          const originalText = simBtn.innerHTML;
-          simBtn.innerHTML = '<span class="material-symbols-outlined text-[18px] animate-spin">refresh</span> Spinning Workspace...';
-          simBtn.classList.add('opacity-80');
-          setTimeout(() => {
-            simBtn.innerHTML = originalText;
-            simBtn.classList.remove('opacity-80');
-          }, 1200);
-        });
-      }
+<span className="font-label-caps text-label-caps text-tertiary font-mono">STAFF TARGET</span>
+</div>
+<div className="space-y-space-sm pt-space-xs">
+{/* Data Structures & Algorithms */}
+<div>
+<div className="flex justify-between font-code-sm text-code-sm mb-1">
+<span className="text-on-surface flex items-center gap-1.5">
+<span className="material-symbols-outlined text-[14px] text-tertiary">check_circle</span>
+                  Data Structures &amp; Algorithms
+                </span>
+<span className="text-on-surface font-mono font-medium">94%</span>
+</div>
+<div className="h-2 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div className="h-full bg-tertiary rounded-full transition-all" style={{ width: "94%" }}></div>
+</div>
+</div>
+{/* Distributed Systems & System Design */}
+<div>
+<div className="flex justify-between font-code-sm text-code-sm mb-1">
+<span className="text-on-surface flex items-center gap-1.5">
+<span className="material-symbols-outlined text-[14px] text-primary">hub</span>
+                  Distributed Systems Architecture
+                </span>
+<span className="text-on-surface font-mono font-medium">82%</span>
+</div>
+<div className="h-2 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div className="h-full bg-primary rounded-full transition-all" style={{ width: "82%" }}></div>
+</div>
+</div>
+{/* Concurrency & Multithreading */}
+<div>
+<div className="flex justify-between font-code-sm text-code-sm mb-1">
+<span className="text-on-surface flex items-center gap-1.5">
+<span className="material-symbols-outlined text-[14px] text-secondary">memory</span>
+                  Concurrency &amp; Low-Latency
+                </span>
+<span className="text-on-surface font-mono font-medium">76%</span>
+</div>
+<div className="h-2 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div className="h-full bg-secondary-container rounded-full transition-all" style={{ width: "76%" }}></div>
+</div>
+</div>
+{/* Behavioral Leadership (STAR) */}
+<div>
+<div className="flex justify-between font-code-sm text-code-sm mb-1">
+<span className="text-on-surface flex items-center gap-1.5">
+<span className="material-symbols-outlined text-[14px] text-tertiary">groups</span>
+                  Behavioral &amp; Staff Leadership
+                </span>
+<span className="text-on-surface font-mono font-medium">88%</span>
+</div>
+<div className="h-2 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div className="h-full bg-tertiary rounded-full transition-all" style={{ width: "88%" }}></div>
+</div>
+</div>
+</div>
+<div className="p-space-sm rounded-lg bg-surface-container flex items-center justify-between text-on-surface-variant font-code-sm text-[11px]">
+<span>Next recommended focus:</span>
+<span className="text-primary font-medium cursor-pointer hover:underline">Raft Consensus &amp; Lock-free Queues →</span>
+</div>
+</div>
+{/* Upcoming AI Mock Interviews & Benchmark */}
+<div className="rounded-xl bg-surface-container-low p-space-lg shadow-md space-y-space-md">
+<div className="flex items-center justify-between">
+<div className="flex items-center gap-space-sm">
+<span className="material-symbols-outlined text-[20px] text-primary">event_available</span>
+<h2 className="font-headline-sm text-headline-sm font-semibold text-on-surface">Scheduled AI Mock</h2>
+</div>
+<span className="font-code-sm text-code-sm text-primary">Tomorrow</span>
+</div>
+<div className="p-space-md rounded-xl bg-surface-container flex flex-col gap-space-sm">
+<div className="flex items-start justify-between">
+<div>
+<span className="font-label-caps text-[10px] text-tertiary uppercase">L6 System Design</span>
+<h4 className="font-headline-sm text-[15px] font-semibold text-on-surface">Google Staff Level Architecture Simulation</h4>
+<p className="font-code-sm text-code-sm text-on-surface-variant mt-0.5">Focus: Global Video Transcoding at Scale</p>
+</div>
+<span className="px-space-xs py-1 rounded bg-surface-container-highest font-code-sm text-code-sm text-on-surface">10:00 AM PST</span>
+</div>
+<div className="pt-space-xs flex items-center justify-between">
+<span className="font-code-sm text-[11px] text-on-surface-variant flex items-center gap-1">
+<span className="material-symbols-outlined text-[14px]">videocam</span> 45-min Voice &amp; CoderPad AI
+              </span>
+<button className="px-space-md py-space-xs rounded-lg bg-primary hover:bg-primary-fixed text-on-primary font-body-sm text-body-sm font-medium transition-all shadow-sm">
+                Setup Environment
+              </button>
+</div>
+</div>
+{/* Peer Community Leaderboard Preview */}
+<div className="pt-space-xs flex items-center justify-between font-code-sm text-code-sm text-on-surface-variant">
+<div className="flex items-center gap-2">
+<span className="text-on-surface font-semibold">Weekly Rank: #14</span>
+<span>· Top 2% Staff Track</span>
+</div>
+<a className="text-tertiary hover:underline" href="#">View Leaderboard</a>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
 
-      const heatmapSquares = document.querySelectorAll('#heatmap-grid > div');
-      heatmapSquares.forEach(square => {
-        square.addEventListener('mouseenter', () => {
-          square.style.transform = 'scale(1.25)';
-          square.style.transition = 'transform 0.1s ease';
-          square.style.zIndex = '10';
-        });
-        square.addEventListener('mouseleave', () => {
-          square.style.transform = 'scale(1)';
-          square.style.zIndex = '1';
-        });
-      });
-    });
-  </script>
-</div></main></div>` }} 
-    />
+    </>
   );
 }
