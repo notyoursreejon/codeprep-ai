@@ -1,5 +1,10 @@
 "use client";
+import { useState } from "react";
+
 export default function IDEAndAISolverPage() {
+  const [activeTab, setActiveTab] = useState("Description");
+  const [drawerOpen, setDrawerOpen] = useState(true);
+
   return (
     <>
       <div className="flex flex-col w-full h-[calc(100vh-3.5rem)] overflow-hidden bg-surface-container-lowest">
@@ -54,7 +59,7 @@ export default function IDEAndAISolverPage() {
 <span>Submit</span>
 </button>
 {/* Toggle AI Drawer */}
-<button className="flex items-center gap-1 px-space-sm py-1.5 rounded-lg bg-secondary-container/40 text-on-secondary-container hover:bg-secondary-container/70 transition-colors font-code-sm text-code-sm ml-1" id="toggle-copilot-btn" title="Toggle AI Copilot" type="button">
+<button className="flex items-center gap-1 px-space-sm py-1.5 rounded-lg bg-secondary-container/40 text-on-secondary-container hover:bg-secondary-container/70 transition-colors font-code-sm text-code-sm ml-1" onClick={() => setDrawerOpen(!drawerOpen)} title="Toggle AI Copilot" type="button">
 <span className="material-symbols-outlined text-[17px] text-secondary">psychology</span>
 <span className="hidden xl:inline">AI Mentor</span>
 </button>
@@ -84,14 +89,14 @@ export default function IDEAndAISolverPage() {
 <span className="font-code-sm text-code-sm px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant font-medium">O(1) Space</span>
 </div>
 </div>
-{/* Problem Scrollable Description Body */}
+{activeTab === "Description" && (
 <div className="flex-1 overflow-y-auto p-gutter-lg flex flex-col gap-space-lg text-on-surface">
 <div className="flex flex-col gap-space-sm">
 <p className="font-body-md text-body-md leading-relaxed text-on-surface/90">
             Given <code className="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-surface-container-highest text-primary">n</code> non-negative integers representing an elevation map where the width of each bar is <code className="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-surface-container-highest text-primary">1</code>, compute how much water it can trap after raining.
           </p>
 </div>
-{/* Inline Visual Elevation Graphic (SVG representation of heights [0,1,0,2,1,0,1,3,2,1,2,1]) */}
+
 <div className="p-space-md rounded-xl bg-surface-container flex flex-col gap-space-xs shadow-inner">
 <div className="flex items-center justify-between text-on-surface-variant">
 <span className="font-label-caps text-label-caps uppercase text-outline">Elevation Cross-Section (Example 1)</span>
@@ -178,6 +183,10 @@ export default function IDEAndAISolverPage() {
 </div>
 </div>
 </div>
+)}
+{activeTab !== "Description" && (
+<div className="flex-1 p-space-lg text-on-surface-variant flex items-center justify-center font-code-sm">Content for {activeTab} coming soon...</div>
+)}
 </div>
 {/* CENTER PANE: Code Editor & Bottom Test Results Pane */}
 <div className="flex-1 flex flex-col min-w-0 bg-surface-container-lowest overflow-hidden">
@@ -333,7 +342,7 @@ export default function IDEAndAISolverPage() {
 <button className="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" title="Clear Conversation" type="button">
 <span className="material-symbols-outlined text-[16px]">clear_all</span>
 </button>
-<button className="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" id="close-drawer-btn" title="Minimize Drawer" type="button">
+<button className="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" onClick={() => setDrawerOpen(false)} title="Minimize Drawer" type="button">
 <span className="material-symbols-outlined text-[16px]">chevron_right</span>
 </button>
 </div>
@@ -411,6 +420,7 @@ export default function IDEAndAISolverPage() {
 </div>
 </div>
 </div>
+}
 </div>
 </div>
 
