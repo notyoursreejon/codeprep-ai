@@ -2,6 +2,9 @@
 
 > **Your AI for Coding, Programming & Technical Interviews.**
 
+![CodePrep AI Landing Page](public/assets/screenshots/home.png)
+![CodePrep AI Solver](public/assets/screenshots/solver.png)
+
 CodePrep AI is a comprehensive, production-ready SaaS platform built to help developers ace technical interviews. Whether you're grinding Data Structures & Algorithms, practicing System Design, or refining your behavioral stories, CodePrep AI provides a unified, AI-driven environment for mastering every aspect of the interview loop.
 
 ---
