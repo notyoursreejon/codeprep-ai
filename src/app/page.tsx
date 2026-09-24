@@ -1,1539 +1,1179 @@
-
 "use client";
-import { useEffect, useState } from "react";
-import Link from "next/link";
+import { useEffect } from "react";
 
-export default function Home() {
+export default function LandingPage() {
   
-  // Script functionality from the original HTML
-  const switchDemoTab = (tabId) => {
-    // Hide all panes
-    document.querySelectorAll('.demo-content-pane').forEach(pane => {
-      pane.classList.add('hidden');
-    });
-    // Remove active state from all tabs
-    document.querySelectorAll('.demo-tab-btn').forEach(btn => {
-      btn.classList.remove('bg-surface-container', 'text-white', 'font-medium');
-      btn.classList.add('text-outline');
-    });
-    // Show selected pane
-    document.getElementById('content-' + tabId).classList.remove('hidden');
-    // Set active state on selected tab
-    const activeTab = document.getElementById('tab-' + tabId);
-    activeTab.classList.remove('text-outline');
-    activeTab.classList.add('bg-surface-container', 'text-white', 'font-medium');
-  };
-
-  const toggleSimMic = () => {
-    const micIcon = document.getElementById('mic-icon');
-    const micText = document.getElementById('mic-text');
-    const waveform = document.getElementById('audio-waveform-bars');
-    const btn = document.getElementById('mic-trigger-btn');
+  // This is needed because the script tags inside dangerouslySetInnerHTML don't execute automatically in React
+  useEffect(() => {
+    const scriptRegex = /<script\b[^>]*>([\s\S]*?)<\/script>/gm;
+    let match;
+    const scripts = [];
     
-    if (micText.innerText === 'Push to Speak') {
-      micIcon.innerText = 'mic_off';
-      micIcon.classList.remove('text-error');
-      micIcon.classList.add('text-outline-variant');
-      micText.innerText = 'Muted';
-      btn.classList.add('opacity-50');
-      waveform.style.opacity = '0.3';
-    } else {
-      micIcon.innerText = 'mic';
-      micIcon.classList.remove('text-outline-variant');
-      micIcon.classList.add('text-error');
-      micText.innerText = 'Push to Speak';
-      btn.classList.remove('opacity-50');
-      waveform.style.opacity = '1';
+    // We extracted the raw HTML, now let's just let it be, 
+    // but React doesn't run scripts inside innerHTML. We need to manually eval them or append them.
+    const container = document.getElementById('landing-page-container');
+    if (container) {
+        const scriptTags = container.getElementsByTagName('script');
+        for (let i = 0; i < scriptTags.length; i++) {
+            const newScript = document.createElement('script');
+            if (scriptTags[i].src) {
+                newScript.src = scriptTags[i].src;
+            } else {
+                newScript.innerHTML = scriptTags[i].innerHTML;
+            }
+            document.body.appendChild(newScript);
+        }
     }
-  };
-
-  const cycleCandidateResponse = () => {
-    const textEl = document.getElementById('candidate-transcript-text');
-    const responses = [
-      '"We decouple the write quorum by electing regional follower-leases with monotonic epoch generation counters..."',
-      '"If the trans-Atlantic fiber drops, the US-East leader retains the lease while EU-Central falls back to serving stale reads..."',
-      '"To prevent split-brain during a symmetric partition, we rely on a Zookeeper ensemble deployed in a neutral 3rd region like AP-East..."'
-    ];
-    let currentIdx = responses.indexOf(textEl.innerText.trim());
-    let nextIdx = (currentIdx + 1) % responses.length;
-    
-    textEl.style.opacity = 0;
-    setTimeout(() => {
-      textEl.innerText = responses[nextIdx];
-      textEl.style.opacity = 1;
-    }, 200);
-  };
-
-  const handleChaosSlider = (val) => {
-    document.getElementById('slider-latency-val').innerText = val + ' ms';
-    const line = document.getElementById('wan-cable-line');
-    const latencyDisp = document.getElementById('wan-latency-display');
-    const euBox = document.getElementById('node-eu-box');
-    
-    latencyDisp.innerText = val + 'ms RTT';
-    
-    if (val > 250) {
-      line.classList.remove('bg-secondary', 'bg-tertiary');
-      line.classList.add('bg-error', 'animate-pulse');
-      latencyDisp.classList.add('text-error', 'border-error/50');
-      latencyDisp.classList.remove('text-white', 'border-outline-variant/30');
-      euBox.classList.add('border-error/50');
-    } else if (val > 100) {
-      line.classList.remove('bg-secondary', 'bg-error', 'animate-pulse');
-      line.classList.add('bg-tertiary');
-      latencyDisp.classList.remove('text-error', 'border-error/50');
-      latencyDisp.classList.add('text-white', 'border-outline-variant/30');
-      euBox.classList.remove('border-error/50');
-    } else {
-      line.classList.remove('bg-tertiary', 'bg-error', 'animate-pulse');
-      line.classList.add('bg-secondary');
-      latencyDisp.classList.remove('text-error', 'border-error/50');
-      latencyDisp.classList.add('text-white', 'border-outline-variant/30');
-      euBox.classList.remove('border-error/50');
-    }
-    
-    // update telemetry fake numbers
-    document.getElementById('p99-metric-text').innerText = (Math.max(12, val * 0.85)).toFixed(1) + ' ms';
-    
-    if (val > 600) {
-      document.getElementById('drop-rate-text').innerText = '14.20%';
-      document.getElementById('drop-rate-text').classList.add('text-error');
-      document.getElementById('drop-rate-text').classList.remove('text-white');
-    } else {
-      document.getElementById('drop-rate-text').innerText = '0.00%';
-      document.getElementById('drop-rate-text').classList.remove('text-error');
-      document.getElementById('drop-rate-text').classList.add('text-white');
-    }
-  };
-
-  const triggerFiberSever = () => {
-    const banner = document.getElementById('whiteboard-alert-banner');
-    const queueStatus = document.getElementById('queue-status-box');
-    const queueLag = document.getElementById('queue-lag-text');
-    const storageBox = document.getElementById('storage-status-box');
-    const storageLease = document.getElementById('storage-lease-text');
-    const btnText = document.getElementById('fiber-sever-text');
-    
-    if (banner.classList.contains('hidden')) {
-      // Trigger fault
-      banner.classList.remove('hidden');
-      queueStatus.classList.add('border', 'border-error/40', 'bg-error-container/20');
-      queueLag.classList.remove('text-secondary');
-      queueLag.classList.add('text-error');
-      queueLag.innerText = '48,209 msgs (Blocked)';
-      
-      storageBox.classList.add('border', 'border-tertiary/40', 'bg-tertiary-container/20');
-      storageLease.classList.remove('text-secondary');
-      storageLease.classList.add('text-tertiary');
-      storageLease.innerText = 'Lease Expired (Read-Only)';
-      
-      btnText.innerText = 'Reset Network Topology';
-    } else {
-      // Reset
-      banner.classList.add('hidden');
-      queueStatus.classList.remove('border', 'border-error/40', 'bg-error-container/20');
-      queueLag.classList.add('text-secondary');
-      queueLag.classList.remove('text-error');
-      queueLag.innerText = '14 msgs (Realtime)';
-      
-      storageBox.classList.remove('border', 'border-tertiary/40', 'bg-tertiary-container/20');
-      storageLease.classList.add('text-secondary');
-      storageLease.classList.remove('text-tertiary');
-      storageLease.innerText = 'Epoch #429 Verified';
-      
-      btnText.innerText = 'Simulate Severing Trans-Atlantic Fiber';
-    }
-  };
-
-  const injectSplitBrainFault = () => {
-    handleChaosSlider(800);
-    document.getElementById('latency-slider').value = 800;
-    document.getElementById('chaos-status-badge').innerText = 'CRITICAL: PARTITION DETECTED';
-    document.getElementById('chaos-status-badge').classList.replace('bg-secondary/10', 'bg-error/10');
-    document.getElementById('chaos-status-badge').classList.replace('text-secondary', 'text-error');
-    document.getElementById('chaos-status-badge').classList.replace('border-secondary/30', 'border-error/30');
-    
-    setTimeout(() => {
-      document.getElementById('chaos-status-badge').innerText = 'Leader Stable • Quorum Healthy';
-      document.getElementById('chaos-status-badge').classList.replace('bg-error/10', 'bg-secondary/10');
-      document.getElementById('chaos-status-badge').classList.replace('text-error', 'text-secondary');
-      document.getElementById('chaos-status-badge').classList.replace('border-error/30', 'border-secondary/30');
-      handleChaosSlider(45);
-      document.getElementById('latency-slider').value = 45;
-    }, 4000);
-  };
-
-  const filterCurriculum = (cat) => {
-    const btns = document.querySelectorAll('.curriculum-filter-btn');
-    btns.forEach(b => {
-      b.classList.remove('bg-surface-container-high', 'text-white', 'border-primary/40');
-      b.classList.add('bg-surface-container', 'text-outline', 'border-outline-variant/20');
-    });
-    
-    // Set active
-    const activeBtn = Array.from(btns).find(b => b.innerText.toLowerCase().includes(cat.split(' ')[0].toLowerCase()) || (cat === 'all' && b.innerText.includes('All')));
-    if (activeBtn) {
-      activeBtn.classList.remove('bg-surface-container', 'text-outline', 'border-outline-variant/20');
-      activeBtn.classList.add('bg-surface-container-high', 'text-white', 'border-primary/40');
-    }
-    
-    // Filter
-    const cards = document.querySelectorAll('.module-card');
-    cards.forEach(card => {
-      if (cat === 'all' || card.getAttribute('data-category').includes(cat)) {
-        card.style.display = 'flex';
-      } else {
-        card.style.display = 'none';
-      }
-    });
-  };
+  }, []);
 
   return (
-    <>
-      <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-      <div className="font-body-md text-on-surface antialiased bg-[#131315]">
-        
-
-<header className="fixed top-0 left-0 w-full z-50 bg-[#131315]/90 backdrop-blur-md border-b border-outline-variant/30">
-<div className="h-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
-
-<div className="flex items-center gap-6 shrink-0">
-<a className="flex items-center gap-2 group" href="#">
-<div className="w-8 h-8 rounded bg-surface-container-high border border-outline-variant/40 flex items-center justify-center font-label-mono-bold text-primary text-sm group-hover:border-primary/50 transition-colors">
-            &lt;/&gt;
+    <div 
+        id="landing-page-container"
+        className="min-h-screen bg-[#0e0e10] text-[#e5e1e4]" 
+        dangerouslySetInnerHTML={{ __html: `
+<!-- ========================================================================= -->
+<!-- 1. REFINED STICKY NAVBAR                                                  -->
+<!-- ========================================================================= -->
+<header class="fixed top-0 left-0 w-full z-50 bg-[#0e0e10]/90 backdrop-blur-md border-b border-outline-variant">
+<div class="max-w-[1400px] mx-auto h-14 px-4 sm:px-6 flex items-center justify-between gap-4">
+<!-- Brand & Version -->
+<div class="flex items-center gap-6">
+<a class="flex items-center gap-2.5 group" href="#">
+<div class="w-7 h-7 rounded border border-outline-variant bg-surface-container flex items-center justify-center font-mono text-xs font-bold text-primary group-hover:border-primary/50 transition-colors">
+            &gt;_
           </div>
-<div className="flex items-baseline gap-1.5">
-<span className="font-headline-sm font-semibold tracking-tight text-white text-base">CodePrep<span className="text-primary-accent">.ai</span></span>
-<span className="font-label-mono text-[10px] uppercase px-1.5 py-0.5 rounded bg-surface-container-high text-outline border border-outline-variant/30">v4.2-prod</span>
+<div class="flex items-center gap-2">
+<span class="font-geist font-bold text-sm tracking-tight text-on-surface">CodePrep<span class="text-primary font-mono">.ai</span></span>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-mono tracking-wider bg-surface-container-high text-on-surface-variant border border-outline-variant/60">v4.19-prod</span>
 </div>
 </a>
-
-<nav className="hidden lg:flex items-center gap-1 font-body-md text-sm">
-<a className="px-3 py-1.5 rounded text-on-surface-variant hover:text-white hover:bg-surface-container-high/60 transition-colors" href="/dashboard">Simulator</a>
-<a className="px-3 py-1.5 rounded text-on-surface-variant hover:text-white hover:bg-surface-container-high/60 transition-colors" href="#whiteboard">System Whiteboard</a>
-<a className="px-3 py-1.5 rounded text-on-surface-variant hover:text-white hover:bg-surface-container-high/60 transition-colors" href="#curriculum">Curriculum</a>
-<a className="px-3 py-1.5 rounded text-on-surface-variant hover:text-white hover:bg-surface-container-high/60 transition-colors" href="#examiners">AI Examiners</a>
-<a className="px-3 py-1.5 rounded text-on-surface-variant hover:text-white hover:bg-surface-container-high/60 transition-colors" href="#pricing">Pricing</a>
+<!-- Main Nav -->
+<nav class="hidden lg:flex items-center gap-1 font-geist text-xs">
+<a class="px-3 py-1.5 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="#product-showcase">Architecture Canvas</a>
+<a class="px-3 py-1.5 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="#fault-engine">Fault Engine</a>
+<a class="px-3 py-1.5 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="#bar-raiser">Live Bar-Raiser</a>
+<a class="px-3 py-1.5 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="#pricing">Pricing</a>
+<a class="px-3 py-1.5 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" href="#faq">FAQ</a>
 </nav>
 </div>
-
-<div className="flex items-center gap-3">
-
-<div className="hidden xl:flex items-center gap-2 px-2.5 py-1 rounded bg-surface-container-lowest border border-outline-variant/30 font-label-mono text-[11px] text-outline">
-<span className="w-1.5 h-1.5 rounded-full bg-secondary animate-ping"></span>
-<span className="text-on-surface-variant">Cluster SLA</span>
-<span className="text-secondary font-semibold">99.98%</span>
+<!-- Quick Metrics & Actions -->
+<div class="flex items-center gap-3">
+<div class="hidden md:flex items-center gap-2 px-2.5 py-1 rounded bg-surface-container-low border border-outline-variant text-[11px] font-mono text-outline">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span>us-east-1 chaos ring:</span>
+<span class="text-secondary font-medium">nom-idle</span>
 </div>
-
-<button className="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded bg-surface-container border border-outline-variant/30 text-on-surface-variant hover:text-white hover:border-outline transition-colors text-xs font-label-mono" id="cmd-palette-btn">
-<span className="material-symbols-outlined text-[14px]">terminal</span>
-<span>Quick Run</span>
-<kbd className="px-1.5 py-0.5 rounded bg-surface-container-highest text-[10px] text-outline font-label-mono">⌘K</kbd>
-</button>
-<a className="text-xs font-body-md text-on-surface-variant hover:text-white px-2 py-1.5 transition-colors" href="/login">Sign In</a>
-<a className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded bg-primary-container hover:bg-primary-accent text-on-primary hover:text-white font-label-mono-bold text-xs transition-all shadow-[0_2px_12px_rgba(128,131,255,0.25)] active:scale-[0.98]" href="/dashboard">
-<span className="material-symbols-outlined text-[15px]">power_settings_new</span>
+<a class="hidden sm:inline-flex text-xs font-mono text-on-surface-variant hover:text-on-surface px-2.5 py-1.5 transition-colors" href="#documentation">
+          Docs
+        </a>
+<a class="inline-flex items-center gap-2 px-3 py-1.5 rounded text-xs font-mono font-medium bg-on-surface text-surface-container-lowest hover:bg-white active:scale-95 transition-all shadow-sm" href="#hero-terminal">
 <span>Launch Sandbox</span>
-<span className="hidden md:inline font-label-mono text-[10px] opacity-75 ml-1 border-l border-on-primary/30 pl-1.5">G S</span>
+<kbd class="hidden sm:inline-block px-1.5 py-0.2 rounded bg-surface-container-lowest/15 border border-surface-container-lowest/30 text-[10px]">⌘K</kbd>
 </a>
 </div>
 </div>
 </header>
-<main className="w-full pt-16">
-
-<section className="relative border-b border-outline-variant/20 pt-12 pb-16 lg:pt-20 lg:pb-24 overflow-hidden">
-
-<div className="absolute inset-0 -z-10 opacity-[0.03]" style={{"backgroundImage":"linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)","backgroundSize":"32px 32px"}}></div>
-<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-<div className="max-w-4xl mx-auto text-center flex flex-col items-center">
-
-<div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container border border-outline-variant/40 text-xs font-label-mono text-on-surface-variant mb-6 hover:border-primary/40 transition-colors">
-<span className="w-1.5 h-1.5 rounded-full bg-secondary"></span>
-<span className="text-white font-medium">TELEMETRY CORE 4.2</span>
-<span className="text-outline">/</span>
-<span className="text-primary">L6/L7 Principal SWE Calibration Active</span>
-<span className="material-symbols-outlined text-[13px] text-outline">arrow_forward</span>
+<!-- ========================================================================= -->
+<!-- 2. AUTHENTIC DEVELOPER HERO SECTION                                      -->
+<!-- ========================================================================= -->
+<main class="w-full pt-14">
+<section class="relative border-b border-outline-variant bg-[#0e0e10] overflow-hidden">
+<!-- Grid Overlay -->
+<div class="absolute inset-0 grid-mesh opacity-40 pointer-events-none"></div>
+<div class="max-w-[1400px] mx-auto px-4 sm:px-6 pt-16 pb-20 relative">
+<!-- System Status Kicker -->
+<div class="inline-flex items-center gap-2.5 px-3 py-1 rounded border border-outline-variant bg-surface-container-low/70 mb-8 font-mono text-xs">
+<span class="inline-flex items-center gap-1.5 text-secondary">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span>
+</span>
+<span>Raft v2.4 Certified</span>
+</span>
+<span class="text-outline-variant">|</span>
+<span class="text-on-surface-variant">Deterministic L6/L7 Mock Arena</span>
+<span class="text-outline-variant hidden sm:inline">|</span>
+<span class="text-outline hidden sm:inline">P99 synthetic jitter &lt;14ms</span>
 </div>
-
-<h1 className="font-headline-lg text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.1] mb-6">
-            Where Staff Engineers Stress-Test System Design and Live Architecture.
+<!-- Main Headline -->
+<div class="max-w-4xl">
+<h1 class="font-geist font-bold text-3xl sm:text-5xl lg:text-6xl tracking-[-0.03em] text-on-surface leading-[1.08]">
+            The distributed systems &amp; interview arena for <span class="text-primary font-mono font-normal">&lt;Staff+&gt;</span> engineers.
           </h1>
-
-<p className="font-body-lg text-base sm:text-lg text-outline max-w-2xl leading-relaxed mb-8">
-            Autonomous synthetic bar-raisers, real-time distributed quorum simulators, and automated post-mortem telemetry. Built strictly for engineers targeting Senior, Staff, and Principal loops at top tier labs.
+<p class="mt-6 font-inter text-base sm:text-lg text-on-surface-variant max-w-2xl leading-relaxed">
+            Test your architecture against asymmetric WAN partitions, live Raft failovers, and rigorous synthetic FAANG bar-raisers before your real L6/L7 loop.
           </p>
-
-<div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-md">
-<a className="w-full sm:w-auto px-5 py-2.5 rounded bg-primary-container hover:bg-primary-accent text-on-primary hover:text-white font-label-mono-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(128,131,255,0.3)]" href="/dashboard">
-<span className="material-symbols-outlined text-[16px]">play_arrow</span>
-<span>Start Free Assessment</span>
+<!-- Dual CTAs & Telemetry -->
+<div class="mt-8 flex flex-wrap items-center gap-3 font-mono text-xs">
+<a class="px-5 py-3 rounded bg-primary text-surface-container-lowest font-semibold hover:bg-white active:scale-95 transition-all flex items-center gap-2" href="#product-showcase">
+<span class="material-symbols-outlined text-[16px]">play_arrow</span>
+<span>Launch Chaos Sandbox</span>
 </a>
-<a className="w-full sm:w-auto px-5 py-2.5 rounded bg-surface-container-high border border-outline-variant/50 text-white font-label-mono text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-surface-bright transition-colors" href="#whiteboard">
-<span className="material-symbols-outlined text-[16px]">schema</span>
-<span>Explore Chaos Canvas</span>
-</a>
-</div>
-
-<div className="mt-6 flex items-center gap-4 text-xs font-label-mono text-outline">
-<span className="flex items-center gap-1.5"><span className="material-symbols-outlined text-[14px] text-secondary">check_circle</span> No card required</span>
-<span className="text-outline-variant">•</span>
-<span className="flex items-center gap-1.5"><span className="material-symbols-outlined text-[14px] text-secondary">check_circle</span> Zero toy algorithms</span>
-<span className="text-outline-variant">•</span>
-<span className="flex items-center gap-1.5"><span className="material-symbols-outlined text-[14px] text-secondary">check_circle</span> Real distributed systems</span>
-</div>
-</div>
-
-<div className="mt-12 max-w-5xl mx-auto rounded-lg border border-outline-variant/40 bg-surface-container-lowest shadow-2xl overflow-hidden" id="simulator">
-
-<div className="bg-surface-container-low border-b border-outline-variant/30 px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
-<div className="flex items-center gap-2">
-<div className="flex items-center gap-1.5">
-<span className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]/80"></span>
-<span className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]/80"></span>
-<span className="w-2.5 h-2.5 rounded-full bg-[#27c93f]/80"></span>
-</div>
-<span className="ml-2 font-label-mono text-[11px] text-outline font-medium">SESSION #8829-US-WEST</span>
-</div>
-
-<div className="inline-flex rounded bg-surface-container-lowest p-0.5 border border-outline-variant/30 text-xs font-label-mono">
-<button className="demo-tab-btn px-3 py-1 rounded bg-surface-container text-white font-medium flex items-center gap-1.5 transition-all" id="tab-bar-raiser" onClick="switchDemoTab('bar-raiser')">
-<span className="material-symbols-outlined text-[14px] text-primary">record_voice_over</span>
-<span>Live FAANG Bar-Raiser</span>
-</button>
-<button className="demo-tab-btn px-3 py-1 rounded text-outline hover:text-white flex items-center gap-1.5 transition-all" id="tab-chaos-canvas" onClick="switchDemoTab('chaos-canvas')">
-<span className="material-symbols-outlined text-[14px] text-secondary">hub</span>
-<span>Distributed Chaos Canvas</span>
-</button>
-<button className="demo-tab-btn px-3 py-1 rounded text-outline hover:text-white flex items-center gap-1.5 transition-all" id="tab-ats-rubric" onClick="switchDemoTab('ats-rubric')">
-<span className="material-symbols-outlined text-[14px] text-tertiary">analytics</span>
-<span>ATS &amp; Rubric Deconstruct</span>
-</button>
-</div>
-
-<div className="flex items-center gap-2 font-label-mono text-[11px]">
-<span className="w-2 h-2 rounded-full bg-secondary"></span>
-<span className="text-secondary font-medium uppercase">SYNTHETIC INQUISITOR ONLINE</span>
-</div>
-</div>
-
-<div className="demo-content-pane grid grid-cols-1 lg:grid-cols-12 min-h-[460px]" id="content-bar-raiser">
-
-<div className="lg:col-span-7 p-5 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-outline-variant/20 bg-surface-container-lowest">
-<div className="space-y-4">
-
-<div className="flex items-center justify-between pb-3 border-b border-outline-variant/20">
-<div className="flex items-center gap-3">
-<div className="w-8 h-8 rounded bg-surface-container border border-outline-variant/40 flex items-center justify-center text-primary font-label-mono font-bold text-xs">
-                      AC
-                    </div>
-<div>
-<div className="text-xs font-semibold text-white">Dr. Alex Chen <span className="text-[10px] font-label-mono text-outline font-normal">• Synthetic L7 Principal Bar-Raiser</span></div>
-<div className="text-[11px] font-label-mono text-secondary">Probing: Distributed Consensus &amp; Split-Brain Recovery</div>
-</div>
-</div>
-<div className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface-container text-[11px] font-label-mono text-outline">
-<span className="material-symbols-outlined text-[13px] text-secondary">schedule</span>
-<span>T+18:42</span>
-</div>
-</div>
-
-<div className="p-3.5 rounded bg-surface-container/60 border border-outline-variant/30 text-xs leading-relaxed text-on-surface">
-<p className="font-medium text-white mb-1.5 flex items-center gap-1.5">
-<span className="material-symbols-outlined text-[14px] text-primary">psychology</span>
-                    Examiner Challenge:
-                  </p>
-                  "You're proposing synchronous Raft writes across US-East and EU-Central with a 220ms RTT. If the trans-Atlantic fiber experiences a 40% packet degradation, your p99 tail will skyrocket. How will your monotonic fencing tokens prevent stale writes without blocking incoming read replicas?"
-                </div>
-
-<div className="p-3 rounded bg-surface-container-low/80 border-l-2 border-primary text-xs space-y-1.5 font-label-mono">
-<div className="flex items-center justify-between text-[11px] text-outline">
-<span className="text-primary font-medium">Candidate Audio Stream [Transcription]:</span>
-<span>Confidence: 94.2%</span>
-</div>
-<p className="text-on-surface-variant leading-normal" id="candidate-transcript-text">
-                    "We decouple the write quorum by electing regional follower-leases with monotonic epoch generation counters. When a lease expires, we fall back to a pessimistic fencing token verified at the RocksDB storage engine layer before fsync commit..."
-                  </p>
-</div>
-</div>
-
-<div className="mt-4 pt-3 border-t border-outline-variant/20 flex items-center justify-between gap-3">
-<div className="flex items-center gap-2">
-<button className="px-3 py-1.5 rounded bg-surface-container-high hover:bg-surface-bright text-xs font-label-mono text-white flex items-center gap-1.5 border border-outline-variant/30 transition-colors" id="mic-trigger-btn" onClick="toggleSimMic()">
-<span className="material-symbols-outlined text-[15px] text-error" id="mic-icon">mic</span>
-<span id="mic-text">Push to Speak</span>
-</button>
-<button className="px-2.5 py-1.5 rounded bg-surface-container text-xs font-label-mono text-on-surface-variant hover:text-white transition-colors border border-outline-variant/20" onClick="cycleCandidateResponse()">
-                    Cycle Response
-                  </button>
-</div>
-
-<div className="flex items-center gap-1 h-5" id="audio-waveform-bars">
-<span className="w-1 h-2 rounded bg-primary/70 animate-pulse"></span>
-<span className="w-1 h-4 rounded bg-primary animate-bounce"></span>
-<span className="w-1 h-3 rounded bg-secondary animate-pulse"></span>
-<span className="w-1 h-5 rounded bg-secondary"></span>
-<span className="w-1 h-2 rounded bg-primary/60"></span>
-<span className="w-1 h-4 rounded bg-secondary animate-pulse"></span>
-<span className="w-1 h-1 rounded bg-outline"></span>
-</div>
-</div>
-</div>
-
-<div className="lg:col-span-5 p-5 bg-surface-container-low/40 flex flex-col justify-between">
-<div className="space-y-4">
-<div className="flex items-center justify-between pb-2 border-b border-outline-variant/20">
-<span className="font-label-mono-bold text-xs uppercase tracking-wider text-outline">Real-Time Rubric Telemetry</span>
-<span className="font-label-mono text-[11px] text-secondary font-semibold">L7 Staff SWE Benchmark</span>
-</div>
-
-<div className="space-y-2.5 font-label-mono text-xs">
-<div>
-<div className="flex justify-between text-[11px] mb-1">
-<span className="text-on-surface-variant">Consensus &amp; Partition Tolerance</span>
-<span className="text-secondary font-semibold">9.4 / 10.0</span>
-</div>
-<div className="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
-<div className="bg-secondary h-full rounded-full" style={{"width":"94%"}}></div>
-</div>
-</div>
-<div>
-<div className="flex justify-between text-[11px] mb-1">
-<span className="text-on-surface-variant">Latency vs Durability Trade-offs</span>
-<span className="text-primary font-semibold">8.9 / 10.0</span>
-</div>
-<div className="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
-<div className="bg-primary h-full rounded-full" style={{"width":"89%"}}></div>
-</div>
-</div>
-<div>
-<div className="flex justify-between text-[11px] mb-1">
-<span className="text-on-surface-variant">Biometric Composure &amp; Structure</span>
-<span className="text-tertiary font-semibold">91% Composed</span>
-</div>
-<div className="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
-<div className="bg-tertiary h-full rounded-full" style={{"width":"91%"}}></div>
-</div>
-</div>
-</div>
-
-<div className="p-3 rounded bg-surface-container-lowest border border-outline-variant/20 space-y-1.5">
-<div className="flex items-center justify-between font-label-mono text-[10px] text-outline uppercase">
-<span>Autonomous Scribe Event Log</span>
-<span className="text-secondary">Synced</span>
-</div>
-<ul className="font-label-mono text-[11px] space-y-1 text-on-surface-variant">
-<li className="flex items-center gap-1.5">
-<span className="text-secondary">✓</span> Candidate identified cross-DC WAN jitter bottleneck.
-                    </li>
-<li className="flex items-center gap-1.5">
-<span className="text-secondary">✓</span> Correctly applied monotonic fencing over 2-phase commit.
-                    </li>
-<li className="flex items-center gap-1.5 text-tertiary">
-<span className="text-tertiary">!</span> Reminder: Question durability of in-memory WAL buffers.
-                    </li>
-</ul>
-</div>
-</div>
-<div className="pt-3 border-t border-outline-variant/20 flex items-center justify-between text-xs font-label-mono text-outline">
-<span>Model: Claude-3.5-Sonnet-SWE-Spec</span>
-<span className="text-white font-medium">Session Score: 92/100</span>
-</div>
-</div>
-</div>
-
-<div className="demo-content-pane hidden p-6 bg-surface-container-lowest" id="content-chaos-canvas">
-<div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-<div className="lg:col-span-8 p-4 rounded bg-surface-container-low border border-outline-variant/30 space-y-4">
-<div className="flex items-center justify-between border-b border-outline-variant/20 pb-2">
-<div className="font-label-mono text-xs text-white flex items-center gap-2">
-<span className="material-symbols-outlined text-[15px] text-secondary">lan</span>
-<span>Active Multi-Region Raft Cluster (3 Nodes)</span>
-</div>
-<span className="font-label-mono text-[10px] uppercase px-2 py-0.5 rounded bg-secondary/10 text-secondary border border-secondary/30" id="chaos-status-badge">
-                    Leader Stable • Quorum Healthy
-                  </span>
-</div>
-
-<div className="relative h-44 rounded bg-surface-container-lowest border border-outline-variant/20 flex items-center justify-around px-4">
-
-<div className="flex flex-col items-center gap-1.5 z-10">
-<div className="w-12 h-12 rounded bg-surface-container-high border-2 border-secondary flex flex-col items-center justify-center font-label-mono text-xs text-white">
-<span className="text-[9px] text-secondary font-bold">NODE 01</span>
-<span className="text-[10px]">Leader</span>
-</div>
-<span className="font-label-mono text-[10px] text-outline">us-east-1a</span>
-</div>
-
-<div className="flex-1 h-[2px] mx-2 relative flex items-center justify-center">
-<div className="w-full h-full bg-secondary transition-colors duration-300" id="wan-cable-line"></div>
-<span className="absolute -top-4 font-label-mono text-[10px] bg-surface-container-high px-1.5 py-0.2 rounded border border-outline-variant/30 text-white" id="wan-latency-display">45ms RTT</span>
-</div>
-
-<div className="flex flex-col items-center gap-1.5 z-10">
-<div className="w-12 h-12 rounded bg-surface-container-high border border-outline-variant flex flex-col items-center justify-center font-label-mono text-xs text-white transition-all" id="node-eu-box">
-<span className="text-[9px] text-outline font-bold">NODE 02</span>
-<span className="text-[10px]">Follower</span>
-</div>
-<span className="font-label-mono text-[10px] text-outline">eu-central-1</span>
-</div>
-
-<div className="flex-1 h-[2px] mx-2 relative flex items-center justify-center">
-<div className="w-full h-full bg-outline-variant"></div>
-<span className="absolute -top-4 font-label-mono text-[10px] bg-surface-container-high px-1.5 py-0.2 rounded border border-outline-variant/30 text-outline">18ms</span>
-</div>
-
-<div className="flex flex-col items-center gap-1.5 z-10">
-<div className="w-12 h-12 rounded bg-surface-container-high border border-outline-variant flex flex-col items-center justify-center font-label-mono text-xs text-white">
-<span className="text-[9px] text-outline font-bold">NODE 03</span>
-<span className="text-[10px]">Follower</span>
-</div>
-<span className="font-label-mono text-[10px] text-outline">ap-east-1</span>
-</div>
-</div>
-
-<div className="pt-2 space-y-2">
-<div className="flex items-center justify-between text-xs font-label-mono">
-<span className="text-on-surface-variant">Induced Trans-Atlantic WAN Latency:</span>
-<span className="text-white font-bold" id="slider-latency-val">45 ms</span>
-</div>
-<input className="w-full h-1.5 bg-surface-container-highest rounded-lg appearance-none cursor-pointer accent-primary-accent" id="latency-slider" max="800" min="30" oninput="handleChaosSlider(this.value)" type="range" value="45"/>
-<div className="flex justify-between text-[10px] font-label-mono text-outline">
-<span>30ms (Nominal Fiber)</span>
-<span>250ms (Jitter)</span>
-<span>800ms (Total Partition Split)</span>
-</div>
-</div>
-</div>
-
-<div className="lg:col-span-4 p-4 rounded bg-surface-container-low border border-outline-variant/30 flex flex-col justify-between space-y-3">
-<div className="font-label-mono-bold text-xs uppercase tracking-wider text-outline">Cluster Telemetry</div>
-<div className="space-y-3 font-label-mono text-xs">
-<div className="p-2.5 rounded bg-surface-container-lowest border border-outline-variant/20">
-<div className="text-outline text-[10px] uppercase">P99 Replication Commit</div>
-<div className="text-lg font-bold text-secondary" id="p99-metric-text">38.4 ms</div>
-<div className="text-[10px] text-on-surface-variant mt-0.5">SLA: &lt; 150ms required</div>
-</div>
-<div className="p-2.5 rounded bg-surface-container-lowest border border-outline-variant/20">
-<div className="text-outline text-[10px] uppercase">Raft Heartbeat Drop Rate</div>
-<div className="text-lg font-bold text-white" id="drop-rate-text">0.00%</div>
-<div className="text-[10px] text-secondary mt-0.5">Zero split-brain events</div>
-</div>
-</div>
-<button className="w-full py-2 rounded bg-error-container/30 hover:bg-error-container/50 border border-error/40 text-error text-xs font-label-mono-bold flex items-center justify-center gap-1.5 transition-colors" onClick="injectSplitBrainFault()">
-<span className="material-symbols-outlined text-[15px]">flash_on</span>
-<span>Inject Sudden Network Partition</span>
+<button class="px-4 py-3 rounded border border-outline-variant bg-surface-container-low text-on-surface hover:bg-surface-container hover:border-outline transition-colors flex items-center gap-2" onclick="switchHeroTab('consensus')">
+<span class="material-symbols-outlined text-[16px] text-tertiary">emergency</span>
+<span>Inspect Incident #8829 (Split-Brain)</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high text-[10px] text-secondary">LIVE</span>
 </button>
 </div>
 </div>
+<!-- Interactive Hero Workspace Terminal Widget -->
+<div class="mt-12 rounded-lg border border-outline-variant bg-surface-container-lowest overflow-hidden shadow-2xl" id="hero-terminal">
+<!-- Terminal Header Bar -->
+<div class="px-4 py-2.5 bg-surface-container-low border-b border-outline-variant flex flex-wrap items-center justify-between gap-3">
+<div class="flex items-center gap-2">
+<div class="flex items-center gap-1.5 mr-2">
+<div class="w-2.5 h-2.5 rounded-full bg-[#3e3d45]"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-[#3e3d45]"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-[#3e3d45]"></div>
 </div>
-
-<div className="demo-content-pane hidden p-6 bg-surface-container-lowest" id="content-ats-rubric">
-<div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-<div className="lg:col-span-7 space-y-4">
-<div className="flex items-center justify-between border-b border-outline-variant/20 pb-2">
-<span className="font-label-mono text-xs text-outline uppercase font-medium">Candidate Resume Bullet Scan (L6/L7 Filter)</span>
-<span className="font-label-mono text-[11px] text-tertiary">Signal Level: Senior (Needs Staff Elevation)</span>
+<span class="font-mono text-xs text-outline">topology://cluster-west-az1.internal/repartition-test</span>
 </div>
-
-<div className="p-3.5 rounded bg-surface-container-low border border-error/30 space-y-1">
-<div className="flex items-center gap-1.5 text-error text-[11px] font-label-mono">
-<span className="material-symbols-outlined text-[13px]">close</span>
-<span>ORIGINAL CANDIDATE BULLET (Weak Staff Signal):</span>
-</div>
-<p className="text-xs text-on-surface-variant font-body-sm leading-relaxed">
-                    "Built a distributed event processing pipeline using Apache Kafka and Go to process millions of user events daily with high availability."
-                  </p>
-</div>
-<div className="p-3.5 rounded bg-surface-container-low border border-secondary/40 space-y-1">
-<div className="flex items-center gap-1.5 text-secondary text-[11px] font-label-mono">
-<span className="material-symbols-outlined text-[13px]">check</span>
-<span>CODEPREP ATS REWRITE (Staff L6+ Calibrated):</span>
-</div>
-<p className="text-xs text-white font-body-sm leading-relaxed">
-                    "Architected active-active Kafka event mesh across 3 AWS regions handling 14.8M ops/sec at p99 &lt; 24ms. Eliminated poison-pill deadlocks via monotonic dead-letter queue backpressure, saving $420k/yr in EC2 ingress."
-                  </p>
+<!-- Interactive Tab Selectors -->
+<div class="flex items-center p-0.5 bg-surface-container-lowest rounded border border-outline-variant font-mono text-xs">
+<button class="px-2.5 py-1 rounded bg-surface-container-high text-on-surface font-medium transition-colors" id="hero-tab-btn-arch" onclick="switchHeroTab('arch')">
+                System Topology
+              </button>
+<button class="px-2.5 py-1 rounded text-on-surface-variant hover:text-on-surface transition-colors" id="hero-tab-btn-consensus" onclick="switchHeroTab('consensus')">
+                Live Consensus Log
+              </button>
+<button class="px-2.5 py-1 rounded text-on-surface-variant hover:text-on-surface transition-colors" id="hero-tab-btn-rubric" onclick="switchHeroTab('rubric')">
+                L7 Bar-Raiser Rubric
+              </button>
 </div>
 </div>
-
-<div className="lg:col-span-5 p-4 rounded bg-surface-container-low border border-outline-variant/30 space-y-3 font-label-mono text-xs">
-<div className="font-label-mono-bold uppercase tracking-wider text-outline">ATS Staff Index Rubric</div>
-<div className="space-y-2">
-<div className="flex justify-between text-[11px]">
-<span className="text-on-surface-variant">Distributed Scale Metrics</span>
-<span className="text-secondary font-bold">96% Staff Bar</span>
-</div>
-<div className="w-full bg-surface-container-highest h-1 rounded-full">
-<div className="bg-secondary h-full rounded-full" style={{"width":"96%"}}></div>
-</div>
-<div className="flex justify-between text-[11px] pt-1">
-<span className="text-on-surface-variant">Cost &amp; Hardware Efficiency Impact</span>
-<span className="text-primary font-bold">92% Staff Bar</span>
-</div>
-<div className="w-full bg-surface-container-highest h-1 rounded-full">
-<div className="bg-primary h-full rounded-full" style={{"width":"92%"}}></div>
-</div>
-<div className="flex justify-between text-[11px] pt-1">
-<span className="text-on-surface-variant">Failure Domain Isolation</span>
-<span className="text-tertiary font-bold">88% Staff Bar</span>
-</div>
-<div className="w-full bg-surface-container-highest h-1 rounded-full">
-<div className="bg-tertiary h-full rounded-full" style={{"width":"88%"}}></div>
-</div>
-</div>
-<div className="pt-3 border-t border-outline-variant/20 text-[11px] text-outline leading-normal">
-                  FAANG recruiters filter resumes via keyword cluster graphs. CodePrep isolates the 14 precise architectural levers that trigger human recruiter outreach.
-                </div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-
-<section className="border-b border-outline-variant/20 py-8 bg-surface-container-lowest">
-<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-<div className="flex flex-col md:flex-row items-center justify-between gap-6">
-<div className="text-xs font-label-mono uppercase tracking-widest text-outline shrink-0">
-            Calibrated against L6/L7 Rubrics From
-          </div>
-<div className="flex flex-wrap items-center justify-center md:justify-end gap-8 md:gap-12 opacity-75 grayscale hover:grayscale-0 transition-all">
-
-<div className="font-headline-sm font-semibold tracking-tight text-white text-base flex items-center gap-1">
-<span>Google</span>
-<span className="font-label-mono text-[10px] text-outline">L6+</span>
-</div>
-
-<div className="font-headline-sm font-semibold tracking-tight text-white text-base flex items-center gap-1">
-<span>Meta</span>
-<span className="font-label-mono text-[10px] text-outline">E6/E7</span>
-</div>
-
-<div className="font-headline-sm font-semibold italic tracking-tight text-white text-base flex items-center gap-1">
-<span>stripe</span>
-<span className="font-label-mono text-[10px] text-outline not-italic">L4+</span>
-</div>
-
-<div className="font-headline-sm font-bold tracking-widest text-[#e50914] text-sm flex items-center gap-1">
-<span>NETFLIX</span>
-</div>
-
-<div className="font-headline-sm font-semibold tracking-tight text-white text-base flex items-center gap-1">
-<span>OpenAI</span>
-<span className="font-label-mono text-[10px] text-secondary">MTS</span>
-</div>
-
-<div className="font-headline-sm font-medium tracking-tight text-[#7742cf] text-base flex items-center gap-1">
-<span>Datadog</span>
-</div>
-</div>
-</div>
-</div>
-</section>
-
-<section className="py-20 border-b border-outline-variant/20">
-<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-<div className="max-w-3xl mb-12">
-<div className="text-xs font-label-mono text-primary uppercase tracking-widest mb-2 font-semibold">The Staff-Level Divide</div>
-<h2 className="font-headline-lg text-3xl sm:text-4xl font-bold text-white tracking-tight">
-            Why Solving 500 LeetCode Problems Fails at L6+ Interviews.
-          </h2>
-<p className="font-body-lg text-outline mt-3 text-base leading-relaxed">
-            Junior and Mid-level interviews test memorized pointer mechanics. Staff loops test distributed blast radius, asynchronous data consistency, and graceful degradation during network splits.
-          </p>
-</div>
-
-<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-<div className="p-6 rounded-lg bg-surface-container-lowest border border-error/20 flex flex-col justify-between space-y-6">
-<div className="space-y-4">
-<div className="flex items-center justify-between pb-3 border-b border-outline-variant/20">
-<span className="font-label-mono-bold text-xs uppercase text-error tracking-wide flex items-center gap-1.5">
-<span className="material-symbols-outlined text-[15px]">dangerous</span>
-                  Conventional Prep &amp; Toy LeetCode
+<!-- Tab Content Views -->
+<div class="p-4 sm:p-6 font-mono text-xs min-h-[340px]">
+<!-- View 1: Architecture Topology (Interactive Node Map) -->
+<div class="space-y-4" id="hero-view-arch">
+<div class="flex items-center justify-between text-outline text-[11px] pb-2 border-b border-outline-variant">
+<span>ACTIVE SHARDS: 3 REPLICAS (EPOCH 1482)</span>
+<span class="text-secondary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span> WAN JITTER: 1.2ms (STABLE)
                 </span>
-<span className="font-label-mono text-[11px] text-outline">Fails at Staff SWE</span>
 </div>
-<ul className="space-y-3 font-body-sm text-sm text-outline">
-<li className="flex items-start gap-2.5">
-<span className="material-symbols-outlined text-error text-[18px] shrink-0 mt-0.5">remove_circle_outline</span>
-<span><strong>In-memory isolation:</strong> Assumes zero disk failure, instant memory reads, and zero packet reordering.</span>
-</li>
-<li className="flex items-start gap-2.5">
-<span className="material-symbols-outlined text-error text-[18px] shrink-0 mt-0.5">remove_circle_outline</span>
-<span><strong>Silent passivity:</strong> Mock interviewers who passively nod at hand-wavy sentences like "we'll just use Redis".</span>
-</li>
-<li className="flex items-start gap-2.5">
-<span className="material-symbols-outlined text-error text-[18px] shrink-0 mt-0.5">remove_circle_outline</span>
-<span><strong>Zero CAP reality:</strong> Fails completely when asked: <em>"What happens to the Write-Ahead Log when the leader loses election mid-fsync?"</em></span>
-</li>
-</ul>
+<!-- Visual Node Graph -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-3 py-2">
+<!-- Node 1 -->
+<div class="p-3 rounded border border-outline-variant bg-surface-container-low flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between text-[11px] mb-1">
+<span class="text-on-surface font-semibold">Edge Ingress</span>
+<span class="text-secondary text-[10px]">HEALTHY</span>
 </div>
-<div className="p-3 rounded bg-surface-container-low font-label-mono text-xs text-outline border border-outline-variant/20">
-              Outcome: Down-leveled to Senior SWE (L5) with $140,000 lower annual equity grant.
-            </div>
+<p class="text-on-surface-variant text-[11px] font-mono">Envoy Proxy v1.28</p>
 </div>
-
-<div className="p-6 rounded-lg bg-surface-container border border-primary/40 flex flex-col justify-between space-y-6 shadow-[0_4px_24px_rgba(99,102,241,0.1)]">
-<div className="space-y-4">
-<div className="flex items-center justify-between pb-3 border-b border-outline-variant/20">
-<span className="font-label-mono-bold text-xs uppercase text-secondary tracking-wide flex items-center gap-1.5">
-<span className="material-symbols-outlined text-[15px]">verified</span>
-                  CodePrep Production Realism
-                </span>
-<span className="font-label-mono text-[11px] text-primary">L6/L7 Principal Calibration</span>
+<div class="mt-3 pt-2 border-t border-outline-variant/50 text-[10px] text-outline flex justify-between">
+<span>94,200 req/s</span>
+<span>p99: 4.1ms</span>
 </div>
-<ul className="space-y-3 font-body-sm text-sm text-on-surface">
-<li className="flex items-start gap-2.5">
-<span className="material-symbols-outlined text-secondary text-[18px] shrink-0 mt-0.5">check_circle</span>
-<span><strong>Multi-region Chaos Simulation:</strong> Live latency injection, simulated BGP flaps, and split-brain recovery harnesses.</span>
-</li>
-<li className="flex items-start gap-2.5">
-<span className="material-symbols-outlined text-secondary text-[18px] shrink-0 mt-0.5">check_circle</span>
-<span><strong>Aggressive Inquisitors:</strong> AI bar-raisers that interrupt vague abstractions and probe edge-case fencing tokens.</span>
-</li>
-<li className="flex items-start gap-2.5">
-<span className="material-symbols-outlined text-secondary text-[18px] shrink-0 mt-0.5">check_circle</span>
-<span><strong>Hardware &amp; Cost Calibration:</strong> Compute core counts, NVMe IOPS exhaustion, and cross-AZ egress bill modeling.</span>
-</li>
-</ul>
 </div>
-<div className="p-3 rounded bg-surface-container-high font-label-mono text-xs text-secondary border border-secondary/30">
-              Outcome: Solidified L6 Staff or L7 Principal hire offer with top-band negotiation leverage.
-            </div>
+<!-- Node 2 (Leader) -->
+<div class="p-3 rounded border border-primary/50 bg-surface-container flex flex-col justify-between relative">
+<div class="absolute -top-2 right-2 px-1.5 py-0.2 rounded bg-primary text-surface-container-lowest font-bold text-[9px]">
+                    RAFT LEADER
+                  </div>
+<div>
+<div class="flex items-center justify-between text-[11px] mb-1">
+<span class="text-on-surface font-semibold">Node-01 (us-west-1a)</span>
+</div>
+<p class="text-on-surface-variant text-[11px] font-mono">Term: 42 // State: Leader</p>
+</div>
+<div class="mt-3 pt-2 border-t border-outline-variant/50 text-[10px] text-primary flex justify-between">
+<span>Lease valid: 1,480ms</span>
+<span>Commit: #891,029</span>
+</div>
+</div>
+<!-- Node 3 (Follower) -->
+<div class="p-3 rounded border border-outline-variant bg-surface-container-low flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between text-[11px] mb-1">
+<span class="text-on-surface font-semibold">Node-02 (us-west-1b)</span>
+<span class="text-secondary text-[10px]">SYNCED</span>
+</div>
+<p class="text-on-surface-variant text-[11px] font-mono">Term: 42 // Follower</p>
+</div>
+<div class="mt-3 pt-2 border-t border-outline-variant/50 text-[10px] text-outline flex justify-between">
+<span>Lag: 0 entries</span>
+<span>Heartbeat: 42ms</span>
+</div>
+</div>
+<!-- Node 4 (Target for Chaos) -->
+<div class="p-3 rounded border border-dashed border-tertiary/60 bg-surface-container-low flex flex-col justify-between transition-all" id="sim-target-node">
+<div>
+<div class="flex items-center justify-between text-[11px] mb-1">
+<span class="text-on-surface font-semibold">Node-03 (us-west-1c)</span>
+<span class="text-tertiary text-[10px]" id="node3-status-badge">CANDIDATE TARGET</span>
+</div>
+<p class="text-on-surface-variant text-[11px] font-mono" id="node3-status-desc">Simulate 400ms packet drop</p>
+</div>
+<div class="mt-3 pt-2 border-t border-outline-variant/50 text-[10px] flex items-center justify-between">
+<span class="text-outline" id="node3-status-sub">Chaos Injector Ready</span>
+<button class="px-2 py-0.5 rounded bg-tertiary/20 text-tertiary hover:bg-tertiary hover:text-surface-container-lowest font-medium transition-colors text-[10px]" id="hero-chaos-btn" onclick="triggerHeroChaos()">
+                      Inject Partition
+                    </button>
+</div>
+</div>
+</div>
+<!-- Interactive Command Output -->
+<div class="p-3 rounded bg-surface-container-low border border-outline-variant text-[11px] text-on-surface-variant leading-relaxed font-mono">
+<span class="text-outline">\$ codeprep chaos-mesh --target=node-03 --mode=asymmetric-partition --delay=250ms</span><br/>
+<span class="text-secondary">&gt; [OK]</span> Cluster heartbeat ping active. Quorum 2/3 maintained across partition boundaries. Zero data write loss detected.
+              </div>
+</div>
+<!-- View 2: Live Consensus Logs (Hidden by default) -->
+<div class="hidden space-y-2" id="hero-view-consensus">
+<div class="text-[11px] text-outline pb-1 border-b border-outline-variant flex justify-between">
+<span>RAFT STREAM // COMMIT INDEX: 891029</span>
+<span class="text-primary font-mono">STRICT_ORDERED_ACID</span>
+</div>
+<div class="space-y-1.5 font-mono text-[11px] text-on-surface-variant">
+<div class="flex gap-2">
+<span class="text-outline">00:04:12.891</span>
+<span class="text-primary">[TERM 42]</span>
+<span class="text-on-surface">LEADER [Node-01] received ClientCommand(AppendTxId=0x98FF4A, payload_bytes=1024)</span>
+</div>
+<div class="flex gap-2">
+<span class="text-outline">00:04:12.894</span>
+<span class="text-secondary">[REPLICATION]</span>
+<span>AppendEntriesRPC dispatched to Node-02, Node-03. BatchID: #4019</span>
+</div>
+<div class="flex gap-2">
+<span class="text-outline">00:04:12.899</span>
+<span class="text-secondary">[QUORUM]</span>
+<span>Node-02 ACK received (RTT: 4.8ms). Majority consensus reached (2/3 replicas confirmed).</span>
+</div>
+<div class="flex gap-2 bg-surface-container p-1 rounded border-l-2 border-primary">
+<span class="text-outline">00:04:12.902</span>
+<span class="text-primary font-semibold">[COMMIT]</span>
+<span class="text-on-surface font-medium">Index 891029 applied to State Machine. Client write unlocked in 11ms.</span>
+</div>
+<div class="flex gap-2">
+<span class="text-outline">00:04:13.104</span>
+<span class="text-tertiary">[HEARTBEAT]</span>
+<span>Leader lease verified. Wall-clock drift: +0.02ms. Epoch valid.</span>
+</div>
+</div>
+</div>
+<!-- View 3: L7 Bar-Raiser Rubric (Hidden by default) -->
+<div class="hidden space-y-3 font-mono text-xs" id="hero-view-rubric">
+<div class="flex items-center justify-between pb-2 border-b border-outline-variant">
+<span class="text-on-surface font-semibold">FAANG Staff (L6/L7) System Design Grading Matrix</span>
+<span class="text-secondary font-bold">CURRENT SCORE: 9.4 / 10</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+<div class="p-2.5 rounded bg-surface-container-low border border-outline-variant">
+<div class="text-outline text-[10px] uppercase">Distributed Consensus</div>
+<div class="text-sm font-bold text-on-surface mt-1">Exceeds Bar</div>
+<p class="text-[11px] text-on-surface-variant mt-1 font-inter">Identified split-brain split condition, implemented generational fencing tokens immediately.</p>
+</div>
+<div class="p-2.5 rounded bg-surface-container-low border border-outline-variant">
+<div class="text-outline text-[10px] uppercase">Backpressure &amp; Capacity</div>
+<div class="text-sm font-bold text-on-surface mt-1">Meets Bar (L6)</div>
+<p class="text-[11px] text-on-surface-variant mt-1 font-inter">Calculated write bandwidth accurately at 48k rps. Proactively added leaky-bucket rate limiting.</p>
+</div>
+<div class="p-2.5 rounded bg-surface-container-low border border-outline-variant">
+<div class="text-outline text-[10px] uppercase">Failure Mode Enumeration</div>
+<div class="text-sm font-bold text-primary mt-1">Staff+ Exceptional</div>
+<p class="text-[11px] text-on-surface-variant mt-1 font-inter">Analyzed asymmetric network partitions where node drops write acks but retains read heartbeats.</p>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 </section>
-
-<section className="py-20 border-b border-outline-variant/20 bg-surface-container-lowest" id="whiteboard">
-<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-<div className="flex flex-col lg:flex-row lg:items-end justify-between mb-10 gap-4">
+<!-- ========================================================================= -->
+<!-- 3. VERIFIED PRODUCTION CREDIBILITY (Proof without fake logos)             -->
+<!-- ========================================================================= -->
+<section class="border-b border-outline-variant bg-surface-container-lowest py-8">
+<div class="max-w-[1400px] mx-auto px-4 sm:px-6">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+<div class="max-w-xs">
+<p class="text-xs font-mono uppercase tracking-wider text-outline">Deterministic Engine</p>
+<h4 class="font-geist text-sm font-semibold text-on-surface mt-0.5">Engineered to mirror real-world production incidents at scale</h4>
+</div>
+<!-- Telemetry Strip -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 flex-1 max-w-4xl">
+<div class="p-3 rounded border border-outline-variant bg-surface-container-low">
+<span class="text-xs font-mono text-outline">Stress Injection</span>
+<div class="font-mono text-lg font-bold text-on-surface mt-0.5">48,000 rps</div>
+<span class="text-[11px] text-secondary font-mono">Sustained failover loops</span>
+</div>
+<div class="p-3 rounded border border-outline-variant bg-surface-container-low">
+<span class="text-xs font-mono text-outline">Interviewer Latency</span>
+<div class="font-mono text-lg font-bold text-primary mt-0.5">&lt;140ms</div>
+<span class="text-[11px] text-on-surface-variant font-mono">Full speech-to-speech</span>
+</div>
+<div class="p-3 rounded border border-outline-variant bg-surface-container-low">
+<span class="text-xs font-mono text-outline">Raft State Verification</span>
+<div class="font-mono text-lg font-bold text-secondary mt-0.5">100%</div>
+<span class="text-[11px] text-secondary font-mono">Deterministic log replay</span>
+</div>
+<div class="p-3 rounded border border-outline-variant bg-surface-container-low">
+<span class="text-xs font-mono text-outline">ACID Consistency</span>
+<div class="font-mono text-lg font-bold text-tertiary mt-0.5">Zero Loss</div>
+<span class="text-[11px] text-on-surface-variant font-mono">Jepsen-style assertion</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 4. INTERACTIVE PRODUCT SHOWCASE (Tabbed Dual-Pane Workspace)              -->
+<!-- ========================================================================= -->
+<section class="py-20 border-b border-outline-variant bg-surface" id="product-showcase">
+<div class="max-w-[1400px] mx-auto px-4 sm:px-6">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
 <div>
-<div className="text-xs font-label-mono text-secondary uppercase tracking-widest mb-2 font-semibold">Active Interactive Canvas</div>
-<h2 className="font-headline-lg text-3xl font-bold text-white tracking-tight">
-              Interactive System Design Whiteboard
+<span class="font-mono text-xs uppercase tracking-wider text-primary">Core Interactive Tooling</span>
+<h2 class="font-geist text-2xl sm:text-3xl font-bold tracking-tight text-on-surface mt-1">
+              Production Simulator &amp; Bar-Raiser Sandbox
             </h2>
-<p className="font-body-md text-outline mt-1 text-sm">
-              Live components with real state propagation: Envoy Ingress, Kafka Streams, and RocksDB stateful nodes.
-            </p>
 </div>
-
-<div className="flex items-center gap-3">
-<button className="px-3.5 py-2 rounded bg-surface-container border border-outline-variant/40 hover:border-error/60 text-xs font-label-mono text-white flex items-center gap-2 transition-colors" id="fiber-sever-btn" onClick="triggerFiberSever()">
-<span className="material-symbols-outlined text-error text-[16px]">cable</span>
-<span id="fiber-sever-text">Simulate Severing Trans-Atlantic Fiber</span>
+<!-- Mode Tabs -->
+<div class="flex items-center p-1 bg-surface-container-low rounded border border-outline-variant font-mono text-xs overflow-x-auto">
+<button class="px-3 py-1.5 rounded bg-surface-container-high text-on-surface font-medium whitespace-nowrap transition-colors" id="showcase-tab-0" onclick="switchShowcaseTab(0)">
+              1. Whiteboard &amp; Chaos Injector
+            </button>
+<button class="px-3 py-1.5 rounded text-on-surface-variant hover:text-on-surface whitespace-nowrap transition-colors" id="showcase-tab-1" onclick="switchShowcaseTab(1)">
+              2. Disaster Recovery Scrubber
+            </button>
+<button class="px-3 py-1.5 rounded text-on-surface-variant hover:text-on-surface whitespace-nowrap transition-colors" id="showcase-tab-2" onclick="switchShowcaseTab(2)">
+              3. Synthetic Bar-Raiser Arena
+            </button>
+</div>
+</div>
+<!-- Showcase Dual-Pane Container -->
+<div class="rounded-lg border border-outline-variant bg-surface-container-lowest overflow-hidden shadow-xl">
+<!-- Pane View 0: System Design Whiteboard & Chaos Injector -->
+<div class="grid grid-cols-1 lg:grid-cols-12 min-h-[500px]" id="showcase-pane-0">
+<!-- Left Canvas Area (Cols 8) -->
+<div class="lg:col-span-8 p-6 border-b lg:border-b-0 lg:border-r border-outline-variant blueprint-dot flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between font-mono text-xs text-outline pb-4 mb-6 border-b border-outline-variant">
+<span class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>CANVAS: Video Streaming Edge Architecture (Netflix L7 benchmark)</span>
+</span>
+<span class="text-on-surface-variant">Active nodes: 6 // QPS: 120,000</span>
+</div>
+<!-- Interactive Service Topology Nodes -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 my-6">
+<!-- Ingress Column -->
+<div class="space-y-3">
+<div class="text-[11px] font-mono text-outline">01. INGRESS TIER</div>
+<div class="p-3 rounded border border-outline-variant bg-surface-container-low font-mono text-xs">
+<div class="font-bold text-on-surface">Cloudflare Anycast</div>
+<div class="text-[11px] text-outline mt-1">DDoS Layer 7 Scrubbing</div>
+<div class="mt-2 text-[10px] text-secondary">TTL 300s | Geo-routed</div>
+</div>
+<div class="p-3 rounded border border-outline-variant bg-surface-container-low font-mono text-xs">
+<div class="font-bold text-on-surface">Envoy Proxy Mesh</div>
+<div class="text-[11px] text-outline mt-1">gRPC mTLS termination</div>
+<div class="mt-2 text-[10px] text-secondary">Active Connections: 34k</div>
+</div>
+</div>
+<!-- Compute / Processing Column -->
+<div class="space-y-3">
+<div class="text-[11px] font-mono text-outline">02. COMPUTE TIER</div>
+<div class="p-3 rounded border border-outline-variant bg-surface-container-low font-mono text-xs transition-all" id="transcode-cluster-node">
+<div class="font-bold text-on-surface">Transcode Cluster</div>
+<div class="text-[11px] text-outline mt-1">FFmpeg GPU Workers</div>
+<div class="mt-2 text-[10px] text-secondary" id="transcode-status">Auto-scaled: 48 Pods</div>
+</div>
+<div class="p-3 rounded border border-outline-variant bg-surface-container-low font-mono text-xs">
+<div class="font-bold text-on-surface">Metadata Engine</div>
+<div class="text-[11px] text-outline mt-1">In-Memory Redis Shards</div>
+<div class="mt-2 text-[10px] text-secondary">Hit Ratio: 99.4%</div>
+</div>
+</div>
+<!-- Storage / Event Log Column -->
+<div class="space-y-3">
+<div class="text-[11px] font-mono text-outline">03. PERSISTENCE TIER</div>
+<div class="p-3 rounded border border-outline-variant bg-surface-container-low font-mono text-xs transition-all" id="kafka-partition-node">
+<div class="font-bold text-on-surface">Kafka Log Bus</div>
+<div class="text-[11px] text-outline mt-1">Append-only Event Log</div>
+<div class="mt-2 text-[10px] text-secondary" id="kafka-status">ISR: 3/3 Replicas</div>
+</div>
+<div class="p-3 rounded border border-outline-variant bg-surface-container-low font-mono text-xs">
+<div class="font-bold text-on-surface">S3 Data Lake</div>
+<div class="text-[11px] text-outline mt-1">Object Store (Chunks)</div>
+<div class="mt-2 text-[10px] text-secondary">Erasure Coded 8+4</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Interactive Chaos Action Bar -->
+<div class="pt-4 border-t border-outline-variant flex flex-wrap items-center justify-between gap-3">
+<div class="font-mono text-xs text-on-surface-variant">
+<span class="text-outline">Active Scenario:</span> Regional Fiber Severance (us-east to us-west)
+                </div>
+<div class="flex items-center gap-2">
+<button class="px-3 py-1.5 rounded bg-surface-container-high text-xs font-mono text-on-surface-variant hover:text-on-surface transition-colors" id="chaos-reset-btn" onclick="resetChaosSimulation()">
+                    Reset
+                  </button>
+<button class="px-4 py-1.5 rounded bg-error text-xs font-mono font-semibold text-surface-container-lowest hover:bg-white active:scale-95 transition-all flex items-center gap-1.5" id="chaos-trigger-btn" onclick="runSplitBrainChaos()">
+<span class="material-symbols-outlined text-[16px]">bolt</span>
+<span>Simulate Split-Brain WAN Cut</span>
 </button>
 </div>
 </div>
-
-<div className="rounded-lg border border-outline-variant/30 bg-surface-container p-6 relative overflow-hidden">
-<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-<div className="p-4 rounded bg-surface-container-low border border-outline-variant/30 space-y-3">
-<div className="flex items-center justify-between text-xs font-label-mono">
-<span className="text-primary font-bold">01 / EDGE INGRESS</span>
-<span className="px-1.5 py-0.5 rounded bg-surface-container-high text-[10px] text-outline">Envoy Proxy</span>
 </div>
-<p className="text-xs text-on-surface-variant font-body-sm">
-                BGP Anycast routing with TLS termination and token-bucket rate limiters configured at 50,000 req/sec per edge node.
-              </p>
-<div className="p-2 rounded bg-surface-container-lowest font-label-mono text-[11px] text-outline flex justify-between">
-<span>Ingress Jitter:</span>
-<span className="text-white font-medium">1.2ms (Healthy)</span>
-</div>
-</div>
-
-<div className="p-4 rounded bg-surface-container-low border border-outline-variant/30 space-y-3">
-<div className="flex items-center justify-between text-xs font-label-mono">
-<span className="text-secondary font-bold">02 / EVENT LOG QUEUE</span>
-<span className="px-1.5 py-0.5 rounded bg-surface-container-high text-[10px] text-outline">Kafka / Pulsar</span>
-</div>
-<p className="text-xs text-on-surface-variant font-body-sm">
-                Multi-partition distributed topic with strict ISR (In-Sync Replicas) = 3 and idempotent producer tokens.
-              </p>
-<div className="p-2 rounded bg-surface-container-lowest font-label-mono text-[11px] flex justify-between" id="queue-status-box">
-<span className="text-outline">Topic Lag:</span>
-<span className="text-secondary font-medium" id="queue-lag-text">14 msgs (Realtime)</span>
-</div>
-</div>
-
-<div className="p-4 rounded bg-surface-container-low border border-outline-variant/30 space-y-3">
-<div className="flex items-center justify-between text-xs font-label-mono">
-<span className="text-tertiary font-bold">03 / STORAGE FENCING</span>
-<span className="px-1.5 py-0.5 rounded bg-surface-container-high text-[10px] text-outline">Cockroach / RocksDB</span>
-</div>
-<p className="text-xs text-on-surface-variant font-body-sm">
-                Monotonic epoch generation numbers to reject stale leaseholders during asymmetric network splits.
-              </p>
-<div className="p-2 rounded bg-surface-container-lowest font-label-mono text-[11px] flex justify-between" id="storage-status-box">
-<span className="text-outline">Lease State:</span>
-<span className="text-secondary font-medium" id="storage-lease-text">Epoch #429 Verified</span>
-</div>
-</div>
-</div>
-
-<div className="hidden mt-6 p-3 rounded bg-error-container/20 border border-error/50 flex items-center justify-between text-xs font-label-mono text-error" id="whiteboard-alert-banner">
-<div className="flex items-center gap-2">
-<span className="material-symbols-outlined text-[18px]">warning</span>
-<span>FAULT INJECTED: US-East &lt;--&gt; EU-Central Fiber Severed. Quorum degraded to 2/3. Dead-Letter-Queue engaged!</span>
-</div>
-<button className="text-[11px] underline text-white hover:text-error transition-colors" onClick="triggerFiberSever()">Reset Topology</button>
-</div>
-</div>
-</div>
-</section>
-
-<section className="py-20 border-b border-outline-variant/20" id="curriculum">
-<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-<div className="max-w-3xl mb-10">
-<div className="text-xs font-label-mono text-primary uppercase tracking-widest mb-2 font-semibold">Specialized Modules</div>
-<h2 className="font-headline-lg text-3xl font-bold text-white tracking-tight">
-            Curriculum Engineered for Staff &amp; Principal SWEs.
-          </h2>
-<p className="font-body-md text-outline mt-2 text-sm">
-            Zero beginner recursion. High-stakes scenarios built on actual production outages and real frontier architectures.
-          </p>
-</div>
-
-<div className="flex flex-wrap gap-2 mb-8 font-label-mono text-xs">
-<button className="curriculum-filter-btn px-3 py-1.5 rounded bg-surface-container-high text-white border border-primary/40" onClick="filterCurriculum('all')">All Tracks (18)</button>
-<button className="curriculum-filter-btn px-3 py-1.5 rounded bg-surface-container text-outline hover:text-white border border-outline-variant/20" onClick="filterCurriculum('infra')">Distributed Systems &amp; Infra</button>
-<button className="curriculum-filter-btn px-3 py-1.5 rounded bg-surface-container text-outline hover:text-white border border-outline-variant/20" onClick="filterCurriculum('staff')">Staff Systems Architecture</button>
-<button className="curriculum-filter-btn px-3 py-1.5 rounded bg-surface-container text-outline hover:text-white border border-outline-variant/20" onClick="filterCurriculum('ingest')">High-Throughput Ingestion</button>
-<button className="curriculum-filter-btn px-3 py-1.5 rounded bg-surface-container text-outline hover:text-white border border-outline-variant/20" onClick="filterCurriculum('consensus')">Security &amp; Consensus</button>
-</div>
-
-<div className="grid grid-cols-1 md:grid-cols-3 gap-6" id="curriculum-grid">
-
-<div className="module-card p-5 rounded-lg bg-surface-container-lowest border border-outline-variant/30 flex flex-col justify-between space-y-4 hover:border-primary/50 transition-colors" data-category="infra consensus">
-<div className="space-y-2.5">
-<div className="flex items-center justify-between font-label-mono text-[11px] text-outline">
-<span className="text-primary font-semibold">MODULE 01</span>
-<span>120 Mins • 4.9 ★</span>
-</div>
-<h3 className="font-headline-sm text-base font-bold text-white leading-snug">
-                Multi-Region Active-Active CockroachDB Quorum &amp; Asymmetric Splits
-              </h3>
-<p className="font-body-sm text-xs text-outline leading-relaxed">
-                Design cross-continental data pipelines with local write quorums, dealing with write skew anomalies under Raft lease changes.
-              </p>
-</div>
-<div className="pt-3 border-t border-outline-variant/20 flex items-center justify-between font-label-mono text-[11px]">
-<span className="text-on-surface-variant">Bar: Google L6 / Meta E6</span>
-<a className="text-primary hover:underline flex items-center gap-0.5" href="/dashboard">Start Drill <span className="material-symbols-outlined text-[13px]">arrow_forward</span></a>
-</div>
-</div>
-
-<div className="module-card p-5 rounded-lg bg-surface-container-lowest border border-outline-variant/30 flex flex-col justify-between space-y-4 hover:border-secondary/50 transition-colors" data-category="ingest staff">
-<div className="space-y-2.5">
-<div className="flex items-center justify-between font-label-mono text-[11px] text-outline">
-<span className="text-secondary font-semibold">MODULE 02</span>
-<span>90 Mins • 4.8 ★</span>
-</div>
-<h3 className="font-headline-sm text-base font-bold text-white leading-snug">
-                Real-Time Video Transcoding Mesh with Edge QUIC Ingestion
-              </h3>
-<p className="font-body-sm text-xs text-outline leading-relaxed">
-                Architect high-volume chunking buffers with zero head-of-line blocking, eBPF packet routing, and dynamic GPU pool auto-scaling.
-              </p>
-</div>
-<div className="pt-3 border-t border-outline-variant/20 flex items-center justify-between font-label-mono text-[11px]">
-<span className="text-on-surface-variant">Bar: Netflix Senior / Meta E6</span>
-<a className="text-secondary hover:underline flex items-center gap-0.5" href="/dashboard">Start Drill <span className="material-symbols-outlined text-[13px]">arrow_forward</span></a>
-</div>
-</div>
-
-<div className="module-card p-5 rounded-lg bg-surface-container-lowest border border-outline-variant/30 flex flex-col justify-between space-y-4 hover:border-tertiary/50 transition-colors" data-category="infra ingest">
-<div className="space-y-2.5">
-<div className="flex items-center justify-between font-label-mono text-[11px] text-outline">
-<span className="text-tertiary font-semibold">MODULE 03</span>
-<span>150 Mins • 5.0 ★</span>
-</div>
-<h3 className="font-headline-sm text-base font-bold text-white leading-snug">
-                10M TPS Distributed Financial Ledger with Idempotent Deduplication
-              </h3>
-<p className="font-body-sm text-xs text-outline leading-relaxed">
-                Build strict double-entry balance sheets with deterministic monotonic transaction IDs, distributed two-phase commit, and zero double-spend risks.
-              </p>
-</div>
-<div className="pt-3 border-t border-outline-variant/20 flex items-center justify-between font-label-mono text-[11px]">
-<span className="text-on-surface-variant">Bar: Stripe L4 / OpenAI MTS</span>
-<a className="text-tertiary hover:underline flex items-center gap-0.5" href="/dashboard">Start Drill <span className="material-symbols-outlined text-[13px]">arrow_forward</span></a>
-</div>
-</div>
-</div>
-</div>
-</section>
-
-<section className="py-20 border-b border-outline-variant/20 bg-surface-container-lowest" id="examiners">
-<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-<div className="max-w-3xl mb-12">
-<div className="text-xs font-label-mono text-tertiary uppercase tracking-widest mb-2 font-semibold">AI Bar-Raiser Personas</div>
-<h2 className="font-headline-lg text-3xl font-bold text-white tracking-tight">
-            Practice Against Calibrated Technical Archetypes.
-          </h2>
-<p className="font-body-md text-outline mt-2 text-sm">
-            Not friendly conversational bots. These synthetic bar-raisers are calibrated to reflect the exact personalities and pressure tactics of real Big Tech hiring committees.
-          </p>
-</div>
-<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-<div className="p-5 rounded-lg bg-surface-container border border-outline-variant/30 space-y-4">
-<div className="flex items-center gap-3">
-<div className="w-10 h-10 rounded bg-primary-container/20 border border-primary/40 flex items-center justify-center font-label-mono font-bold text-primary text-sm">
-                AC
-              </div>
+<!-- Right Telemetry Panel (Cols 4) -->
+<div class="lg:col-span-4 p-6 bg-surface-container-low font-mono text-xs flex flex-col justify-between">
 <div>
-<h3 className="font-headline-sm text-sm font-bold text-white">Alex Chen, Ph.D.</h3>
-<div className="text-[11px] font-label-mono text-outline">Principal Infrastructure Architect</div>
+<div class="flex items-center justify-between pb-3 border-b border-outline-variant mb-4">
+<span class="font-semibold text-on-surface">FAILOVER TELEMETRY</span>
+<span class="text-secondary text-[11px]" id="telemetry-indicator">ALL_SYSTEMS_NOMINAL</span>
 </div>
-</div>
-<div className="space-y-2 text-xs">
-<div className="font-label-mono text-[11px] text-primary">Style: Relentless on Failure Modes</div>
-<p className="text-on-surface-variant leading-relaxed font-body-sm">
-                Probes deeply into Paxos split-brains, monotonic clock skews, and disk sector corruption. Will interrupt the moment you hand-wave distributed state.
-              </p>
-</div>
-<div className="pt-2 border-t border-outline-variant/20 font-label-mono text-[10px] text-outline">
-              Typical Question: <em>"Show me your leader election fencing token logic."</em>
-</div>
-</div>
-
-<div className="p-5 rounded-lg bg-surface-container border border-outline-variant/30 space-y-4">
-<div className="flex items-center gap-3">
-<div className="w-10 h-10 rounded bg-secondary-container/20 border border-secondary/40 flex items-center justify-center font-label-mono font-bold text-secondary text-sm">
-                SL
-              </div>
+<div class="space-y-3 text-[11px]">
 <div>
-<h3 className="font-headline-sm text-sm font-bold text-white">Sarah Lin</h3>
-<div className="text-[11px] font-label-mono text-outline">VP of Cloud Architecture</div>
+<div class="text-outline mb-1">CIRCUIT BREAKER STATUS:</div>
+<div class="p-2 rounded bg-surface-container text-secondary font-medium" id="circuit-breaker-val">CLOSED (Traffic Allowed 100%)</div>
 </div>
-</div>
-<div className="space-y-2 text-xs">
-<div className="font-label-mono text-[11px] text-secondary">Style: Cost, Blast Radius &amp; Hardware</div>
-<p className="text-on-surface-variant leading-relaxed font-body-sm">
-                Forces you to calculate real AWS bill egress numbers, NVMe IOPS limits, cross-region bandwidth saturation, and long-term operating expenditure.
-              </p>
-</div>
-<div className="pt-2 border-t border-outline-variant/20 font-label-mono text-[10px] text-outline">
-              Typical Question: <em>"That replication topology will burn $1.2M/mo in WAN egress. Redesign it."</em>
-</div>
-</div>
-
-<div className="p-5 rounded-lg bg-surface-container border border-outline-variant/30 space-y-4">
-<div className="flex items-center gap-3">
-<div className="w-10 h-10 rounded bg-tertiary-container/20 border border-tertiary/40 flex items-center justify-center font-label-mono font-bold text-tertiary text-sm">
-                MV
-              </div>
 <div>
-<h3 className="font-headline-sm text-sm font-bold text-white">Marcus Vance</h3>
-<div className="text-[11px] font-label-mono text-outline">Staff Reliability Lead (SRE)</div>
+<div class="text-outline mb-1">PARTITION BUFFER BACKPRESSURE:</div>
+<div class="w-full bg-surface-container rounded h-2 overflow-hidden">
+<div class="bg-secondary h-full transition-all duration-300" id="buffer-progress" style="width: 14%;"></div>
 </div>
+<div class="text-right text-[10px] text-outline mt-1" id="buffer-text">14% (12MB / 100MB)</div>
 </div>
-<div className="space-y-2 text-xs">
-<div className="font-label-mono text-[11px] text-tertiary">Style: Post-Mortems &amp; Thundering Herds</div>
-<p className="text-on-surface-variant leading-relaxed font-body-sm">
-                Tests cascading retries, cache stampedes, circuit breakers, and degraded read-only modes under catastrophic multi-rack power outages.
-              </p>
-</div>
-<div className="pt-2 border-t border-outline-variant/20 font-label-mono text-[10px] text-outline">
-              Typical Question: <em>"Your cache just restarted empty with 200k TPS incoming. What prevents total collapse?"</em>
-</div>
+<div class="p-3 rounded bg-surface-container-lowest border border-outline-variant space-y-1.5">
+<div class="text-outline uppercase text-[10px]">Staff Bar-Raiser Feedback</div>
+<p class="text-on-surface-variant font-inter leading-relaxed" id="bar-raiser-eval-text">
+                      "Good baseline caching. When WAN partitions occur, ensure your Kafka producer switches to idempotent ack-all mode to avoid duplicate stream writes."
+                    </p>
 </div>
 </div>
 </div>
-</section>
-
-<section className="py-20 border-b border-outline-variant/20">
-<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-<div className="max-w-3xl mb-12">
-<div className="text-xs font-label-mono text-secondary uppercase tracking-widest mb-2 font-semibold">Verified Case Studies</div>
-<h2 className="font-headline-lg text-3xl font-bold text-white tracking-tight">
-            How Engineers Secured L6 &amp; L7 Staff Offers.
-          </h2>
-<p className="font-body-md text-outline mt-2 text-sm">
-            Read authentic architectural debriefs from candidates who calibrated on CodePrep before facing their loops.
-          </p>
+<div class="pt-4 border-t border-outline-variant text-[11px] text-outline">
+                Deterministic Seed: <span class="text-on-surface-variant">0x8829F_CHAOS_ENGINE</span>
 </div>
-<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-<div className="p-6 rounded-lg bg-surface-container-low border border-outline-variant/30 space-y-4">
-<div className="flex items-center justify-between">
-<div className="flex items-center gap-2.5">
-<div className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center font-label-mono text-xs font-bold text-white">
-                  DK
+</div>
+</div>
+<!-- Pane View 1: Disaster Recovery Incident Scrubber (Hidden by default) -->
+<div class="hidden p-6 font-mono text-xs space-y-6" id="showcase-pane-1">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-outline-variant">
+<div>
+<span class="text-error font-bold">[SEV-1 POST-MORTEM REPLAY]</span>
+<span class="text-on-surface ml-2">Incident #4912: Multi-Region Leader Epoch Race</span>
+</div>
+<span class="text-outline text-[11px]">Total Incident Timeline: 02m 45s</span>
+</div>
+<!-- Interactive Timeline Slider -->
+<div class="space-y-3 bg-surface-container-low p-4 rounded border border-outline-variant">
+<div class="flex justify-between text-[11px] text-outline">
+<span>T+00s (Severance)</span>
+<span>T+48s (DLQ Ingestion)</span>
+<span>T+02m 15s (Epoch Fencing)</span>
+<span>T+02m 45s (Resolved)</span>
+</div>
+<input class="w-full accent-primary cursor-pointer bg-surface-container h-2 rounded" id="incident-slider" max="3" min="0" oninput="updateIncidentScrubber(this.value)" step="1" type="range" value="0"/>
+<div class="flex justify-between font-mono text-[10px] text-on-surface-variant">
+<span>Keyframe 0</span>
+<span>Keyframe 1</span>
+<span>Keyframe 2</span>
+<span>Keyframe 3</span>
+</div>
+</div>
+<!-- Dynamic State Box Updated by Slider -->
+<div class="p-5 rounded border border-outline-variant bg-surface-container grid grid-cols-1 md:grid-cols-3 gap-4" id="incident-status-card">
+<div>
+<div class="text-outline text-[10px] uppercase">Incident Phase</div>
+<div class="text-base font-bold text-error mt-0.5" id="inc-phase">T+00s: WAN Partition Severance</div>
+<p class="text-on-surface-variant font-inter text-[12px] mt-1" id="inc-desc">Cross-regional fiber optic link severed between us-east-1 and eu-central-1. Heartbeats begin dropping.</p>
+</div>
+<div>
+<div class="text-outline text-[10px] uppercase">System State</div>
+<div class="text-on-surface font-semibold mt-0.5" id="inc-cluster">Quorum Threatened</div>
+<div class="text-secondary text-[11px] mt-1 font-mono" id="inc-action">Attempting consensus with remaining 2 AZs</div>
+</div>
+<div>
+<div class="text-outline text-[10px] uppercase">L7 Candidate Expectation</div>
+<div class="text-primary text-[12px] font-inter mt-0.5" id="inc-eval">Identify split immediately. Do NOT permit writes on partitioned minority segment.</div>
+</div>
+</div>
+</div>
+<!-- Pane View 2: Synthetic FAANG Bar-Raiser Arena (Hidden by default) -->
+<div class="hidden p-6 font-mono text-xs space-y-6" id="showcase-pane-2">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-outline-variant">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded bg-surface-container-high border border-outline-variant flex items-center justify-center text-primary font-bold">
+                  AI
                 </div>
 <div>
-<div className="text-xs font-bold text-white">David K.</div>
-<div className="text-[11px] font-label-mono text-secondary">Promoted: Senior SWE → Staff Infra Engineer (Tier-1 Cloud)</div>
+<div class="font-bold text-on-surface">Synthetic Principal Bar-Raiser (Meta E7 / Staff Benchmark)</div>
+<div class="text-outline text-[11px]">Calibrated to: Distributed Storage Deep Dive</div>
 </div>
 </div>
-<span className="font-label-mono text-[10px] px-2 py-0.5 rounded bg-surface-container-highest text-outline">Verified Loop</span>
-</div>
-<p className="text-xs text-on-surface-variant font-body-sm leading-relaxed">
-              "In my actual Google on-site, the interviewer gave me an open-ended scenario about geo-distributed cache coherence. Because I had spent hours running the CodePrep chaos partition simulator against Dr. Alex Chen, I immediately brought up monotonic epoch counters and write-ahead log leases. The interviewer paused and said: <em>'You're the first candidate today who didn't give me a generic LeetCode answer.'</em> That single session secured my L6 offer."
-            </p>
-<div className="pt-3 border-t border-outline-variant/20 flex items-center gap-4 text-[11px] font-label-mono text-outline">
-<span>Prep Duration: 4 Weeks</span>
-<span>•</span>
-<span>18 Chaos Drills Completed</span>
+<div class="flex items-center gap-2">
+<span class="px-2.5 py-1 rounded bg-secondary/15 text-secondary border border-secondary/30 text-[10px]">SPEECH LATENCY: 112ms</span>
+<span class="px-2.5 py-1 rounded bg-surface-container-high text-on-surface-variant text-[10px]">VOICE MODEL: NEURAL-FLUID v3</span>
 </div>
 </div>
-
-<div className="p-6 rounded-lg bg-surface-container-low border border-outline-variant/30 space-y-4">
-<div className="flex items-center justify-between">
-<div className="flex items-center gap-2.5">
-<div className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center font-label-mono text-xs font-bold text-white">
-                  PM
-                </div>
-<div>
-<div className="text-xs font-bold text-white">Priya M.</div>
-<div className="text-[11px] font-label-mono text-primary">Offered: Principal Backend SWE (FinTech Tier-1)</div>
+<!-- Dialogue & Realtime Waveform -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+<div class="md:col-span-8 p-4 rounded bg-surface-container-low border border-outline-variant space-y-4">
+<div class="space-y-1">
+<div class="text-outline text-[10px] uppercase flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+<span>Interviewer Voice Stream (Live Synthesis)</span>
+</div>
+<p class="text-on-surface font-inter text-sm leading-relaxed">
+                    "You've chosen a primary-secondary replication scheme. Walk me through the exact instant the leader undergoes a 4-second garbage collection pause. How do you prevent split-brain before the election timer trips?"
+                  </p>
+</div>
+<!-- Synthetic Waveform Representation -->
+<div class="p-2 rounded bg-surface-container flex items-center gap-1 h-8">
+<span class="w-1 h-2 bg-primary/40 rounded-full"></span>
+<span class="w-1 h-4 bg-primary/70 rounded-full"></span>
+<span class="w-1 h-6 bg-primary rounded-full"></span>
+<span class="w-1 h-3 bg-primary/50 rounded-full"></span>
+<span class="w-1 h-7 bg-secondary rounded-full"></span>
+<span class="w-1 h-5 bg-secondary/80 rounded-full"></span>
+<span class="w-1 h-2 bg-outline rounded-full"></span>
+<span class="w-1 h-4 bg-primary rounded-full"></span>
+<span class="w-1 h-7 bg-primary rounded-full"></span>
+<span class="w-1 h-3 bg-secondary rounded-full"></span>
+<span class="w-1 h-5 bg-secondary rounded-full"></span>
+<span class="w-1 h-2 bg-outline rounded-full"></span>
+<span class="w-1 h-6 bg-primary rounded-full"></span>
+<span class="w-1 h-3 bg-primary/50 rounded-full"></span>
+<span class="w-1 h-5 bg-secondary rounded-full"></span>
 </div>
 </div>
-<span className="font-label-mono text-[10px] px-2 py-0.5 rounded bg-surface-container-highest text-outline">Verified Loop</span>
+<!-- Candidate Telemetry -->
+<div class="md:col-span-4 p-4 rounded bg-surface-container-low border border-outline-variant space-y-3">
+<div class="text-outline text-[10px] uppercase">Candidate Telemetry</div>
+<div class="flex justify-between items-center text-[11px]">
+<span class="text-on-surface-variant">Speaking Rate:</span>
+<span class="font-bold text-on-surface">118 WPM (Optimal)</span>
 </div>
-<p className="text-xs text-on-surface-variant font-body-sm leading-relaxed">
-              "The synthetic examiner didn't just listen politely; it aggressively pushed back the moment I glossed over distributed 2-phase commit failure modes. Realizing my blind spot in WAL replication under high network jitter completely transformed how I structured my architectural diagrams. It is ten times more rigorous than any human peer mock interview I've ever booked."
-            </p>
-<div className="pt-3 border-t border-outline-variant/20 flex items-center gap-4 text-[11px] font-label-mono text-outline">
-<span>Prep Duration: 3 Weeks</span>
-<span>•</span>
-<span>100% System Design Pass Rate</span>
+<div class="flex justify-between items-center text-[11px]">
+<span class="text-on-surface-variant">Hesitation Pauses:</span>
+<span class="font-bold text-secondary">0.8s (Meets L7 Bar)</span>
+</div>
+<div class="flex justify-between items-center text-[11px]">
+<span class="text-on-surface-variant">Composure Score:</span>
+<span class="font-bold text-primary">88 / 100</span>
+</div>
+<div class="pt-2 border-t border-outline-variant text-[10px] text-outline">
+                  Auto-interrupts on hand-waving: <span class="text-secondary">ENABLED</span>
+</div>
+</div>
 </div>
 </div>
 </div>
 </div>
 </section>
-
-<section className="py-20 border-b border-outline-variant/20 bg-surface-container-lowest" id="pricing">
-<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-<div className="max-w-3xl mx-auto text-center flex flex-col items-center mb-12">
-<div className="text-xs font-label-mono text-primary uppercase tracking-widest mb-2 font-semibold">Predictable Investment</div>
-<h2 className="font-headline-lg text-3xl sm:text-4xl font-bold text-white tracking-tight">
-            Transparent Pricing for High-Stakes Career Loops.
+<!-- ========================================================================= -->
+<!-- 5. VISUAL STORYTELLING FEATURES (Varied Layout Rhythm)                    -->
+<!-- ========================================================================= -->
+<section class="py-20 border-b border-outline-variant bg-surface-container-lowest">
+<div class="max-w-[1400px] mx-auto px-4 sm:px-6 space-y-24">
+<!-- Feature 1: Full-Width Deep Dive (Asymmetric Fault Injection Engine) -->
+<div class="space-y-6" id="fault-engine">
+<div class="max-w-3xl">
+<span class="font-mono text-xs uppercase tracking-wider text-secondary">Engine Feature 01</span>
+<h3 class="font-geist text-2xl sm:text-4xl font-bold tracking-tight text-on-surface mt-1">
+              Asymmetric Fault Injection with Declarative Chaos YAML
+            </h3>
+<p class="font-inter text-sm sm:text-base text-on-surface-variant mt-3 leading-relaxed">
+              Don't just draw boxes on a digital whiteboard. CodePrep executes actual kernel-level packet drops, clock skews, and memory pressure tests against your system topology definition in isolated microVMs.
+            </p>
+</div>
+<div class="rounded-lg border border-outline-variant bg-surface-container-low overflow-hidden">
+<div class="px-4 py-2 bg-surface-container border-b border-outline-variant flex items-center justify-between font-mono text-xs">
+<span class="text-outline">topology-chaos-spec.v1alpha1.yaml</span>
+<span class="text-secondary font-mono text-[11px]">VALIDATED_BY_EBPF_AGENT</span>
+</div>
+<div class="p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 font-mono text-xs">
+<div class="lg:col-span-7 bg-surface-container-lowest p-4 rounded border border-outline-variant overflow-x-auto text-[12px] leading-relaxed">
+<div><span class="text-primary font-bold">apiVersion:</span> <span class="text-secondary">chaos.codeprep.ai/v1alpha1</span></div>
+<div><span class="text-primary font-bold">kind:</span> <span class="text-secondary">NetworkPartitionExperiment</span></div>
+<div><span class="text-primary font-bold">metadata:</span></div>
+<div class="pl-4"><span class="text-on-surface">name:</span> <span class="text-tertiary">raft-leader-asymmetric-blackhole</span></div>
+<div class="pl-4"><span class="text-on-surface">targetCluster:</span> <span class="text-on-surface-variant">"spanner-mock-zone-c"</span></div>
+<div><span class="text-primary font-bold">spec:</span></div>
+<div class="pl-4"><span class="text-on-surface">mode:</span> <span class="text-tertiary">one-way-drop</span> <span class="text-outline"># ingress packets dropped, egress passes</span></div>
+<div class="pl-4"><span class="text-on-surface">selector:</span></div>
+<div class="pl-8"><span class="text-on-surface">role:</span> <span class="text-secondary">raft-active-leader</span></div>
+<div class="pl-4"><span class="text-on-surface">duration:</span> <span class="text-tertiary">12s</span></div>
+<div class="pl-4"><span class="text-on-surface">injectedJitter:</span> <span class="text-tertiary">350ms</span></div>
+<div class="pl-4"><span class="text-on-surface">assertionProof:</span></div>
+<div class="pl-8"><span class="text-on-surface">ensureZeroDuplicateWrites:</span> <span class="text-secondary font-bold">true</span></div>
+<div class="pl-8"><span class="text-on-surface">maxFailoverLatencyMs:</span> <span class="text-secondary font-bold">850</span></div>
+</div>
+<div class="lg:col-span-5 flex flex-col justify-between space-y-4">
+<div class="space-y-3">
+<div class="text-on-surface font-semibold font-geist text-sm">Deterministic Verification Loop</div>
+<p class="font-inter text-xs text-on-surface-variant leading-relaxed">
+                    Most mock interview platforms evaluate distributed systems by opinion. CodePrep evaluates by test assertions. If your proposed architecture permits a phantom read during the 12-second lease window, the assertion throws a hard verification trace.
+                  </p>
+<div class="p-3 rounded bg-surface-container border border-outline-variant space-y-1.5 text-[11px]">
+<div class="text-outline uppercase text-[10px]">Assert Failure Trace #428</div>
+<div class="text-error font-mono">ERROR: Split-brain detected at term 43</div>
+<div class="text-on-surface-variant font-inter">Follower Node-02 promoted before Leader Node-01 yielded lease. Write payload diverged at offset 0x9AF0.</div>
+</div>
+</div>
+<div class="pt-3 border-t border-outline-variant font-mono text-[11px] text-outline flex items-center justify-between">
+<span>MicroVM boot time: 24ms</span>
+<span class="text-secondary">Firecracker Jail</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Feature 2: Split 60/40 Layout (Real-Time Speech-to-Speech Bar Raiser) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-8 border-t border-outline-variant" id="bar-raiser">
+<div class="lg:col-span-7 space-y-4">
+<span class="font-mono text-xs uppercase tracking-wider text-primary">Engine Feature 02</span>
+<h3 class="font-geist text-2xl sm:text-3xl font-bold tracking-tight text-on-surface">
+              Synthetic Speech-to-Speech Bar Raisers with Strict Interviewer Personas
+            </h3>
+<p class="font-inter text-sm text-on-surface-variant leading-relaxed">
+              Trained on verbatim hiring committee transcripts from Meta, Google, and Amazon. Select from calibrated interviewer personas: the benevolent Google Fellow who probes algorithmic correctness, or the adversarial Meta E8 who interrupts every ambiguous scaling estimate.
+            </p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 font-mono text-xs">
+<div class="p-3 rounded border border-outline-variant bg-surface-container-low">
+<div class="text-primary font-bold">Latency Budget: &lt;140ms</div>
+<p class="text-[11px] text-on-surface-variant font-inter mt-1">Direct audio streaming without text-intermediate bottlenecks ensures natural human conversational interruption dynamics.</p>
+</div>
+<div class="p-3 rounded border border-outline-variant bg-surface-container-low">
+<div class="text-secondary font-bold">Dynamic Whiteboard Sync</div>
+<p class="text-[11px] text-on-surface-variant font-inter mt-1">Interviewer observes your mouse trajectory, node placements, and math calculations in real-time as you speak.</p>
+</div>
+</div>
+</div>
+<div class="lg:col-span-5 rounded-lg border border-outline-variant bg-surface-container-low p-4 font-mono text-xs space-y-3">
+<div class="flex items-center justify-between pb-2 border-b border-outline-variant text-[11px]">
+<span class="text-outline">TRANSCRIPT AUTO-INDEXER</span>
+<span class="text-secondary">LIVE RECORDING</span>
+</div>
+<div class="space-y-2 text-[11px]">
+<div class="p-2 rounded bg-surface-container border-l-2 border-outline">
+<span class="text-outline text-[10px]">00:14:02 // Candidate</span>
+<p class="text-on-surface font-inter text-xs mt-0.5">"For the caching layer, I'll place Redis in front of PostgreSQL with a simple write-around policy."</p>
+</div>
+<div class="p-2 rounded bg-surface-container border-l-2 border-primary">
+<span class="text-primary text-[10px] font-bold">00:14:09 // Synthetic Bar-Raiser (Interruption)</span>
+<p class="text-on-surface font-inter text-xs mt-0.5">"Hold on. What happens when your Redis cluster suffers an uneven key hash partition under a sudden spike in celebrity live broadcasts?"</p>
+</div>
+<div class="p-2 rounded bg-surface-container-lowest border border-outline-variant text-[10px] text-on-surface-variant">
+<span class="text-secondary font-bold">RUBRIC TRIGGER:</span> Hotkey skew detection requirement flagged for scoring matrix.
+              </div>
+</div>
+</div>
+</div>
+<!-- Feature 3: Monospaced Incident Feed (Automated Post-Mortem Generator) -->
+<div class="pt-8 border-t border-outline-variant space-y-6">
+<div class="max-w-3xl">
+<span class="font-mono text-xs uppercase tracking-wider text-tertiary">Engine Feature 03</span>
+<h3 class="font-geist text-2xl sm:text-3xl font-bold tracking-tight text-on-surface mt-1">
+              Automated Post-Mortem Incident Generation &amp; Deterministic Proofs
+            </h3>
+<p class="font-inter text-sm text-on-surface-variant mt-2 leading-relaxed">
+              Every round generates a 12-page production post-mortem detailing your architectural trade-offs, theoretical p99 latencies under 100k QPS, and exact code patches for observed data-loss vectors.
+            </p>
+</div>
+<!-- Feed Terminal -->
+<div class="rounded-lg border border-outline-variant bg-surface-container-lowest font-mono text-xs p-4 sm:p-5 overflow-x-auto">
+<div class="text-outline text-[11px] pb-2 border-b border-outline-variant flex items-center justify-between">
+<span>POST-MORTEM ARTIFACT GENERATOR // OUTPUT STREAM</span>
+<span class="text-primary">SHA-256: e8f912c4b...</span>
+</div>
+<div class="mt-3 space-y-1 text-on-surface-variant text-[11px]">
+<div><span class="text-outline">[2025-02-27T08:12:01Z]</span> <span class="text-secondary">[OK]</span> Compiling candidate architecture AST (Abstract Syntax Tree)...</div>
+<div><span class="text-outline">[2025-02-27T08:12:02Z]</span> <span class="text-secondary">[OK]</span> Jepsen test suite executed: 1,024 randomized read/write operations injected.</div>
+<div><span class="text-outline">[2025-02-27T08:12:03Z]</span> <span class="text-primary">[INFO]</span> Latency SLA analysis: 99th percentile write latency projected at 38.4ms.</div>
+<div><span class="text-outline">[2025-02-27T08:12:04Z]</span> <span class="text-tertiary">[WARN]</span> Single Point of Failure (SPOF) detected in primary database write pipeline without auto-fencing token.</div>
+<div><span class="text-outline">[2025-02-27T08:12:05Z]</span> <span class="text-secondary">[OK]</span> Markdown Post-Mortem and Staff rubric PDF compiled (Artifact ID: #ART-9921).</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 6. INTERACTIVE PRICING MATRIX                                             -->
+<!-- ========================================================================= -->
+<section class="py-20 border-b border-outline-variant bg-surface" id="pricing">
+<div class="max-w-[1400px] mx-auto px-4 sm:px-6">
+<div class="text-center max-w-2xl mx-auto mb-12">
+<span class="font-mono text-xs uppercase tracking-wider text-primary">Transparent Investment</span>
+<h2 class="font-geist text-3xl sm:text-4xl font-bold tracking-tight text-on-surface mt-1">
+            Predictable Pricing for Serious Career Transitions
           </h2>
-<p className="font-body-md text-outline mt-2 text-sm max-w-xl">
-            A single level jump from Senior (L5) to Staff (L6) yields over $120k+ in annual compensation. Invest in authentic preparation.
+<p class="font-inter text-sm sm:text-base text-on-surface-variant mt-3">
+            Calibrated for Senior Engineers, Tech Leads, and Staff candidates preparing for top-tier tech loops.
           </p>
-
-<div className="mt-6 inline-flex items-center gap-3 p-1 rounded bg-surface-container border border-outline-variant/30 text-xs font-label-mono">
-<button className="px-3 py-1 rounded bg-surface-container-highest text-white font-medium transition-all" id="billing-monthly-btn" onClick="toggleBilling('monthly')">Monthly</button>
-<button className="px-3 py-1 rounded text-outline hover:text-white transition-all flex items-center gap-1.5" id="billing-annual-btn" onClick="toggleBilling('annual')">
+<!-- Billing Period Toggle -->
+<div class="mt-6 inline-flex items-center p-1 rounded bg-surface-container border border-outline-variant font-mono text-xs">
+<button class="px-3 py-1.5 rounded bg-surface-container-high text-on-surface font-medium transition-colors" id="billing-monthly" onclick="setBilling('monthly')">
+              Monthly
+            </button>
+<button class="px-3 py-1.5 rounded text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1.5" id="billing-annual" onclick="setBilling('annual')">
 <span>Annual</span>
-<span className="px-1.5 py-0.2 rounded bg-secondary/20 text-secondary text-[10px] font-bold">SAVE 20%</span>
+<span class="px-1.5 py-0.2 rounded bg-secondary/20 text-secondary text-[10px] font-bold">Save 25%</span>
 </button>
 </div>
 </div>
-
-<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-
-<div className="p-6 rounded-lg bg-surface-container border border-outline-variant/30 flex flex-col justify-between space-y-6">
-<div className="space-y-4">
+<!-- Pricing Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+<!-- Plan 1: Community Sandbox -->
+<div class="rounded-lg border border-outline-variant bg-surface-container-low p-6 flex flex-col justify-between">
 <div>
-<div className="font-label-mono-bold text-xs uppercase text-outline">Developer Sandbox</div>
-<div className="mt-3 flex items-baseline gap-1">
-<span className="text-3xl font-bold text-white" id="price-sandbox">$39</span>
-<span className="text-xs font-label-mono text-outline">/month</span>
+<div class="flex justify-between items-center">
+<span class="font-geist font-bold text-base text-on-surface">Community Sandbox</span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-[11px] font-mono text-outline">TIER 0</span>
 </div>
-<p className="text-xs text-on-surface-variant font-body-sm mt-2">
-                  Essential tooling for active algorithmic refinement and core system design practice.
-                </p>
+<p class="text-xs text-on-surface-variant font-inter mt-2">Self-paced algorithmic practice and baseline system architecture whiteboard.</p>
+<div class="mt-6 pb-6 border-b border-outline-variant">
+<div class="font-mono text-3xl font-bold text-on-surface">\$0</div>
+<div class="text-xs font-mono text-outline mt-1">Free forever // No credit card</div>
 </div>
-<ul className="space-y-2.5 font-label-mono text-xs text-outline pt-3 border-t border-outline-variant/20">
-<li className="flex items-center gap-2 text-on-surface">
-<span className="material-symbols-outlined text-secondary text-[15px]">check</span>
-                  Full Monaco Coding IDE &amp; Test Suite
-                </li>
-<li className="flex items-center gap-2 text-on-surface">
-<span className="material-symbols-outlined text-secondary text-[15px]">check</span>
-                  5 AI Synthetic Interviews per month
-                </li>
-<li className="flex items-center gap-2 text-on-surface">
-<span className="material-symbols-outlined text-secondary text-[15px]">check</span>
-                  Interactive System Whiteboard
-                </li>
-<li className="flex items-center gap-2 text-outline">
-<span className="material-symbols-outlined text-outline-variant text-[15px]">remove</span>
-                  Multi-Region Chaos Engine
-                </li>
-<li className="flex items-center gap-2 text-outline">
-<span className="material-symbols-outlined text-outline-variant text-[15px]">remove</span>
-                  ATS Staff Resume Deconstructor
-                </li>
-</ul>
+<div class="mt-6 space-y-2.5 font-mono text-xs">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-secondary">check</span>
+<span>Blind 75 &amp; NeetCode 150 code IDE</span>
 </div>
-<button className="w-full py-2.5 rounded bg-surface-container-high hover:bg-surface-bright text-xs font-label-mono text-white border border-outline-variant/40 transition-colors">
-              Get Started with Sandbox
-            </button>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-secondary">check</span>
+<span>3 Chaos system simulations / mo</span>
 </div>
-
-<div className="p-6 rounded-lg bg-surface-container-low border-2 border-primary-container relative flex flex-col justify-between space-y-6 shadow-[0_0_30px_rgba(128,131,255,0.15)]">
-<div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-primary-container text-on-primary font-label-mono-bold text-[10px] uppercase tracking-wider">
-              Most Popular for L6/L7 Loops
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-secondary">check</span>
+<span>Standard algorithmic test harness</span>
+</div>
+<div class="flex items-center gap-2 text-outline line-through">
+<span class="material-symbols-outlined text-[16px]">close</span>
+<span>Live Voice Bar-Raiser Sessions</span>
+</div>
+<div class="flex items-center gap-2 text-outline line-through">
+<span class="material-symbols-outlined text-[16px]">close</span>
+<span>Incident Scrubber Post-Mortems</span>
+</div>
+</div>
+</div>
+<a class="mt-8 block text-center py-2.5 rounded border border-outline-variant bg-surface-container hover:bg-surface-container-high font-mono text-xs text-on-surface font-medium transition-colors" href="#hero-terminal">
+              Access Community Sandbox
+            </a>
+</div>
+<!-- Plan 2: Staff SWE Accelerator (Featured) -->
+<div class="rounded-lg border-2 border-primary bg-surface-container p-6 flex flex-col justify-between relative shadow-2xl">
+<div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-primary text-surface-container-lowest font-mono font-bold text-[10px] uppercase tracking-wider">
+              Most Popular for L6/L7 Loop
             </div>
-<div className="space-y-4">
 <div>
-<div className="font-label-mono-bold text-xs uppercase text-primary">Staff Candidate</div>
-<div className="mt-3 flex items-baseline gap-1">
-<span className="text-3xl font-bold text-white" id="price-staff">$89</span>
-<span className="text-xs font-label-mono text-outline">/month</span>
+<div class="flex justify-between items-center">
+<span class="font-geist font-bold text-base text-on-surface">Staff Accelerator</span>
+<span class="px-2 py-0.5 rounded bg-primary/20 text-[11px] font-mono text-primary font-bold">PRO</span>
 </div>
-<p className="text-xs text-on-surface-variant font-body-sm mt-2">
-                  Unrestricted access to the entire distributed simulation harness and all bar-raisers.
-                </p>
+<p class="text-xs text-on-surface-variant font-inter mt-2">Unlimited chaos simulations, synthetic bar-raiser loops, and full post-mortem reports.</p>
+<div class="mt-6 pb-6 border-b border-outline-variant">
+<div class="flex items-baseline gap-1">
+<span class="font-mono text-3xl font-bold text-on-surface" id="price-staff-val">\$79</span>
+<span class="text-xs font-mono text-outline" id="price-staff-sub">/ month</span>
 </div>
-<ul className="space-y-2.5 font-label-mono text-xs text-on-surface pt-3 border-t border-outline-variant/20">
-<li className="flex items-center gap-2">
-<span className="material-symbols-outlined text-secondary text-[15px]">check</span>
-<strong>Unlimited</strong> Synthetic Bar-Raiser Sessions
-                </li>
-<li className="flex items-center gap-2">
-<span className="material-symbols-outlined text-secondary text-[15px]">check</span>
-                  Full Multi-Region Chaos Engine &amp; Split Sim
-                </li>
-<li className="flex items-center gap-2">
-<span className="material-symbols-outlined text-secondary text-[15px]">check</span>
-                  Automated Post-Mortem Telemetry Scribe
-                </li>
-<li className="flex items-center gap-2">
-<span className="material-symbols-outlined text-secondary text-[15px]">check</span>
-                  ATS Resume Deconstructor &amp; Rewriter
-                </li>
-<li className="flex items-center gap-2">
-<span className="material-symbols-outlined text-secondary text-[15px]">check</span>
-                  Access to All 18 Staff Scenario Modules
-                </li>
-</ul>
+<div class="text-xs font-mono text-secondary mt-1">Billed monthly or \$59/mo annually</div>
 </div>
-<button className="w-full py-2.5 rounded bg-primary-container hover:bg-primary-accent text-on-primary hover:text-white text-xs font-label-mono-bold uppercase tracking-wider transition-colors shadow-lg">
-              Launch Staff Membership
-            </button>
+<div class="mt-6 space-y-2.5 font-mono text-xs">
+<div class="flex items-center gap-2 text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-secondary">check</span>
+<span>Unlimited Chaos Network Partition tests</span>
 </div>
-
-<div className="p-6 rounded-lg bg-surface-container border border-outline-variant/30 flex flex-col justify-between space-y-6">
-<div className="space-y-4">
+<div class="flex items-center gap-2 text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-secondary">check</span>
+<span>20 Full synthetic voice Bar-Raiser mocks / mo</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-secondary">check</span>
+<span>Full Post-Mortem Incident Replay scrubbers</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-secondary">check</span>
+<span>MicroVM firecracker isolation runner</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-secondary">check</span>
+<span>FAANG Staff calibration rubric grading</span>
+</div>
+</div>
+</div>
+<a class="mt-8 block text-center py-2.5 rounded bg-primary text-surface-container-lowest font-mono text-xs font-bold hover:bg-white active:scale-95 transition-all" href="#hero-terminal">
+              Start 7-Day Staff Trial
+            </a>
+</div>
+<!-- Plan 3: Enterprise & Team Pods -->
+<div class="rounded-lg border border-outline-variant bg-surface-container-low p-6 flex flex-col justify-between">
 <div>
-<div className="font-label-mono-bold text-xs uppercase text-outline">Principal &amp; Team</div>
-<div className="mt-3 flex items-baseline gap-1">
-<span className="text-3xl font-bold text-white" id="price-principal">$199</span>
-<span className="text-xs font-label-mono text-outline">/month</span>
+<div class="flex justify-between items-center">
+<span class="font-geist font-bold text-base text-on-surface">Enterprise Pods</span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-[11px] font-mono text-outline">CUSTOM</span>
 </div>
-<p className="text-xs text-on-surface-variant font-body-sm mt-2">
-                  Custom organization rubrics, private problem spaces, and dedicated calibration.
-                </p>
+<p class="text-xs text-on-surface-variant font-inter mt-2">Custom cloud topologies, private LLM bar-raiser calibration, and company interview tracks.</p>
+<div class="mt-6 pb-6 border-b border-outline-variant">
+<div class="font-mono text-3xl font-bold text-on-surface">Custom</div>
+<div class="text-xs font-mono text-outline mt-1">Starting from 5 engineering seats</div>
 </div>
-<ul className="space-y-2.5 font-label-mono text-xs text-on-surface pt-3 border-t border-outline-variant/20">
-<li className="flex items-center gap-2">
-<span className="material-symbols-outlined text-secondary text-[15px]">check</span>
-                  Custom Company Architecture Stacks
-                </li>
-<li className="flex items-center gap-2">
-<span className="material-symbols-outlined text-secondary text-[15px]">check</span>
-                  Private Question Banks &amp; Internal Rubrics
-                </li>
-<li className="flex items-center gap-2">
-<span className="material-symbols-outlined text-secondary text-[15px]">check</span>
-                  Dedicated 1-on-1 Calibration Review
-                </li>
-<li className="flex items-center gap-2">
-<span className="material-symbols-outlined text-secondary text-[15px]">check</span>
-                  SOC2 Compliance &amp; SSO Integration
-                </li>
-</ul>
+<div class="mt-6 space-y-2.5 font-mono text-xs">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-secondary">check</span>
+<span>Import proprietary Terraform / K8s specs</span>
 </div>
-<button className="w-full py-2.5 rounded bg-surface-container-high hover:bg-surface-bright text-xs font-label-mono text-white border border-outline-variant/40 transition-colors">
-              Contact Enterprise Desk
-            </button>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-secondary">check</span>
+<span>Fine-tuned company specific interview rubrics</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-secondary">check</span>
+<span>SOC2 Type II compliance &amp; zero data retention</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-secondary">check</span>
+<span>Dedicated Slack channel with Staff AI engineers</span>
+</div>
+</div>
+</div>
+<a class="mt-8 block text-center py-2.5 rounded border border-outline-variant bg-surface-container hover:bg-surface-container-high font-mono text-xs text-on-surface font-medium transition-colors" href="mailto:enterprise@codeprep.ai">
+              Contact Engineering Sales
+            </a>
 </div>
 </div>
 </div>
 </section>
-
-<section className="py-20 border-b border-outline-variant/20">
-<div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-<div className="mb-10 text-center">
-<div className="text-xs font-label-mono text-primary uppercase tracking-widest mb-2 font-semibold">Technical Architecture FAQ</div>
-<h2 className="font-headline-lg text-3xl font-bold text-white tracking-tight">
-            Frequently Addressed Engineering Questions.
+<!-- ========================================================================= -->
+<!-- 7. ENGINEERING FAQ (Accordion with Real Concerns)                        -->
+<!-- ========================================================================= -->
+<section class="py-20 border-b border-outline-variant bg-surface-container-lowest" id="faq">
+<div class="max-w-[900px] mx-auto px-4 sm:px-6">
+<div class="mb-10">
+<span class="font-mono text-xs uppercase tracking-wider text-outline">Frequently Asked Questions</span>
+<h2 class="font-geist text-2xl sm:text-3xl font-bold tracking-tight text-on-surface mt-1">
+            Real Technical Answers for Systems Engineers
           </h2>
 </div>
-<div className="space-y-3">
-
-<div className="rounded border border-outline-variant/30 bg-surface-container-low overflow-hidden">
-<button className="w-full p-4 text-left flex items-center justify-between text-sm font-headline-sm font-semibold text-white hover:bg-surface-container transition-colors" onClick="toggleAccordion('faq-1')">
-<span>How does the AI examiner calibrate against Google L6 and Meta E6 rubrics?</span>
-<span className="material-symbols-outlined text-[18px] text-outline transition-transform duration-200" id="icon-faq-1">expand_more</span>
+<div class="space-y-3 font-mono text-xs">
+<!-- Accordion Item 1 -->
+<div class="border border-outline-variant rounded bg-surface-container-low overflow-hidden">
+<button class="w-full px-4 py-3.5 text-left font-geist font-semibold text-sm text-on-surface flex items-center justify-between hover:bg-surface-container transition-colors" onclick="toggleFaq(1)">
+<span>How does the synthetic bar-raiser achieve &lt;140ms voice latency without hallucinating?</span>
+<span class="material-symbols-outlined text-[18px] text-outline transition-transform duration-200" id="faq-icon-1">expand_more</span>
 </button>
-<div className="hidden p-4 pt-0 text-xs font-body-sm text-outline leading-relaxed border-t border-outline-variant/20 bg-surface-container-lowest" id="faq-1">
-              Our evaluation models are tuned with fine-grained rubric criteria curated from verified L6+ Staff and L7 Principal interviewers at Meta, Google, and Amazon. The system monitors 14 distinct dimensions, including distributed consensus edge cases, failure domain isolation, hardware resource boundaries, and architectural communication clarity.
+<div class="hidden px-4 pb-4 pt-1 font-inter text-xs text-on-surface-variant leading-relaxed border-t border-outline-variant/40" id="faq-content-1">
+              We bypass classical text-to-speech-to-text daisy chains using a direct neural speech model pipeline hosted on edge GPU clusters. The model ingests streaming audio tokens while simultaneously referencing an architectural graph knowledge base, ensuring immediate response times with zero speculative hallucination on distributed consistency protocols.
             </div>
 </div>
-
-<div className="rounded border border-outline-variant/30 bg-surface-container-low overflow-hidden">
-<button className="w-full p-4 text-left flex items-center justify-between text-sm font-headline-sm font-semibold text-white hover:bg-surface-container transition-colors" onClick="toggleAccordion('faq-2')">
-<span>Can I export post-mortem incident reports and architecture whiteboard diagrams?</span>
-<span className="material-symbols-outlined text-[18px] text-outline transition-transform duration-200" id="icon-faq-2">expand_more</span>
+<!-- Accordion Item 2 -->
+<div class="border border-outline-variant rounded bg-surface-container-low overflow-hidden">
+<button class="w-full px-4 py-3.5 text-left font-geist font-semibold text-sm text-on-surface flex items-center justify-between hover:bg-surface-container transition-colors" onclick="toggleFaq(2)">
+<span>Does the synthetic interviewer interrupt when I am explaining edge cases?</span>
+<span class="material-symbols-outlined text-[18px] text-outline transition-transform duration-200" id="faq-icon-2">expand_more</span>
 </button>
-<div className="hidden p-4 pt-0 text-xs font-body-sm text-outline leading-relaxed border-t border-outline-variant/20 bg-surface-container-lowest" id="faq-2">
-              Yes. At the conclusion of every session, you receive an automated, publication-ready PDF Post-Mortem Incident Report and high-resolution SVG diagram of your architecture. The report contains quantified scoring, detected architectural vulnerabilities, and exact timestamps of hand-waved trade-offs.
+<div class="hidden px-4 pb-4 pt-1 font-inter text-xs text-on-surface-variant leading-relaxed border-t border-outline-variant/40" id="faq-content-2">
+              Yes, depending on the calibrated persona. In real FAANG Staff (L6+) loops, interviewers deliberately interrupt if a candidate spends more than 90 seconds in theoretical discourse without defining concrete storage bounds or failure topologies. The system reproduces these high-pressure pushbacks to train candidate composure.
             </div>
 </div>
-
-<div className="rounded border border-outline-variant/30 bg-surface-container-low overflow-hidden">
-<button className="w-full p-4 text-left flex items-center justify-between text-sm font-headline-sm font-semibold text-white hover:bg-surface-container transition-colors" onClick="toggleAccordion('faq-3')">
-<span>How is this fundamentally different from generic ChatGPT interview prompts?</span>
-<span className="material-symbols-outlined text-[18px] text-outline transition-transform duration-200" id="icon-faq-3">expand_more</span>
+<!-- Accordion Item 3 -->
+<div class="border border-outline-variant rounded bg-surface-container-low overflow-hidden">
+<button class="w-full px-4 py-3.5 text-left font-geist font-semibold text-sm text-on-surface flex items-center justify-between hover:bg-surface-container transition-colors" onclick="toggleFaq(3)">
+<span>How are Raft and Paxos states mathematically proven during the chaos simulation?</span>
+<span class="material-symbols-outlined text-[18px] text-outline transition-transform duration-200" id="faq-icon-3">expand_more</span>
 </button>
-<div className="hidden p-4 pt-0 text-xs font-body-sm text-outline leading-relaxed border-t border-outline-variant/20 bg-surface-container-lowest" id="faq-3">
-              Generic LLMs are fundamentally agreeable: they politely validate broken architectures and fail to probe edge cases unless instructed. CodePrep features stateful, real-time distributed simulation engines running concurrent network emulations, active speech interrupt logic, and aggressive bar-raiser personas designed to test your mental composure under genuine interview pressure.
+<div class="hidden px-4 pb-4 pt-1 font-inter text-xs text-on-surface-variant leading-relaxed border-t border-outline-variant/40" id="faq-content-3">
+              When you design a consensus tier, our back-end compiles your visual graph into a formal model validated by an internal linearizability checker (similar to Jepsen testing). We simulate randomized network partitions, delay packets, and assert whether linearizable consistency (ACID) holds across all replica terms.
             </div>
 </div>
-
-<div className="rounded border border-outline-variant/30 bg-surface-container-low overflow-hidden">
-<button className="w-full p-4 text-left flex items-center justify-between text-sm font-headline-sm font-semibold text-white hover:bg-surface-container transition-colors" onClick="toggleAccordion('faq-4')">
-<span>Does the simulator support custom infrastructure components like eBPF and Envoy filters?</span>
-<span className="material-symbols-outlined text-[18px] text-outline transition-transform duration-200" id="icon-faq-4">expand_more</span>
+<!-- Accordion Item 4 -->
+<div class="border border-outline-variant rounded bg-surface-container-low overflow-hidden">
+<button class="w-full px-4 py-3.5 text-left font-geist font-semibold text-sm text-on-surface flex items-center justify-between hover:bg-surface-container transition-colors" onclick="toggleFaq(4)">
+<span>What happens to my resume and audio data? Is it used to train AI models?</span>
+<span class="material-symbols-outlined text-[18px] text-outline transition-transform duration-200" id="faq-icon-4">expand_more</span>
 </button>
-<div className="hidden p-4 pt-0 text-xs font-body-sm text-outline leading-relaxed border-t border-outline-variant/20 bg-surface-container-lowest" id="faq-4">
-              Yes. The Whiteboard engine includes pre-configured low-level primitives: eBPF sidecar tap filters, Cilium service meshes, monotonic Raft election harnesses, RocksDB LSM trees, and Kafka transactional producers.
+<div class="hidden px-4 pb-4 pt-1 font-inter text-xs text-on-surface-variant leading-relaxed border-t border-outline-variant/40" id="faq-content-4">
+              Never. We enforce a strict zero-retention policy for candidate audio streams and uploaded resume data. All voice recordings are discarded immediately after post-mortem generation. Enterprise accounts can further mandate client-side ephemeral encryption keys.
             </div>
 </div>
-</div>
-</div>
-</section>
-
-<section className="py-20 bg-surface-container-lowest border-b border-outline-variant/20 relative overflow-hidden">
-<div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-<div className="p-8 sm:p-12 rounded-xl bg-surface-container border border-primary/30 flex flex-col items-center text-center space-y-6 shadow-2xl relative">
-<div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-highest font-label-mono text-xs text-secondary">
-<span className="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
-<span>SYSTEM ENGINE ACTIVE • ZERO COMMITMENT</span>
-</div>
-<h2 className="font-headline-lg text-3xl sm:text-4xl font-bold text-white tracking-tight max-w-2xl">
-            Ready to stress-test your architecture before your dream interview loop?
-          </h2>
-<p className="font-body-md text-outline max-w-xl text-sm leading-relaxed">
-            Run an instant 15-minute diagnostic scenario. No card required. Complete telemetry and rubric analysis delivered immediately.
-          </p>
-
-<div className="w-full max-w-md p-2 rounded bg-surface-container-lowest border border-outline-variant/40 flex items-center justify-between text-xs font-label-mono">
-<div className="flex items-center gap-2 px-2 text-on-surface-variant overflow-x-auto">
-<span className="text-primary font-bold">$</span>
-<span id="terminal-cli-command">codeprep run scenario-8829 --level=L7</span>
-</div>
-<button className="px-2.5 py-1 rounded bg-surface-container-high hover:bg-surface-bright text-[11px] text-white transition-colors shrink-0 flex items-center gap-1" onClick="copyCliCommand()">
-<span className="material-symbols-outlined text-[13px]" id="copy-icon">content_copy</span>
-<span id="copy-label">Copy</span>
-</button>
-</div>
-<div className="flex flex-col sm:flex-row items-center gap-3 w-full max-w-sm">
-<a className="w-full py-3 rounded bg-primary-container hover:bg-primary-accent text-on-primary hover:text-white font-label-mono-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-[0_0_25px_rgba(128,131,255,0.4)]" href="/dashboard">
-<span className="material-symbols-outlined text-[16px]">bolt</span>
-<span>Launch Instant Diagnostic</span>
-</a>
-</div>
-<div className="text-[11px] font-label-mono text-outline">
-            Instant sandbox initialization in &lt; 250ms • Direct browser execution
-          </div>
 </div>
 </div>
 </section>
 </main>
-
-<footer className="w-full bg-[#0e0e10] border-t border-outline-variant/20 py-12">
-<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-<div className="grid grid-cols-2 md:grid-cols-5 gap-8 pb-10 border-b border-outline-variant/20">
-
-<div className="col-span-2 space-y-3">
-<div className="flex items-center gap-2">
-<div className="w-6 h-6 rounded bg-surface-container-high border border-outline-variant/40 flex items-center justify-center font-label-mono text-xs text-primary font-bold">
-              &lt;/&gt;
+<!-- ========================================================================= -->
+<!-- 8. HIGH-FIDELITY FOOTER                                                   -->
+<!-- ========================================================================= -->
+<footer class="bg-surface-container-lowest border-t border-outline-variant py-14">
+<div class="max-w-[1400px] mx-auto px-4 sm:px-6">
+<div class="grid grid-cols-1 md:grid-cols-5 gap-8 pb-12 border-b border-outline-variant">
+<!-- Col 1: Brand & Status -->
+<div class="md:col-span-2 space-y-4">
+<div class="flex items-center gap-2.5">
+<div class="w-6 h-6 rounded border border-outline-variant bg-surface-container flex items-center justify-center font-mono text-xs font-bold text-primary">
+              &gt;_
             </div>
-<span className="font-headline-sm text-sm font-semibold text-white">CodePrep.ai</span>
-<span className="font-label-mono text-[10px] text-outline">v4.2-telemetry</span>
+<span class="font-geist font-bold text-sm tracking-tight text-on-surface">CodePrep<span class="text-primary font-mono">.ai</span></span>
 </div>
-<p className="font-body-sm text-xs text-outline max-w-xs leading-relaxed">
-            The high-stakes technical interview arena engineered for Senior, Staff, and Principal Software Engineers targeting Tier-1 frontier tech companies.
+<p class="font-inter text-xs text-on-surface-variant max-w-sm leading-relaxed">
+            The deterministic distributed systems and interview arena for Staff and Principal engineers preparing for top-tier tech loops.
           </p>
-<div className="flex items-center gap-2 pt-1 font-label-mono text-[11px] text-secondary">
-<span className="w-2 h-2 rounded-full bg-secondary"></span>
-<span>All Global Simulation Pods Operational</span>
+<div class="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-surface-container border border-outline-variant text-[11px] font-mono">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-on-surface">All Systems Operational // 99.99%</span>
 </div>
 </div>
-
-<div className="space-y-2.5 font-label-mono text-xs">
-<div className="text-white font-semibold uppercase text-[11px] tracking-wider">Simulator</div>
-<ul className="space-y-1.5 text-outline">
-<li><a className="hover:text-white transition-colors" href="/dashboard">Bar-Raiser Inquisitor</a></li>
-<li><a className="hover:text-white transition-colors" href="#whiteboard">Chaos Whiteboard</a></li>
-<li><a className="hover:text-white transition-colors" href="/dashboard">ATS Rubric Deconstruct</a></li>
-<li><a className="hover:text-white transition-colors" href="#curriculum">Scenario Modules</a></li>
+<!-- Col 2: Platform -->
+<div class="space-y-3 font-mono text-xs">
+<div class="text-outline uppercase text-[11px] font-semibold">Engine</div>
+<ul class="space-y-2 text-on-surface-variant">
+<li><a class="hover:text-on-surface transition-colors" href="#product-showcase">Architecture Canvas</a></li>
+<li><a class="hover:text-on-surface transition-colors" href="#fault-engine">Chaos Injector</a></li>
+<li><a class="hover:text-on-surface transition-colors" href="#bar-raiser">Synthetic Bar-Raiser</a></li>
+<li><a class="hover:text-on-surface transition-colors" href="#pricing">Pricing Matrix</a></li>
+<li><a class="hover:text-on-surface transition-colors" href="#">Changelog <span class="text-secondary text-[10px]">v4.19</span></a></li>
 </ul>
 </div>
-
-<div className="space-y-2.5 font-label-mono text-xs">
-<div className="text-white font-semibold uppercase text-[11px] tracking-wider">Platform Docs</div>
-<ul className="space-y-1.5 text-outline">
-<li><a className="hover:text-white transition-colors" href="#">CLI Installation</a></li>
-<li><a className="hover:text-white transition-colors" href="#">Raft Consensus Benchmarks</a></li>
-<li><a className="hover:text-white transition-colors" href="#">FAANG Rubric Standards</a></li>
-<li><a className="hover:text-white transition-colors" href="#">API Endpoints</a></li>
+<!-- Col 3: Curriculum -->
+<div class="space-y-3 font-mono text-xs">
+<div class="text-outline uppercase text-[11px] font-semibold">Curriculum</div>
+<ul class="space-y-2 text-on-surface-variant">
+<li><a class="hover:text-on-surface transition-colors" href="#">Distributed Caching (L6)</a></li>
+<li><a class="hover:text-on-surface transition-colors" href="#">Raft Consensus Proofs</a></li>
+<li><a class="hover:text-on-surface transition-colors" href="#">Global Geo-Replication</a></li>
+<li><a class="hover:text-on-surface transition-colors" href="#">Backpressure &amp; Rate Limits</a></li>
+<li><a class="hover:text-on-surface transition-colors" href="#">Staff Behavioral Rubrics</a></li>
 </ul>
 </div>
-
-<div className="space-y-2.5 font-label-mono text-xs">
-<div className="text-white font-semibold uppercase text-[11px] tracking-wider">Compliance</div>
-<ul className="space-y-1.5 text-outline">
-<li><a className="hover:text-white transition-colors" href="#">Privacy Policy</a></li>
-<li><a className="hover:text-white transition-colors" href="#">Terms of Service</a></li>
-<li><a className="hover:text-white transition-colors" href="#">SOC2 Type II Audit</a></li>
-<li><a className="hover:text-white transition-colors" href="#">Security Disclosures</a></li>
+<!-- Col 4: Operations & Legal -->
+<div class="space-y-3 font-mono text-xs">
+<div class="text-outline uppercase text-[11px] font-semibold">Security</div>
+<ul class="space-y-2 text-on-surface-variant">
+<li><a class="hover:text-on-surface transition-colors" href="#">SOC2 Compliance</a></li>
+<li><a class="hover:text-on-surface transition-colors" href="#">Zero-Retention Audio</a></li>
+<li><a class="hover:text-on-surface transition-colors" href="#">Privacy Policy</a></li>
+<li><a class="hover:text-on-surface transition-colors" href="#">Security Whitepaper</a></li>
+<li><a class="hover:text-on-surface transition-colors" href="#">Bug Bounty</a></li>
 </ul>
 </div>
 </div>
-
-<div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-label-mono text-outline">
+<!-- Bottom Bar -->
+<div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs text-outline">
 <div>
-          © 2025 CodePrep AI Systems Inc. Engineered for elite algorithmic mastery and system design excellence.
+          © 2025 CodePrep AI Inc. Precision tooling for distributed engineering.
         </div>
-<div className="flex items-center gap-4">
-<a className="hover:text-white transition-colors" href="#">GitHub</a>
-<span>•</span>
-<a className="hover:text-white transition-colors" href="#">Discord Community</a>
-<span>•</span>
-<a className="hover:text-white transition-colors" href="#">Status Dashboard</a>
+<div class="flex items-center gap-4">
+<span>Git: <span class="text-on-surface-variant">7a91bf2</span></span>
+<span>Region: <span class="text-secondary">us-east-1</span></span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant">ESC to close modals</span>
 </div>
 </div>
 </div>
 </footer>
-
+<!-- ========================================================================= -->
+<!-- VANILLA INTERACTIVITY JAVASCRIPT                                         -->
+<!-- ========================================================================= -->
 <script>
-    // 1. PRODUCT DEMO TAB SWITCHER
-    function switchDemoTab(tabId) {
-      // Hide all panes
-      document.querySelectorAll('.demo-content-pane').forEach(el => {
-        el.classList.add('hidden');
-      });
-      // Show selected pane
-      const targetPane = document.getElementById('content-' + tabId);
-      if (targetPane) {
-        targetPane.classList.remove('hidden');
-      }
+    // 1. Hero Terminal Tab Switcher
+    function switchHeroTab(tabId) {
+      const views = {
+        'arch': document.getElementById('hero-view-arch'),
+        'consensus': document.getElementById('hero-view-consensus'),
+        'rubric': document.getElementById('hero-view-rubric')
+      };
+      const buttons = {
+        'arch': document.getElementById('hero-tab-btn-arch'),
+        'consensus': document.getElementById('hero-tab-btn-consensus'),
+        'rubric': document.getElementById('hero-tab-btn-rubric')
+      };
 
-      // Reset tab button states
-      document.querySelectorAll('.demo-tab-btn').forEach(btn => {
-        btn.classList.remove('bg-surface-container', 'text-white', 'font-medium');
-        btn.classList.add('text-outline');
-      });
-
-      // Highlight active tab
-      const activeBtn = document.getElementById('tab-' + tabId);
-      if (activeBtn) {
-        activeBtn.classList.add('bg-surface-container', 'text-white', 'font-medium');
-        activeBtn.classList.remove('text-outline');
-      }
-    }
-
-    // 2. LIVE FAANG BAR-RAISER: CANDIDATE MIC TOGGLE & RESPONSE CYCLING
-    let isMicActive = false;
-    function toggleSimMic() {
-      isMicActive = !isMicActive;
-      const micText = document.getElementById('mic-text');
-      const micIcon = document.getElementById('mic-icon');
-      if (isMicActive) {
-        micText.innerText = "Listening... (Speaking)";
-        micIcon.classList.add('animate-pulse');
-        micIcon.style.color = "#4edea3";
-      } else {
-        micText.innerText = "Push to Speak";
-        micIcon.classList.remove('animate-pulse');
-        micIcon.style.color = "#ffb4ab";
-      }
-    }
-
-    const responses = [
-      '"We decouple the write quorum by electing regional follower-leases with monotonic epoch generation counters. When a lease expires, we fall back to a pessimistic fencing token verified at the RocksDB storage engine layer before fsync commit..."',
-      '"To mitigate p99 latency spikes during cross-region packet drops, we implement speculative retry hedges with an exponential backoff jitter cap at 85ms, routing degraded requests to read-only replica snapshots with read-your-writes session tokens."',
-      '"If the trans-Atlantic fiber splits entirely, the Raft majority leader in US-East maintains quorum, while the EU-Central cluster enters read-only fallback mode with monotonic epoch barriers, rejecting conflicting mutations."'
-    ];
-    let responseIdx = 0;
-    function cycleCandidateResponse() {
-      responseIdx = (responseIdx + 1) % responses.length;
-      document.getElementById('candidate-transcript-text').innerText = responses[responseIdx];
-    }
-
-    // 3. CHAOS CANVAS: WAN LATENCY SLIDER DYNAMICS
-    function handleChaosSlider(val) {
-      document.getElementById('slider-latency-val').innerText = val + ' ms';
-      document.getElementById('wan-latency-display').innerText = val + 'ms RTT';
-      
-      const line = document.getElementById('wan-cable-line');
-      const statusBadge = document.getElementById('chaos-status-badge');
-      const p99Text = document.getElementById('p99-metric-text');
-      const dropText = document.getElementById('drop-rate-text');
-      const euBox = document.getElementById('node-eu-box');
-
-      if (val < 180) {
-        // Nominal
-        line.style.backgroundColor = '#4edea3';
-        statusBadge.className = "font-label-mono text-[10px] uppercase px-2 py-0.5 rounded bg-secondary/10 text-secondary border border-secondary/30";
-        statusBadge.innerText = "Leader Stable • Quorum Healthy";
-        p99Text.innerText = (parseFloat(val) * 0.85).toFixed(1) + " ms";
-        p99Text.className = "text-lg font-bold text-secondary";
-        dropText.innerText = "0.00%";
-        euBox.style.borderColor = "rgba(144, 143, 160, 0.4)";
-      } else if (val < 450) {
-        // Degraded
-        line.style.backgroundColor = '#ffb95f';
-        statusBadge.className = "font-label-mono text-[10px] uppercase px-2 py-0.5 rounded bg-tertiary/10 text-tertiary border border-tertiary/30";
-        statusBadge.innerText = "WAN Jitter High • Replicating Async";
-        p99Text.innerText = (parseFloat(val) * 1.4).toFixed(1) + " ms";
-        p99Text.className = "text-lg font-bold text-tertiary";
-        dropText.innerText = "4.12%";
-        euBox.style.borderColor = "#ffb95f";
-      } else {
-        // Partition / Split
-        line.style.backgroundColor = '#ffb4ab';
-        statusBadge.className = "font-label-mono text-[10px] uppercase px-2 py-0.5 rounded bg-error/10 text-error border border-error/30";
-        statusBadge.innerText = "Network Partition • Quorum Asymmetric";
-        p99Text.innerText = "TIMEOUT (>800ms)";
-        p99Text.className = "text-lg font-bold text-error";
-        dropText.innerText = "42.8%";
-        euBox.style.borderColor = "#ffb4ab";
-      }
-    }
-
-    function injectSplitBrainFault() {
-      const slider = document.getElementById('latency-slider');
-      slider.value = 750;
-      handleChaosSlider(750);
-    }
-
-    // 4. WHITEBOARD FAULT INJECTION WIDGET
-    let isFiberCut = false;
-    function triggerFiberSever() {
-      isFiberCut = !isFiberCut;
-      const banner = document.getElementById('whiteboard-alert-banner');
-      const severText = document.getElementById('fiber-sever-text');
-      const lagText = document.getElementById('queue-lag-text');
-      const leaseText = document.getElementById('storage-lease-text');
-
-      if (isFiberCut) {
-        banner.classList.remove('hidden');
-        severText.innerText = "Restore Trans-Atlantic Fiber";
-        lagText.innerText = "4,290 msgs Lag (DLQ Activated)";
-        lagText.className = "text-error font-medium";
-        leaseText.innerText = "Epoch Fencing Blocked (Safe Fallback)";
-        leaseText.className = "text-tertiary font-medium";
-      } else {
-        banner.classList.add('hidden');
-        severText.innerText = "Simulate Severing Trans-Atlantic Fiber";
-        lagText.innerText = "14 msgs (Realtime)";
-        lagText.className = "text-secondary font-medium";
-        leaseText.innerText = "Epoch #429 Verified";
-        leaseText.className = "text-secondary font-medium";
-      }
-    }
-
-    // 5. CURRICULUM FILTER TOGGLES
-    function filterCurriculum(category) {
-      // Update filter button styling
-      const buttons = document.querySelectorAll('.curriculum-filter-btn');
-      buttons.forEach(btn => {
-        btn.classList.remove('bg-surface-container-high', 'text-white', 'border-primary/40');
-        btn.classList.add('bg-surface-container', 'text-outline', 'border-outline-variant/20');
-      });
-      event.target.classList.add('bg-surface-container-high', 'text-white', 'border-primary/40');
-      event.target.classList.remove('bg-surface-container', 'text-outline', 'border-outline-variant/20');
-
-      // Filter cards
-      const cards = document.querySelectorAll('.module-card');
-      cards.forEach(card => {
-        if (category === 'all' || card.getAttribute('data-category').includes(category)) {
-          card.classList.remove('hidden');
+      for (const [key, view] of Object.entries(views)) {
+        if (key === tabId) {
+          view.classList.remove('hidden');
+          buttons[key].className = 'px-2.5 py-1 rounded bg-surface-container-high text-on-surface font-medium transition-colors';
         } else {
-          card.classList.add('hidden');
+          view.classList.add('hidden');
+          buttons[key].className = 'px-2.5 py-1 rounded text-on-surface-variant hover:text-on-surface transition-colors';
         }
-      });
-    }
-
-    // 6. BILLING CYCLE TOGGLE (MONTHLY VS ANNUAL)
-    function toggleBilling(cycle) {
-      const mBtn = document.getElementById('billing-monthly-btn');
-      const aBtn = document.getElementById('billing-annual-btn');
-      const priceSandbox = document.getElementById('price-sandbox');
-      const priceStaff = document.getElementById('price-staff');
-      const pricePrincipal = document.getElementById('price-principal');
-
-      if (cycle === 'annual') {
-        aBtn.classList.add('bg-surface-container-highest', 'text-white', 'font-medium');
-        aBtn.classList.remove('text-outline');
-        mBtn.classList.remove('bg-surface-container-highest', 'text-white', 'font-medium');
-        mBtn.classList.add('text-outline');
-
-        priceSandbox.innerText = "$31";
-        priceStaff.innerText = "$71";
-        pricePrincipal.innerText = "$159";
-      } else {
-        mBtn.classList.add('bg-surface-container-highest', 'text-white', 'font-medium');
-        mBtn.classList.remove('text-outline');
-        aBtn.classList.remove('bg-surface-container-highest', 'text-white', 'font-medium');
-        aBtn.classList.add('text-outline');
-
-        priceSandbox.innerText = "$39";
-        priceStaff.innerText = "$89";
-        pricePrincipal.innerText = "$199";
       }
     }
 
-    // 7. ACCORDION LOGIC
-    function toggleAccordion(id) {
-      const content = document.getElementById(id);
-      const icon = document.getElementById('icon-' + id);
+    // 2. Hero Chaos Injection Simulation
+    let heroChaosActive = false;
+    function triggerHeroChaos() {
+      const node = document.getElementById('sim-target-node');
+      const badge = document.getElementById('node3-status-badge');
+      const desc = document.getElementById('node3-status-desc');
+      const btn = document.getElementById('hero-chaos-btn');
+
+      if (!heroChaosActive) {
+        heroChaosActive = true;
+        node.classList.remove('border-dashed', 'border-tertiary/60');
+        node.classList.add('border-error', 'bg-error/10');
+        badge.className = 'text-error text-[10px] font-bold animate-pulse';
+        badge.textContent = 'PARTITIONED (100% DROP)';
+        desc.textContent = 'Heartbeat ACK missed (380ms)';
+        btn.textContent = 'Recover Partition';
+        btn.className = 'px-2 py-0.5 rounded bg-secondary/20 text-secondary hover:bg-secondary hover:text-surface-container-lowest font-medium transition-colors text-[10px]';
+      } else {
+        heroChaosActive = false;
+        node.classList.remove('border-error', 'bg-error/10');
+        node.classList.add('border-dashed', 'border-tertiary/60');
+        badge.className = 'text-tertiary text-[10px]';
+        badge.textContent = 'CANDIDATE TARGET';
+        desc.textContent = 'Simulate 400ms packet drop';
+        btn.textContent = 'Inject Partition';
+        btn.className = 'px-2 py-0.5 rounded bg-tertiary/20 text-tertiary hover:bg-tertiary hover:text-surface-container-lowest font-medium transition-colors text-[10px]';
+      }
+    }
+
+    // 3. Showcase Workspace Tab Switcher
+    function switchShowcaseTab(tabIndex) {
+      for (let i = 0; i < 3; i++) {
+        const pane = document.getElementById(\`showcase-pane-\${i}\`);
+        const btn = document.getElementById(\`showcase-tab-\${i}\`);
+        if (i === tabIndex) {
+          pane.classList.remove('hidden');
+          btn.className = 'px-3 py-1.5 rounded bg-surface-container-high text-on-surface font-medium whitespace-nowrap transition-colors';
+        } else {
+          pane.classList.add('hidden');
+          btn.className = 'px-3 py-1.5 rounded text-on-surface-variant hover:text-on-surface whitespace-nowrap transition-colors';
+        }
+      }
+    }
+
+    // 4. Whiteboard Split-Brain Chaos Runner
+    function runSplitBrainChaos() {
+      const transcode = document.getElementById('transcode-cluster-node');
+      const kafka = document.getElementById('kafka-partition-node');
+      const transStatus = document.getElementById('transcode-status');
+      const kafkaStatus = document.getElementById('kafka-status');
+      const breaker = document.getElementById('circuit-breaker-val');
+      const barEval = document.getElementById('bar-raiser-eval-text');
+      const indicator = document.getElementById('telemetry-indicator');
+      const bufferBar = document.getElementById('buffer-progress');
+      const bufferText = document.getElementById('buffer-text');
+
+      transcode.classList.add('border-error', 'bg-error/10');
+      kafka.classList.add('border-tertiary', 'bg-tertiary/10');
+      transStatus.textContent = 'DROPPING FRAME SYNC';
+      transStatus.className = 'mt-2 text-[10px] text-error font-bold';
+      kafkaStatus.textContent = 'ISR: 1/3 (QUORUM LOST)';
+      kafkaStatus.className = 'mt-2 text-[10px] text-tertiary font-bold';
+
+      breaker.textContent = 'OPEN (Tripped - 80% Traffic Diverted)';
+      breaker.className = 'p-2 rounded bg-surface-container text-error font-medium';
+      indicator.textContent = 'SEV-1_DEGRADED';
+      indicator.className = 'text-error text-[11px] font-bold animate-pulse';
+
+      bufferBar.style.width = '88%';
+      bufferBar.className = 'bg-error h-full transition-all duration-300';
+      bufferText.textContent = '88% (88MB / 100MB - Spillover Near Cap)';
+
+      barEval.textContent = '"Alert: Candidate should now invoke the Dead Letter Queue fallback and switch ingress proxies to serve cached video segments with reduced bitrate."';
+    }
+
+    function resetChaosSimulation() {
+      const transcode = document.getElementById('transcode-cluster-node');
+      const kafka = document.getElementById('kafka-partition-node');
+      const transStatus = document.getElementById('transcode-status');
+      const kafkaStatus = document.getElementById('kafka-status');
+      const breaker = document.getElementById('circuit-breaker-val');
+      const barEval = document.getElementById('bar-raiser-eval-text');
+      const indicator = document.getElementById('telemetry-indicator');
+      const bufferBar = document.getElementById('buffer-progress');
+      const bufferText = document.getElementById('buffer-text');
+
+      transcode.className = 'p-3 rounded border border-outline-variant bg-surface-container-low font-mono text-xs transition-all';
+      kafka.className = 'p-3 rounded border border-outline-variant bg-surface-container-low font-mono text-xs transition-all';
+      transStatus.textContent = 'Auto-scaled: 48 Pods';
+      transStatus.className = 'mt-2 text-[10px] text-secondary';
+      kafkaStatus.textContent = 'ISR: 3/3 Replicas';
+      kafkaStatus.className = 'mt-2 text-[10px] text-secondary';
+
+      breaker.textContent = 'CLOSED (Traffic Allowed 100%)';
+      breaker.className = 'p-2 rounded bg-surface-container text-secondary font-medium';
+      indicator.textContent = 'ALL_SYSTEMS_NOMINAL';
+      indicator.className = 'text-secondary text-[11px]';
+
+      bufferBar.style.width = '14%';
+      bufferBar.className = 'bg-secondary h-full transition-all duration-300';
+      bufferText.textContent = '14% (12MB / 100MB)';
+
+      barEval.textContent = '"Good baseline caching. When WAN partitions occur, ensure your Kafka producer switches to idempotent ack-all mode to avoid duplicate stream writes."';
+    }
+
+    // 5. Disaster Recovery Scrubber
+    const incidentData = [
+      {
+        phase: "T+00s: WAN Partition Severance",
+        desc: "Cross-regional fiber optic link severed between us-east-1 and eu-central-1. Heartbeats begin dropping.",
+        cluster: "Quorum Threatened",
+        action: "Attempting consensus with remaining 2 AZs",
+        eval: "Identify split immediately. Do NOT permit writes on partitioned minority segment."
+      },
+      {
+        phase: "T+48s: Dead Letter Queue Ingestion",
+        desc: "Buffer queues hit 70% threshold. Async consumers fallback to local NVMe spillover buckets.",
+        cluster: "Degraded Mode Active",
+        action: "Backpressure signaled to Edge Envoy tier",
+        eval: "Validate that write acknowledgments return 503 Retry-After rather than silent data drop."
+      },
+      {
+        phase: "T+02m 15s: Epoch Fencing Token Enforced",
+        desc: "Stale leader from old term tries to commit write. Fencing token rejected by storage nodes.",
+        cluster: "Split-Brain Averted",
+        action: "Generation Token #1483 validated",
+        eval: "Staff+ standard: Ensure generational monotonic token prevents zombie leader write corruption."
+      },
+      {
+        phase: "T+02m 45s: Re-convergence & Catch-up",
+        desc: "Fiber link reconnected. Log replication engine streams delta offsets from WAL to catch up replica.",
+        cluster: "Full Quorum Restored",
+        action: "Lag reduced to 0 entries. ACID intact.",
+        eval: "Interview cleared. Perfect response to asymmetric WAN partition failure."
+      }
+    ];
+
+    function updateIncidentScrubber(val) {
+      const data = incidentData[val];
+      document.getElementById('inc-phase').textContent = data.phase;
+      document.getElementById('inc-desc').textContent = data.desc;
+      document.getElementById('inc-cluster').textContent = data.cluster;
+      document.getElementById('inc-action').textContent = data.action;
+      document.getElementById('inc-eval').textContent = data.eval;
+    }
+
+    // 6. Pricing Toggle
+    function setBilling(mode) {
+      const btnM = document.getElementById('billing-monthly');
+      const btnA = document.getElementById('billing-annual');
+      const priceStaff = document.getElementById('price-staff-val');
+      const priceSub = document.getElementById('price-staff-sub');
+
+      if (mode === 'annual') {
+        btnA.className = 'px-3 py-1.5 rounded bg-surface-container-high text-on-surface font-medium transition-colors flex items-center gap-1.5';
+        btnM.className = 'px-3 py-1.5 rounded text-on-surface-variant hover:text-on-surface transition-colors';
+        priceStaff.textContent = '\$59';
+        priceSub.textContent = '/ month (billed annually)';
+      } else {
+        btnM.className = 'px-3 py-1.5 rounded bg-surface-container-high text-on-surface font-medium transition-colors';
+        btnA.className = 'px-3 py-1.5 rounded text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1.5';
+        priceStaff.textContent = '\$79';
+        priceSub.textContent = '/ month';
+      }
+    }
+
+    // 7. FAQ Accordion Toggle
+    function toggleFaq(id) {
+      const content = document.getElementById(\`faq-content-\${id}\`);
+      const icon = document.getElementById(\`faq-icon-\${id}\`);
       if (content.classList.contains('hidden')) {
         content.classList.remove('hidden');
-        icon.style.transform = 'rotate(180deg)';
+        icon.textContent = 'expand_less';
       } else {
         content.classList.add('hidden');
-        icon.style.transform = 'rotate(0deg)';
+        icon.textContent = 'expand_more';
       }
     }
-
-    // 8. CLI COMMAND COPY HELPER
-    function copyCliCommand() {
-      const cmd = document.getElementById('terminal-cli-command').innerText;
-      navigator.clipboard.writeText(cmd).then(() => {
-        const copyLabel = document.getElementById('copy-label');
-        const copyIcon = document.getElementById('copy-icon');
-        copyLabel.innerText = "Copied!";
-        copyIcon.innerText = "check";
-        setTimeout(() => {
-          copyLabel.innerText = "Copy";
-          copyIcon.innerText = "content_copy";
-        }, 2000);
-      });
-    }
-
-    // 9. KEYBOARD SHORTCUT TRIGGER SIMULATION
-    document.addEventListener('keydown', function(e) {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        const cmdBtn = document.getElementById('cmd-palette-btn');
-        cmdBtn.click();
-      }
-    });
-
-    document.getElementById('cmd-palette-btn').addEventListener('click', function() {
-      switchDemoTab('chaos-canvas');
-      const demo = document.getElementById('simulator');
-      demo.scrollIntoView({ behavior: 'smooth' });
-    });
   </script>
-
-      </div>
-    </>
+` }} 
+    />
   );
 }
