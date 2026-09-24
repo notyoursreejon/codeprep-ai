@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  role          String?   // User's job role (e.g., Software Engineer)
+  experience    String?   // User's experience level
+  accounts      Account[]
+  sessions      Session[]
+  submissions   Submission[]
+  interviews    InterviewSession[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Problem {
+  id          String   @id @default(cuid())
+  title       String
+  difficulty  String   // Easy, Medium, Hard
+  topic       String   // Array, String, Dynamic Programming, etc.
+  description String
+  starterCode String?
+  testCases   String?
+  submissions Submission[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Submission {
+  id            String   @id @default(cuid())
+  userId        String
+  problemId     String
+  code          String
+  language      String
+  status        String   // Accepted, Wrong Answer, Error
+  executionTime Int?
+  memoryUsed    Int?
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problem       Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+}
+
+model InterviewSession {
+  id                 String   @id @default(cuid())
+  userId             String
+  role               String
+  experience         String
+  scoreTechnical     Int?
+  scoreCommunication Int?
+  scoreDsa           Int?
+  scoreCs            Int?
+  feedback           String?
+  questions          InterviewQuestion[]
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model InterviewQuestion {
+  id        String   @id @default(cuid())
+  sessionId String
+  question  String
+  answer    String?
+  feedback  String?
+  session   InterviewSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}
