@@ -90,25 +90,25 @@
 @layer base {
   :root {
     --background: #09090b;
-    --foreground: #fafafa;
-    --card: #09090b;
-    --card-foreground: #fafafa;
-    --popover: #09090b;
-    --popover-foreground: #fafafa;
-    --primary: #fafafa;
-    --primary-foreground: #18181b;
-    --secondary: #27272a;
-    --secondary-foreground: #fafafa;
-    --muted: #27272a;
-    --muted-foreground: #a1a1aa;
-    --accent: #27272a;
-    --accent-foreground: #fafafa;
-    --destructive: #7f1d1d;
-    --destructive-foreground: #fafafa;
-    --border: #27272a;
-    --input: #27272a;
-    --ring: #d4d4d8;
-    --radius: 0.5rem;
+    --foreground: #e5e1e4;
+    --card: #131315;
+    --card-foreground: #e5e1e4;
+    --popover: #1c1b1d;
+    --popover-foreground: #e5e1e4;
+    --primary: #6366f1;
+    --primary-foreground: #ffffff;
+    --secondary: #10b981;
+    --secondary-foreground: #ffffff;
+    --muted: #201f22;
+    --muted-foreground: #c7c4d7;
+    --accent: #353437;
+    --accent-foreground: #e5e1e4;
+    --destructive: #ffb4ab;
+    --destructive-foreground: #690005;
+    --border: #353437;
+    --input: #131315;
+    --ring: #6366f1;
+    --radius: 0.25rem;
   }
 }
 
@@ -117,6 +117,14 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-body-sm), sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-headline-lg), sans-serif;
+    letter-spacing: -0.02em;
+  }
+  code, pre {
+    font-family: var(--font-code-lg), monospace;
   }
 }
